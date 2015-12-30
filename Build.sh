@@ -35,7 +35,7 @@ NO=0
 for i in CorePlus-$COREVER.iso \
 nbscript.sh tc-config.diff kexec.tgz \
 grub.exe \
-dialog.tcz ncurses.tcz ncurses-common.tcz bash.tcz \
+dialog.tcz ncurses.tcz bash.tcz \
 disksplit.sh;do
 	if [ ! -e $i ];then
 		echo "Couldn't find $i!"
@@ -127,7 +127,7 @@ cp -v nbscript.sh ${NBINIT}/usr/bin
 if [ -e squashfs-root ];then
 	rm -r squashfs-root
 fi
-for i in dialog.tcz ncurses.tcz ncurses-common.tcz;do
+for i in dialog.tcz ncurses.tcz;do
 	unsquashfs $i
 	cp -a squashfs-root/* ${NBINIT}
 	rm -r squashfs-root
@@ -193,12 +193,12 @@ fi
 
 #Add pxe-kexec to nbinit, if it exists in this folder
 if [ -f pxe-kexec.tgz ] && [ -f readline.tcz ] && \
-   [ -f curl.tcz ] && [ -f openssl-1.0.1.tcz ] && \
+   [ -f curl.tcz ] && [ -f openssl.tcz ] && \
    [ -f libgcrypt.tcz ] && [ -f libgpg-error.tcz ] && \
    [ -f libidn.tcz ] && [ -f libssh2.tcz ];then
 	mkdir ${WORK}/pxe-kexec
 	tar -C ${WORK}/pxe-kexec -xf pxe-kexec.tgz # an extra utility
-	for i in readline.tcz curl.tcz openssl-1.0.1.tcz libgcrypt.tcz libgpg-error.tcz libidn.tcz libssh2.tcz;do #dependencies of pxe-kexec
+	for i in readline.tcz curl.tcz openssl.tcz libgcrypt.tcz libgpg-error.tcz libidn.tcz libssh2.tcz;do #dependencies of pxe-kexec
 		unsquashfs $i
 		cp -a squashfs-root/* ${WORK}/pxe-kexec
 		rm -r squashfs-root
