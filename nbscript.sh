@@ -115,7 +115,7 @@ rm /tmp/nb-distro
 if [ $DISTRO = "ubuntu" ];then
 	#Ask about version
 	dialog --menu "Choose a system to install:" 20 70 13 \
-	wily "Ubuntu 15.10 (released on Oct. 22, 2015)" \
+	wily "Ubuntu 15.10" \
 	vivid "Ubuntu 15.04" \
 	trusty "Ubuntu 14.04 LTS" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
@@ -141,7 +141,7 @@ fi
 if [ $DISTRO = "ubuntu64" ];then
 	#Ask about version
 	dialog --menu "Choose a system to install:" 20 70 13 \
-	wily "Ubuntu 15.10 (released on Oct. 22, 2015)" \
+	wily "Ubuntu 15.10" \
 	vivid "Ubuntu 15.04" \
 	trusty "Ubuntu 14.04 LTS" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
@@ -212,7 +212,7 @@ if [ $DISTRO = "debiandaily64" ];then
 fi
 if [ $DISTRO = "fedora" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
-	releases/22/Server "Fedora 23 (released on Oct. 27, 2015)" \
+	releases/23/Server "Fedora 23" \
 	releases/22/Server "Fedora 22" \
 	releases/21/Server "Fedora 21" \
 	development/rawhide "Rawhide" \
@@ -227,7 +227,7 @@ if [ $DISTRO = "fedora" ];then
 fi
 if [ $DISTRO = "fedora64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
-	releases/23/Server "Fedora 23 (released on Oct. 27, 2015)" \
+	releases/23/Server "Fedora 23" \
 	releases/22/Server "Fedora 22" \
 	releases/21/Server "Fedora 21" \
 	development/rawhide "Rawhide" \
@@ -419,7 +419,8 @@ if [ $DISTRO = "slackware" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
 	slackware-14.1 "Slackware 14.1 (32-bit)" \
 	slackware64-14.1 "Slackware 14.1 (64-bit)" \
-	current "Slackware-current" \
+	slackware-current "Slackware current (32-bit)" \
+	slackware64-current "Slackware current (64-bit)" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
 	dialog --backtitle "$TITLE" --menu "Choose a kernel type:" 20 70 13 \
@@ -452,8 +453,8 @@ rm /tmp/nb-distro
 #What version?
 if [ $DISTRO = "grub4dos" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a version to download:" 20 70 13 \
-	0.4.6a-2015-05-18 "grub4dos-chenall fork (0.4.6a branch)" \
-	0.4.5c-2015-05-18 "grub4dos-chenall fork (0.4.5c branch)" \
+	0.4.6a-2015-12-16 "grub4dos-chenall fork (0.4.6a branch)" \
+	0.4.5c-2015-12-24 "grub4dos-chenall fork (0.4.5c branch)" \
 	0.4.4-2009-06-20 "Latest version of original - June 20, 2009" 2>/tmp/nb-version
 	getversion
 else
