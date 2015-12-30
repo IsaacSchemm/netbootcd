@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-## nbscript.sh 6.2 - Download netboot images and launch them with kexec
+## nbscript.sh 6.3 - Download netboot images and launch them with kexec
 ## Copyright (C) 2015 Isaac Schemm <isaacschemm@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 6.2 - May 26, 2015"
+TITLE="NetbootCD Script 6.3 - October 16, 2015"
 
 getversion ()
 {
@@ -115,8 +115,8 @@ rm /tmp/nb-distro
 if [ $DISTRO = "ubuntu" ];then
 	#Ask about version
 	dialog --menu "Choose a system to install:" 20 70 13 \
+	wily "Ubuntu 15.10 (released on Oct. 22, 2015)" \
 	vivid "Ubuntu 15.04" \
-	utopic "Ubuntu 14.10" \
 	trusty "Ubuntu 14.04 LTS" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	#Run the getversion() function above
@@ -141,8 +141,8 @@ fi
 if [ $DISTRO = "ubuntu64" ];then
 	#Ask about version
 	dialog --menu "Choose a system to install:" 20 70 13 \
+	wily "Ubuntu 15.10 (released on Oct. 22, 2015)" \
 	vivid "Ubuntu 15.04" \
-	utopic "Ubuntu 14.10" \
 	trusty "Ubuntu 14.04 LTS" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	#Run the getversion() function above
@@ -212,9 +212,9 @@ if [ $DISTRO = "debiandaily64" ];then
 fi
 if [ $DISTRO = "fedora" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
-	releases/22/Server "Fedora 22 (released on May 19, 2015)" \
+	releases/22/Server "Fedora 23 (released on Oct. 27, 2015)" \
+	releases/22/Server "Fedora 22" \
 	releases/21/Server "Fedora 21" \
-	releases/20/Fedora "Fedora 20" \
 	development/rawhide "Rawhide" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
@@ -227,9 +227,9 @@ if [ $DISTRO = "fedora" ];then
 fi
 if [ $DISTRO = "fedora64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	releases/23/Server "Fedora 23 (released on Oct. 27, 2015)" \
 	releases/22/Server "Fedora 22" \
 	releases/21/Server "Fedora 21" \
-	releases/20/Fedora "Fedora 20" \
 	development/rawhide "Rawhide" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
