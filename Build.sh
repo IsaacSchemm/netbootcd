@@ -1,5 +1,5 @@
-20#!/bin/sh
-#Build.sh 6.2 for netbootcd
+#!/bin/sh
+#Build.sh 6.4.1 for netbootcd
 
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License
@@ -28,8 +28,8 @@ NBINIT2=${WORK}/nbinit2 #for floppy
 
 #Set to false to not build floppy images
 FLOPPY=true
-NBCDVER=6.2
-COREVER=6.2
+NBCDVER=6.4.1
+COREVER=6.4.1
 
 NO=0
 for i in CorePlus-$COREVER.iso \
