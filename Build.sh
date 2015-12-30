@@ -262,7 +262,7 @@ initrd /boot/nbinit4.gz
 append quiet
 
 LABEL grub4dos
-menu label ^GRUB4DOS 0.4.6a-2015-05-18
+menu label ^GRUB4DOS 0.4.6a-2015-12-16
 kernel /boot/grub.exe
 " >> ${WORK}/iso/boot/isolinux/isolinux.cfg
 
@@ -350,7 +350,7 @@ initrd /boot/core.gz
 append loglevel=3 base
 
 LABEL grub4dos
-menu label ^GRUB4DOS 0.4.6a-2015-05-18
+menu label ^GRUB4DOS 0.4.6a-2015-12-16
 kernel /boot/grub.exe
 " > ${WORK}/iso/boot/isolinux/isolinux.cfg
 $MAKER --no-emul-boot --boot-info-table --boot-load-size 4 \
