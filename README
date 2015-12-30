@@ -1,0 +1,25 @@
+The files needed to run Build.sh are:
+blank-bootable-1440-floppy.gz
+CorePlus-6.1.iso (get it from http://www.tinycorelinux.com)
+dialog.tcz (from http://distro.ibiblio.org/tinycorelinux/6.x/x86/tcz)
+disksplit.sh
+dosfiles.tar.gz
+grub.exe (grub4dos - the version included here is 0.4.6a 2015-04-08)
+kexec.tgz (kexec-tools 2.0.9 binaries for tinycore)
+nbscript.sh
+ncurses-common.tcz (from http://distro.ibiblio.org/tinycorelinux/6.x/x86/tcz)
+ncurses.tcz (from http://distro.ibiblio.org/tinycorelinux/6.x/x86/tcz)
+tc-config.diff
+
+Recommended files: (note - none of these will end up in the floppy disk version; this is to keep the size down)
+bash.tcz (required for read-cfg feature)
+nbcd-bg.png (desktop background for X11 environment)
+pxe-kexec.tcz (a recommendation from someone else)
+readline.tcz (required by pxe-kexec)
+curl.tcz (required by pxe-kexec)
+libidn.tcz (required by curl)
+openssl-1.0.1.tcz (required by curl)
+libssh2.tcz (required by curl)
+libgcrypt.tcz (required by libssh2)
+
+You must have installed squashfs-tools, zip, mkdosfs, perl, syslinux-utils (in particular isohybrid), and genisoimage/mkisofs.
