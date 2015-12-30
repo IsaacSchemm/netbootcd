@@ -1,5 +1,5 @@
-#!/bin/sh
-#Build.sh 6.1 for netbootcd
+20#!/bin/sh
+#Build.sh 6.2 for netbootcd
 
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License
@@ -28,8 +28,8 @@ NBINIT2=${WORK}/nbinit2 #for floppy
 
 #Set to false to not build floppy images
 FLOPPY=true
-NBCDVER=6.1
-COREVER=6.1
+NBCDVER=6.2
+COREVER=6.2
 
 NO=0
 for i in CorePlus-$COREVER.iso \
@@ -245,8 +245,7 @@ for i in vmlinuz nbinit4.gz;do
 	cp ${DONE}/$i ${WORK}/iso/boot
 done
 
-cat >> ${WORK}/iso/boot/isolinux/isolinux.cfg << "EOF"
-DEFAULT menu.c32
+echo "DEFAULT menu.c32
 PROMPT 0
 TIMEOUT 100
 ONTIMEOUT nbcd
@@ -263,9 +262,9 @@ initrd /boot/nbinit4.gz
 append quiet
 
 LABEL grub4dos
-menu label ^GRUB4DOS 0.4.6a-2015-03-29
+menu label ^GRUB4DOS 0.4.6a-2015-05-18
 kernel /boot/grub.exe
-EOF
+" >> ${WORK}/iso/boot/isolinux/isolinux.cfg
 
 if which mkisofs>/dev/null;then
 	CDRTOOLS=1
@@ -351,7 +350,7 @@ initrd /boot/core.gz
 append loglevel=3 base
 
 LABEL grub4dos
-menu label ^GRUB4DOS 0.4.6a-2015-03-29
+menu label ^GRUB4DOS 0.4.6a-2015-05-18
 kernel /boot/grub.exe
 " > ${WORK}/iso/boot/isolinux/isolinux.cfg
 $MAKER --no-emul-boot --boot-info-table --boot-load-size 4 \

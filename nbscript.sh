@@ -1,6 +1,6 @@
-w#!/bin/sh
+#!/bin/sh
 set -e
-## nbscript.sh 6.1 - Download netboot images and launch them with kexec
+## nbscript.sh 6.2 - Download netboot images and launch them with kexec
 ## Copyright (C) 2015 Isaac Schemm <isaacschemm@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 6.1 - April 8, 2015"
+TITLE="NetbootCD Script 6.2 - May 26, 2015"
 
 getversion ()
 {
@@ -43,6 +43,48 @@ CUSTOM=$(cat /tmp/nb-custom)
 rm /tmp/nb-custom
 }
 
+probe_and_provision () {
+provisionpath=""
+provisionscript="nbprovision.sh"
+mntpath="/mnt/cdrom"
+
+skip_probe=$(cat /proc/cmdline|grep 'nb_noprobe=1')
+if [ "$skip_probe" == "" ]; then
+mkdir -p $mntpath
+for dev in /dev/cd* /dev/sc* /dev/sg* /dev/sr*; do
+	mountable=$(blkid $dev)
+	mounted=$(cat /proc/mounts |grep "$mntpath")
+	if [ "$mountable" != "" ] && [ "$mounted" = "" ]; then
+		mount $dev $mntpath
+		if [ -f $mntpath/$provisionscript ]; then
+			provisionpath=$mntpath/$provisionscript
+			break
+		fi
+		umount -f $mntpath
+	fi
+done
+
+if [ "$provisionpath" != "" ]; then
+	echo "Starting provisioning from local disk..."
+	sh $provisionpath
+	umount -f $mntpath
+fi
+# skip_probe
+fi
+}
+
+
+downloadandrun ()
+{
+if wget -O /tmp/nbscript.sh $1;then
+	chmod +x /tmp/nbscript.sh
+	exec /tmp/nbscript.sh
+else
+	rm /tmp/nbscript.sh
+	echo "Downloading the new script was not successful."
+fi
+
+}
 
 installmenu ()
 {
@@ -185,7 +227,7 @@ if [ $DISTRO = "fedora" ];then
 fi
 if [ $DISTRO = "fedora64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
-	releases/22/Server "Fedora 22 (released on May 19, 2015)" \
+	releases/22/Server "Fedora 22" \
 	releases/21/Server "Fedora 21" \
 	releases/20/Fedora "Fedora 20" \
 	development/rawhide "Rawhide" \
@@ -242,6 +284,7 @@ if [ $DISTRO = "opensuse64" ];then
 fi
 if [ $DISTRO = "mageia" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	5 "Mageia 5" \
 	4 "Mageia 4" \
 	3 "Mageia 3" \
 	cauldron "Mageia cauldron" \
@@ -253,6 +296,7 @@ if [ $DISTRO = "mageia" ];then
 fi
 if [ $DISTRO = "mageia64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	5 "Mageia 5" \
 	4 "Mageia 4" \
 	3 "Mageia 3" \
 	cauldron "Mageia cauldron" \
@@ -406,8 +450,8 @@ rm /tmp/nb-distro
 #What version?
 if [ $DISTRO = "grub4dos" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a version to download:" 20 70 13 \
-	0.4.6a-2015-04-08 "grub4dos-chenall fork (0.4.6a branch)" \
-	0.4.5c-2015-04-08 "grub4dos-chenall fork (0.4.5c branch)" \
+	0.4.6a-2015-05-18 "grub4dos-chenall fork (0.4.6a branch)" \
+	0.4.5c-2015-05-18 "grub4dos-chenall fork (0.4.5c branch)" \
 	0.4.4-2009-06-20 "Latest version of original - June 20, 2009" 2>/tmp/nb-version
 	getversion
 else
@@ -428,7 +472,7 @@ if [ $DISTRO = "grub4dos" ];then
 		mv /tmp/grub4dos-*/grub.exe /tmp/nb-linux
 		rm -r /tmp/grub4dos-*
 	else
-		wget -O /tmp/nb-linux http://download.tuxfamily.org/netbootcd/grub4dos-$VERSION/grub.exe
+		wget -O /tmp/nb-linux http://netbootcd.us/downloads/grub4dos/$VERSION/grub.exe
 	fi
 	true>/tmp/nb-initrd
 elif [ $DISTRO = "core" ] || [ $DISTRO = "tinycore" ] || [ $DISTRO = "gparted" ];then
@@ -469,12 +513,28 @@ elif [ $DISTRO = "core" ] || [ $DISTRO = "tinycore" ] || [ $DISTRO = "gparted" ]
 	fi
 fi
 }
+# Do not display menu if nb_provisionurl or local provisioning
+# script was provided. Exception: nb_noprobe=1
+for param in $(cat /proc/cmdline); do
+    url=$(echo $param|egrep '^nb_provisionurl'|sed 's/nb_provisionurl=//g')
+    if [ "$url" != "" ]; then
+        downloadandrun $url
+        exit 0
+    fi
+done
 
+# Required to handle blkid and grep
+set +e
+probe_and_provision
+set -e
+
+# Proceed with interactive menu
 dialog --backtitle "$TITLE" --menu "What would you like to do?" 16 70 9 \
 install "Install a Linux system" \
 utils "Download and run boot-time utilities" \
 download "Get newest script from the NetbootCD website" \
 ipaddr "View/release IP address" \
+provision "Download and run custom provisioning script" \
 quit "Quit to prompt (do not reboot)" 2>/tmp/nb-mainmenu
 
 MAINMENU=$(cat /tmp/nb-mainmenu)
@@ -485,20 +545,24 @@ fi
 #We are going to need /tmp/nb-options empty later.
 true>/tmp/nb-options
 if [ $MAINMENU = "download" ];then
-if wget -O /tmp/nbscript.sh http://downloads.tuxfamily.org/netbootcd/nbscript.sh;then
-	chmod +x /tmp/nbscript.sh
-	exec /tmp/nbscript.sh
-else
-	rm /tmp/nbscript.sh
-	echo "Downloading the new script was not successful."
-	exit 1
-fi
+	downloadandrun http://netbootcd.us/downloads/nbscript.sh
 fi
 if [ $MAINMENU = "utils" ];then
 	utilsmenu
 fi
 if [ $MAINMENU = "install" ];then
 	installmenu
+fi
+if [ $MAINMENU = "provision" ]; then
+  url=""
+  while [ "$url" == "" ]; do
+    dialog --inputbox "Remote provision url:" 8 30 "" 2>/tmp/nb-interface
+    url="$(cat /tmp/nb-interface)"
+    if [ "$url" != "" ]; then
+        downloadandrun $url
+    fi
+  done
+  exit
 fi
 if [ $MAINMENU = "ipaddr" ];then
   dialog --inputbox "Network interface:" 8 30 "eth0" 2>/tmp/nb-interface
@@ -517,10 +581,10 @@ if [ $MAINMENU = "ipaddr" ];then
   exit
 fi
 #This is what we will tell kexec.
-if [ $MAINMENU != "script" ];then
+if [ $DISTRO != "grub4dos" ];then
 	ARGS="-l /tmp/nb-linux --initrd=/tmp/nb-initrd $OPTIONS $CUSTOM"
 else
-	ARGS="-l /tmp/nb-linux --initrd=/tmp/nb-initrd $OPTIONS"
+	ARGS="-l /tmp/nb-linux $OPTIONS $CUSTOM"
 fi
 if [ $DISTRO = "rhel-type-5" ];then
 	ARGS=$ARGS" --args-linux"
