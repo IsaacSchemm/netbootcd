@@ -35,7 +35,7 @@ NO=0
 for i in CorePlus-$COREVER.iso \
 nbscript.sh tc-config.diff kexec.tgz \
 grub.exe \
-dialog.tcz ncurses.tcz bash.tcz \
+dialog.tcz ncurses.tcz \
 disksplit.sh;do
 	if [ ! -e $i ];then
 		echo "Couldn't find $i!"
@@ -144,7 +144,7 @@ tar -C ${NBINIT} -xvf kexec.tgz
 #done
 
 if $FLOPPY;then
-	#Make the floppy disk version of the initrd (without bash. bash is needed for read-cfg.sh but it is a big program.)
+	#Make the floppy disk version of the initrd.
 	cp -a ${NBINIT} ${NBINIT2}
 	#now we remove things in a dirty way.
 	#remove filesystem utils
@@ -159,8 +159,7 @@ if $FLOPPY;then
 	##for i in parport scsi usb;do
 		##rm -r ${NBINIT2}/lib/modules/*tinycore/kernel/drivers/$i || true
 	##done
-	#Remove "script" option from nbscript.sh, because bash is not on the floppy disc (too many big dependencies)
-	sed -i -e '/^script/d' ${NBINIT2}/usr/bin/nbscript.sh
+
 	#NetbootCD > .profile
 	echo "netboot" >> ${NBINIT2}/etc/skel/.profile
 	cd ${NBINIT2}
@@ -172,11 +171,6 @@ if $FLOPPY;then
 	#rm -r ${NBINIT2}
 	echo "Made smaller floppy initrd:" $(wc -c ${DONE}/nbflop4.gz)
 fi
-
-#copy bash to CD version (supports arrays for read-cfg.sh)
-unsquashfs bash.tcz
-cp -a squashfs-root/* ${NBINIT}
-rm -r squashfs-root
 
 #change background
 if [ -f nbcd-bg.png ];then
@@ -192,14 +186,14 @@ else
 fi
 
 #Add pxe-kexec to nbinit, if it exists in this folder
-if [ -f pxe-kexec.tgz ] && [ -f readline.tcz ] && \
-   [ -f curl.tcz ] && [ -f openssl.tcz ] && \
-   [ -f libgcrypt.tcz ] && [ -f libgpg-error.tcz ] && \
-   [ -f libidn.tcz ] && [ -f libssh2.tcz ];then
+if [ -f pxe-kexec/pxe-kexec.tgz ] && [ -f pxe-kexec/readline.tcz ] && \
+   [ -f pxe-kexec/curl.tcz ] && [ -f pxe-kexec/openssl.tcz ] && \
+   [ -f pxe-kexec/libgcrypt.tcz ] && [ -f pxe-kexec/libgpg-error.tcz ] && \
+   [ -f pxe-kexec/libidn.tcz ] && [ -f pxe-kexec/libssh2.tcz ];then
 	mkdir ${WORK}/pxe-kexec
-	tar -C ${WORK}/pxe-kexec -xf pxe-kexec.tgz # an extra utility
+	tar -C ${WORK}/pxe-kexec -xf pxe-kexec/pxe-kexec.tgz # an extra utility
 	for i in readline.tcz curl.tcz openssl.tcz libgcrypt.tcz libgpg-error.tcz libidn.tcz libssh2.tcz;do #dependencies of pxe-kexec
-		unsquashfs $i
+		unsquashfs pxe-kexec/$i
 		cp -a squashfs-root/* ${WORK}/pxe-kexec
 		rm -r squashfs-root
 	done

@@ -1,0 +1,3 @@
+[submodule "netbootcd-source"]
+	path = netbootcd-source
+	url = https://github.com/IsaacSchemm/netbootcd-source
