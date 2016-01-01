@@ -102,7 +102,6 @@ opensuse64 "(x86_64) openSUSE" \
 opensuse "  (i386) openSUSE" \
 mageia64 "(x86_64) Mageia" \
 mageia "  (i386) Mageia" \
-rhel-type-7-64 "(x86_64) CentOS 7 and Scientific Linux 7 [NOT WORKING]" \
 rhel-type-6-64 "(x86_64) CentOS 6 and Scientific Linux 6" \
 rhel-type-6 "  (i386) CentOS 6 and Scientific Linux 6" \
 rhel-type-5-64 "(x86_64) CentOS 5 and Scientific Linux 5" \
@@ -307,27 +306,6 @@ if [ $DISTRO = "mageia64" ];then
 	KERNELURL="http://mirrors.kernel.org/mageia/distrib/$VERSION/x86_64/isolinux/x86_64/vmlinuz"
 	INITRDURL="http://mirrors.kernel.org/mageia/distrib/$VERSION/x86_64/isolinux/x86_64/all.rdz"
 	echo -n '--append=automatic=method:http' >>/tmp/nb-options
-fi
-if [ $DISTRO = "rhel-type-7-64" ];then
-	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
-	c_7 "Latest version of CentOS 7" \
-	s_7x "Latest version of Scientific Linux 7" \
-	Manual "Manually enter a version to install (prefix with s_ or c_)" 2>/tmp/nb-version
-	getversion
-	TYPE=$(echo $VERSION|head -c 1)
-	VERSION=$(echo $VERSION|tail -c +3)
-	#Ask the user which server to use (the installer doesn't have a built-in list like Ubuntu and Debian do.)
-	if [ $TYPE = s ];then
-		dialog --inputbox "Where do you want to install Scientific Linux from?" 8 70 "ftp://linux1.fnal.gov/linux/scientific/$VERSION/x86_64/os" 2>/tmp/nb-server
-	else
-		dialog --inputbox "Where do you want to install CentOS from?" 8 70 "http://mirrors.kernel.org/centos/$VERSION/os/x86_64" 2>/tmp/nb-server
-	fi
-	SERVER=$(cat /tmp/nb-server)
-	KERNELURL="$SERVER/isolinux/vmlinuz"
-	INITRDURL="$SERVER/isolinux/initrd.img"
-	echo -n "--append=inst.repo=$(cat /tmp/nb-server)" >>/tmp/nb-options
-	rm /tmp/nb-server
-	askforopts
 fi
 if [ $DISTRO = "rhel-type-6" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
