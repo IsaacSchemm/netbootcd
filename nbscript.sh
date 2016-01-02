@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 ## nbscript.sh 6.4.1 - Download netboot images and launch them with kexec
-## Copyright (C) 2015 Isaac Schemm <isaacschemm@gmail.com>
+## Copyright (C) 2016 Isaac Schemm <isaacschemm@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License
@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 6.4.1 - December 30, 2015"
+TITLE="NetbootCD Script 6.4.1 - January 1, 2016"
 
 getversion ()
 {
@@ -422,6 +422,7 @@ utilsmenu ()
 #Ask the user to choose a distro, save the choice to /tmp/nb-distro
 dialog --backtitle "$TITLE" --menu "Choose a utility:" 20 70 13 \
 grub4dos "GRUB4DOS - a versitle bootloader that can be loaded from kexec" \
+slitaz "SliTaz" \
 core "Core 6.x" \
 tinycore "Core 6.x (add TinyCore packages: Xvesa Xlibs Xprogs aterm flwm_topside wbar)" \
 gparted "Core 6.x (above plus: gparted ntfsprogs dosfstools reiserfsprogs)" 2>/tmp/nb-distro
@@ -434,6 +435,13 @@ if [ $DISTRO = "grub4dos" ];then
 	0.4.6a-2015-12-16 "grub4dos-chenall fork (0.4.6a branch)" \
 	0.4.5c-2015-12-24 "grub4dos-chenall fork (0.4.5c branch)" \
 	0.4.4-2009-06-20 "Latest version of original - June 20, 2009" 2>/tmp/nb-version
+	getversion
+elif [ $DISTRO = "slitaz" ];then
+	dialog --backtitle "$TITLE" --menu "Choose a version to download:" 20 70 13 \
+	4.0-httpfs "SliTaz 4.0 (root filesystem mounted over HTTP)" \
+	4.0-text "SliTaz 4.0 (text mode, first initrd only)" \
+	tiny "Tiny SliTaz (see tiny.slitaz.org)" \
+	fbvnc "VNC client" 2>/tmp/nb-version
 	getversion
 else
 	dialog --backtitle "$TITLE" --menu "Choose a version to download:" 20 70 13 \
@@ -456,6 +464,23 @@ if [ $DISTRO = "grub4dos" ];then
 		wget -O /tmp/nb-linux http://netbootcd.us/downloads/grub4dos/$VERSION/grub.exe
 	fi
 	true>/tmp/nb-initrd
+elif [ $DISTRO = "slitaz" ];then
+	if [ "$VERSION" = "tiny" ];then
+		wget http://mirror.slitaz.org/pxe/tiny/bzImage.gz -O /tmp/nb-linux
+		wget http://mirror.slitaz.org/pxe/tiny/rootfs.gz -O /tmp/nb-initrd
+	elif [ "$VERSION" = "4.0-text" ];then
+		wget http://mirror.slitaz.org/boot/4.0/bzImage -O /tmp/nb-linux
+		wget http://mirror.slitaz.org/boot/4.0/rootfs4.gz -O /tmp/nb-initrd
+		echo -n "--append=rw --append=root=/dev/null --append=vga=normal --append=autologin" >>/tmp/nb-options
+	elif [ "$VERSION" = "4.0-httpfs" ];then
+		wget http://mirror.slitaz.org/boot/4.0/bzImage -O /tmp/nb-linux
+		wget http://mirror.slitaz.org/boot/4.0/rootfstiny.gz -O /tmp/nb-initrd
+		echo -n "--append=rw --append=root=/dev/null --append=vga=normal --append=autologin" >>/tmp/nb-options
+	elif [ "$VERSION" = "vnc" ];then
+		wget http://mirror.slitaz.org/pxe/tiny/vnc/bzImage.gz -O /tmp/nb-linux
+		wget http://mirror.slitaz.org/pxe/tiny/vnc/rootfs.gz -O /tmp/nb-initrd
+		echo -n "--append=vga=ask" >>/tmp/nb-options
+	fi
 elif [ $DISTRO = "core" ] || [ $DISTRO = "tinycore" ] || [ $DISTRO = "gparted" ];then
 	if [ "$VERSION" == "64" ];then
 		wget http://distro.ibiblio.org/tinycorelinux/6.x/x86_64/release/distribution_files/vmlinuz64 -O /tmp/nb-linux
