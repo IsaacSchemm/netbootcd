@@ -290,7 +290,7 @@ MENU LABEL Boot from hard disk
 localboot 0x80
 
 LABEL nbcd-coreplus
-menu label Start CorePlus $COREVER ^on top of NetbootCD $NBCDVER
+menu label Start CorePlus $COREVER on top of NetbootCD $NBCDVER
 menu default
 kernel /boot/vmlinuz
 initrd /boot/nbinit4.gz
