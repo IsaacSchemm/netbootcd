@@ -438,6 +438,7 @@ if [ $DISTRO = "grub4dos" ];then
 	getversion
 elif [ $DISTRO = "slitaz" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a version to download:" 20 70 13 \
+	5.0-rc3 "SliTaz 5.0 rc3" \
 	4.0-httpfs "SliTaz 4.0 (root filesystem mounted over HTTP)" \
 	4.0-text "SliTaz 4.0 (text mode, first initrd only)" \
 	tiny "Tiny SliTaz (see tiny.slitaz.org)" \
@@ -480,6 +481,13 @@ elif [ $DISTRO = "slitaz" ];then
 		wget http://mirror.slitaz.org/pxe/tiny/vnc/bzImage.gz -O /tmp/nb-linux
 		wget http://mirror.slitaz.org/pxe/tiny/vnc/rootfs.gz -O /tmp/nb-initrd
 		echo -n "--append=vga=ask" >>/tmp/nb-options
+	elif [ "$VERSION" = "5.0-rc3" ];then
+		wget http://mirror.slitaz.org/iso/5.0/slitaz-5.0-rc3.iso -O /tmp/slitaz.iso
+		mkdir /tmp/slitaz
+		mount -o loop /tmp/slitaz.iso /tmp/slitaz
+		ln -s /tmp/slitaz/boot/vmlinuz* /tmp/nb-linux
+		ln -s /tmp/slitaz/boot/rootfs.gz /tmp/nb-initrd
+		echo -n "--append=rw --append=root=/dev/null --append=autologin" >>/tmp/nb-options
 	fi
 elif [ $DISTRO = "core" ] || [ $DISTRO = "tinycore" ] || [ $DISTRO = "gparted" ];then
 	if [ "$VERSION" == "64" ];then
