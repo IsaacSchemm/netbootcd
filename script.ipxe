@@ -1,5 +1,0 @@
-#!ipxe
-
-kernel http://netbootcd.us/downloads/6.2/vmlinuz
-initrd http://netbootcd.us/downloads/6.2/nbinit4.gz
-boot
