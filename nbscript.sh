@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 6.4.1 - January 1, 2016"
+TITLE="NetbootCD Script 6.4.1 - January 2, 2016"
 
 getversion ()
 {
@@ -439,7 +439,8 @@ if [ $DISTRO = "grub4dos" ];then
 elif [ $DISTRO = "slitaz" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a version to download:" 20 70 13 \
 	5.0-rc3 "SliTaz 5.0 rc3" \
-	4.0-httpfs "SliTaz 4.0 (root filesystem mounted over HTTP)" \
+	4.0-httpfs "SliTaz 4.0 (GUI mode, mounted over HTTP)" \
+	4.0-full "SliTaz 4.0 (GUI mode, download and copy to RAM)" \
 	4.0-text "SliTaz 4.0 (text mode, first initrd only)" \
 	tiny "Tiny SliTaz (see tiny.slitaz.org)" \
 	fbvnc "VNC client" 2>/tmp/nb-version
@@ -469,6 +470,16 @@ elif [ $DISTRO = "slitaz" ];then
 	if [ "$VERSION" = "tiny" ];then
 		wget http://mirror.slitaz.org/pxe/tiny/bzImage.gz -O /tmp/nb-linux
 		wget http://mirror.slitaz.org/pxe/tiny/rootfs.gz -O /tmp/nb-initrd
+	elif [ "$VERSION" = "4.0-full" ];then
+		sudo -u tc tce-load -wi xz
+		wget http://mirror.slitaz.org/boot/4.0/bzImage -O /tmp/nb-linux
+		if [ -f /tmp/nb-initrd ];then
+			rm /tmp/nb-initrd
+		fi
+		for i in 4 3 2 1;do
+			wget http://mirror.slitaz.org/boot/4.0/rootfs$i.gz -O - | /usr/local/bin/xz -cd >> /tmp/nb-initrd
+		done
+		echo -n "--append=rw --append=root=/dev/null --append=vga=normal --append=autologin" >>/tmp/nb-options
 	elif [ "$VERSION" = "4.0-text" ];then
 		wget http://mirror.slitaz.org/boot/4.0/bzImage -O /tmp/nb-linux
 		wget http://mirror.slitaz.org/boot/4.0/rootfs4.gz -O /tmp/nb-initrd
