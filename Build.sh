@@ -344,7 +344,7 @@ append loglevel=3 base
 LABEL ipxe-nbcd
 MENU LABEL Try loading current NetbootCD with ^iPXE
 kernel /boot/ipxe.krn
-append dhcp && chain https://raw.githubusercontent.com/IsaacSchemm/netbootcd/master/script.ipxe || chain http://netbootcd.us/downloads/script.ipxe
+append dhcp && chain http://raw.githubusercontent.com/IsaacSchemm/netbootcd/master/script.ipxe || chain http://netbootcd.us/downloads/script.ipxe
 
 LABEL grub4dos
 menu label ^GRUB4DOS 0.4.6a-2015-12-16
