@@ -34,7 +34,7 @@ COREVER=6.4.1
 NO=0
 for i in CorePlus-$COREVER.iso \
 nbscript.sh tc-config.diff kexec.tgz \
-grub.exe \
+grub.exe ipxe.krn \
 dialog.tcz ncurses.tcz \
 disksplit.sh;do
 	if [ ! -e $i ];then
@@ -234,7 +234,6 @@ mkdir -p ${WORK}/iso/boot/isolinux
 cp ${TCISO}/boot/isolinux/isolinux.bin ${WORK}/iso/boot/isolinux #get ISOLINUX from the TinyCore disc
 cp ${TCISO}/boot/isolinux/menu.c32 ${WORK}/iso/boot/isolinux #get menu.c32 from the TinyCore disc
 
-cp grub.exe ${WORK}/iso/boot
 for i in vmlinuz nbinit4.gz;do
 	cp ${DONE}/$i ${WORK}/iso/boot
 done
@@ -254,10 +253,6 @@ menu default
 kernel /boot/vmlinuz
 initrd /boot/nbinit4.gz
 append quiet
-
-LABEL grub4dos
-menu label ^GRUB4DOS 0.4.6a-2015-12-16
-kernel /boot/grub.exe
 " >> ${WORK}/iso/boot/isolinux/isolinux.cfg
 
 if which mkisofs>/dev/null;then
@@ -280,6 +275,9 @@ isohybrid ${DONE}/NetbootCD-$NBCDVER.iso
 
 cp -r ${TCISO}/cde ${WORK}/iso
 cp ${TCISO}/boot/core.gz ${WORK}/iso/boot
+
+cp grub.exe ${WORK}/iso/boot
+cp ipxe.krn ${WORK}/iso/boot
 
 echo "DEFAULT menu.c32
 PROMPT 0
@@ -342,6 +340,11 @@ ENDTEXT
 kernel /boot/vmlinuz
 initrd /boot/core.gz
 append loglevel=3 base
+
+LABEL ipxe-nbcd
+MENU LABEL Try loading current NetbootCD with ^iPXE
+kernel /boot/ipxe.krn
+append dhcp && chain https://raw.githubusercontent.com/IsaacSchemm/netbootcd/master/script.ipxe || chain http://netbootcd.us/downloads/script.ipxe
 
 LABEL grub4dos
 menu label ^GRUB4DOS 0.4.6a-2015-12-16

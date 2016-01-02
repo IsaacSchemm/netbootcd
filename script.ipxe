@@ -1,0 +1,5 @@
+#!ipxe
+
+kernel 6.2/vmlinuz
+initrd 6.2/nbinit4.gz
+boot
