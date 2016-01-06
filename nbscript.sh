@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-## nbscript.sh 6.4.1 - Download netboot images and launch them with kexec
+## nbscript.sh 6.4.1.1 - Download netboot images and launch them with kexec
 ## Copyright (C) 2016 Isaac Schemm <isaacschemm@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 6.4.1 - January 2, 2016"
+TITLE="NetbootCD Script 6.4.1.1 - January 6, 2016"
 
 getversion ()
 {
@@ -325,6 +325,27 @@ if [ $DISTRO = "rhel-type-6" ];then
 	KERNELURL="$SERVER/isolinux/vmlinuz"
 	INITRDURL="$SERVER/isolinux/initrd.img"
 	echo -n "--append=ide=nodma --append=method=$(cat /tmp/nb-server)" >>/tmp/nb-options
+	rm /tmp/nb-server
+	askforopts
+fi
+if [ $DISTRO = "rhel-type-7-64" ];then
+	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	c_6 "Latest version of CentOS 7" \
+	s_6x "Latest version of Scientific Linux 7" \
+	Manual "Manually enter a version to install (prefix with s_ or c_)" 2>/tmp/nb-version
+	getversion
+	TYPE=$(echo $VERSION|head -c 1)
+	VERSION=$(echo $VERSION|tail -c +3)
+	#Ask the user which server to use (the installer doesn't have a built-in list like Ubuntu and Debian do.)
+	if [ $TYPE = s ];then
+		dialog --inputbox "Where do you want to install Scientific Linux from?" 8 70 "ftp://linux1.fnal.gov/linux/scientific/$VERSION/x86_64/os" 2>/tmp/nb-server
+	else
+		dialog --inputbox "Where do you want to install CentOS from?" 8 70 "http://mirrors.kernel.org/centos/$VERSION/os/x86_64" 2>/tmp/nb-server
+	fi
+	SERVER=$(cat /tmp/nb-server)
+	KERNELURL="$SERVER/isolinux/vmlinuz"
+	INITRDURL="$SERVER/isolinux/initrd.img"
+	echo -n "--append=xdriver=vesa --append=nomodeset --append=repo=$(cat /tmp/nb-server)" >>/tmp/nb-options
 	rm /tmp/nb-server
 	askforopts
 fi
