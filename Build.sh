@@ -35,8 +35,7 @@ NO=0
 for i in CorePlus-$COREVER.iso \
 nbscript.sh tc-config.diff kexec.tgz \
 grub.exe ipxe.krn \
-dialog.tcz ncurses.tcz \
-disksplit.sh;do
+dialog.tcz ncurses.tcz;do
 	if [ ! -e $i ];then
 		echo "Couldn't find $i!"
 		NO=1
@@ -44,6 +43,10 @@ disksplit.sh;do
 done
 if $FLOPPY && [ ! -e blank-bootable-1440-floppy.gz ];then
 	echo "Couldn't find blank-bootable-1440-floppy.gz!"
+	NO=1
+fi
+if $FLOPPY && [ ! -f bootloader ];then
+	echo "Couldn't find bootloader! Get it from http://mirror.slitaz.org/floppies/builder"
 	NO=1
 fi
 for i in zip mkdosfs unsquashfs genisoimage isohybrid;do
@@ -223,7 +226,11 @@ echo "Made initrd:" $(wc -c ${DONE}/nbinit4.gz)
 
 if $FLOPPY;then
 	#Split up the kernel and floppy initrd for several disks
-	./disksplit.sh ${DONE}/vmlinuz ${DONE}/nbflop4.gz
+	echo "Welcome to NetbootCD $NBCDVER." > /tmp/info.txt
+	mkdir -p done/floppy
+	cd done/floppy
+	../../bootloader ../vmlinuz --initrd ../nbflop4.gz --info /tmp/info.txt
+	cd -
 fi
 
 if [ -d ${WORK}/iso ];then
