@@ -28,7 +28,7 @@ NBINIT2=${WORK}/nbinit2 #for floppy
 
 #Set to false to not build floppy images
 FLOPPY=true
-NBCDVER=6.4.1
+NBCDVER=6.4.1.a
 COREVER=6.4.1
 
 NO=0
@@ -237,6 +237,7 @@ cp ${TCISO}/boot/isolinux/menu.c32 ${WORK}/iso/boot/isolinux #get menu.c32 from 
 for i in vmlinuz nbinit4.gz;do
 	cp ${DONE}/$i ${WORK}/iso/boot
 done
+cp ipxe.krn ${WORK}/iso/boot/ipxe
 
 echo "DEFAULT menu.c32
 PROMPT 0
@@ -253,6 +254,11 @@ menu default
 kernel /boot/vmlinuz
 initrd /boot/nbinit4.gz
 append quiet
+
+LABEL ipxe-nbcd
+MENU LABEL Download and run newest NetbootCD (and other options)
+kernel /boot/ipxe
+append dhcp && chain http://netbootcd.us/downloads/script.ipxe
 " >> ${WORK}/iso/boot/isolinux/isolinux.cfg
 
 if which mkisofs>/dev/null;then
@@ -277,7 +283,6 @@ cp -r ${TCISO}/cde ${WORK}/iso
 cp ${TCISO}/boot/core.gz ${WORK}/iso/boot
 
 cp grub.exe ${WORK}/iso/boot
-cp ipxe.krn ${WORK}/iso/boot
 
 echo "DEFAULT menu.c32
 PROMPT 0
@@ -342,8 +347,8 @@ initrd /boot/core.gz
 append loglevel=3 base
 
 LABEL ipxe-nbcd
-MENU LABEL Try loading current NetbootCD (http://netbootcd.us/downloads/script.ipxe)
-kernel /boot/ipxe.krn
+MENU LABEL Download and run newest NetbootCD (and other options)
+kernel /boot/ipxe
 append dhcp && chain http://netbootcd.us/downloads/script.ipxe
 
 LABEL grub4dos
