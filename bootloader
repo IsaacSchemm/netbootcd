@@ -1,0 +1,396 @@
+#!/bin/bash
+#
+# This script creates a floppy image set from a linux bzImage and can merge
+# a cmdline and/or one or more initramfs.
+#
+# (C) 2009-2015 Pascal Bellard - GNU General Public License v3.
+
+usage()
+{
+cat <<EOT
+Usage: $0 bzImage [--prefix image_prefix] [--info file] [--quiet]
+       [--format 1200|1440|1680|1920|2880|...] [--mem mb] [--tracks cnt]
+       [--rdev device] [--video mode] [--flags rootflags] [--no-syssize-fix]
+       [--dont-edit-cmdline] [--cmdline 'args'] [--hide-version-string]
+       [--address-initrd address] [--initrd initrdfile]...
+
+Default values: --format 1440 --tracks 80 --rdev /dev/fd0 --prefix floppy. --mem 16
+
+Example:
+$0 /boot/bzImage --rdev /dev/ram0 --video -3 --cmdline 'rw lang=fr_FR kmap=fr-latin1 laptop autologin' --initrd /boot/rootfs.gz --initrd ./myconfig.gz
+
+or: $0 --extract floppy*
+
+Create kernel and maybe cmdline, initrd and info files from a floppy images set 
+EOT
+exit 1
+}
+
+# bzImage offsets
+SetupSzOfs=497
+FlagsOfs=498
+OldRamfsLenOfs=504
+VideoModeOfs=506
+RootDevOfs=508
+Magic=0x202
+RamfsAdrOfs=0x218
+RamfsLenOfs=0x21C
+
+ddq() { dd $@ 2> /dev/null; }
+
+get()
+{
+echo $( od -v -j $(($1)) -N ${4:-${3:-2}} -t u${3:-2} -w${3:-2} -An $2 2>/dev/null ||
+	hexdump -v -s $(($1)) -n ${4:-${3:-2}} -e "\"\" 1/${3:-2} \" %d\n\"" $2 )
+}
+
+trace()
+{
+	[ -n "$DEBUG" ] && printf "$@" 1>&2 && echo 1>&2
+}
+
+# usage: store bits offset data file
+store()
+{
+	n=$3; for i in $(seq 8 8 $1); do
+		printf '\\\\x%02X' $(($n & 255))
+		n=$(($n >> 8))
+	done | xargs echo -en | ddq bs=1 conv=notrunc of=$4 seek=$(($2))
+	s=$1; a=$2; d=$3; shift 4; c="$@"
+	trace "store$s(%03X) = %0$(($s/4))X	$c" $a $d
+}
+
+die()
+{
+	echo $@ 1>&2
+	exit 1
+}
+extract()
+{
+	shift
+	[ ! -s "$1" ] && die "No floppy ?"
+	[ $(get 0x1FE "$1") -ne 43605 ] && die "Not bootable"
+	[ $(get $Magic "$1" 4) != 1400005704 ] &&
+	[ $(get 0x1F4 "$1") -gt 32768 -o $(get 0x1F6 "$1") -ne 0 ] &&
+	die "Not linux."
+	FORMAT="$(($(stat -c "%s" $1)/1024))"
+	cat <<EOT
+--format $FORMAT
+--rdev $(printf "0x%04X" $(get $RootDevOfs $1))
+--video $(get $VideoModeOfs $1)
+--flags $(get $FlagsOfs $1)
+EOT
+	MYBB="$(ddq if=$1 bs=512 count=1 | strings | grep "Insert disk 00")"
+	cmdline=0
+	info=0
+	if [ "$MYBB" ]; then
+		cmdline=$(get 0x22 $1)
+		info=$(get 0x1EF $1)
+		[ $(get 0x75 $1) -eq $((0xDB0)) ] && echo "--dont-edit-cmdline"
+		[ $(get 0x58 $1) -eq $((0x9090)) ] && echo "--hide-version-string"
+	fi
+	n=$(($(get $SetupSzOfs $1 1)+1))
+	[ $n -eq 1 ] && n=5
+	[ $info -ne 0 ] && infolen=$(($n-$info/512)) && n=$(($info/512))
+	[ $cmdline -ne 0 ] && n=$(($cmdline/512))
+	cat "$@" | {
+		ddq bs=512 count=$n >kernel
+		files="kernel"
+		if [ "$MYBB" ]; then
+			store 8 $SetupSzOfs $(($n-1)) kernel "setup size $n"
+			store 16 0x22 0 kernel "clear cmdline"
+			store 16 0x1EF 0 kernel "clear info"
+		fi
+		[ $cmdline -ne 0 ] && files="$files cmdline" &&
+		ddq bs=512 count=1 | strings | sed q > cmdline
+		[ $info -ne 0 ] && files="$files info" &&
+		ddq bs=512 count=$infolen | sed \
+		 's/'$(echo -en "\xff\xff$//;s/\xff/\f")'/g;s/\r/\n/g;q' > info
+		syssz=$(get 0x1F4 kernel 4)
+		ddq bs=16 count=$syssz >>kernel
+		[ $(($syssz % 32)) -ne 0 ] &&
+		ddq bs=16 of=/dev/null count=$((32 - ($syssz % 32)))
+		if [ $(get $Magic kernel 4) == 1400005704 ]; then
+	  		ddq bs=1 count=200 skip=$((512+$(get 0x20E kernel 2))) \
+	  			if=kernel | strings | sed q
+			len=$(get $RamfsLenOfs kernel 4)
+			if [ $len -ne 0 ]; then
+				adrs=$(get $RamfsAdrOfs kernel 4)
+				printf "--address-initrd 0x%X \n" $adrs
+				echo "--mem $(((($adrs+$len)/1024+512)/1024))"
+				ddq bs=512 count=$((($len+511)/512)) > initrd
+				ddq count=0 bs=1 seek=$len of=initrd
+				files="$files initrd"
+				store 64 $RamfsAdrOfs 0 kernel "reset initrd"
+			fi
+			if [ $(get 0x206 kernel) -ge 514 ]; then
+				store 32 0x228 0 kernel "clean cmdline32"
+			fi
+		else
+			len=$(get $OldRamfsLenOfs kernel)
+			[ $len -ne 0 ] && files="$files initrd" &&
+			if [ -s "$2" ]; then
+				ddq if=$2 bs=1024 count=$len of=initrd
+			else
+				ddq if=$1 bs=1024 skip=256 count=$len of=initrd
+			fi
+		fi
+		ls -l $files
+	}
+	exit
+}
+
+KERNEL=""
+INITRD=""
+ADRSRD=""
+CMDLINE=""
+PREFIX="floppy."
+FORMAT="1440"
+RDEV=""
+VIDEO=""
+FLAGS=""
+TRACKS="80"
+MEM="16"
+HIDE=""
+NOEDIT=""
+QUIET=""
+NOSYSSIZEFIX=""
+INFOFILE=""
+DEBUG=""
+while [ -n "$1" ]; do
+	case "${1/--/-}" in
+	-c*) CMDLINE="$2"; shift;;
+	-inf*) INFOFILE="$2"; shift;;
+	-i*) INITRD="$INITRD $2"; shift;;
+	-a*) ADRSRD="$2"; shift;;
+	-h*) HIDE="1";;
+	-p*) PREFIX="$2"; shift;;
+	-fl*)FLAGS="$2"; shift;;	# 1 read-only, 0 read-write
+	-f*) FORMAT="$2"; shift;;
+	-m*) MEM="$(echo $2 | sed 's/[^0-9]//g')"; shift;;
+	-r*) RDEV="$2"; shift;;
+	-v*) VIDEO="$2"; shift;;	# -3 .. n
+	-t*) TRACKS="$2"; shift;;	# likely 81 .. 84
+	-n*) NOSYSSIZEFIX="1";;
+	-debug) DEBUG="1";;
+	-d*) NOEDIT="1";;
+	-q*) QUIET="1";;
+	-e*) extract "$@";;
+	*) KERNEL="$1";;
+	esac
+	shift
+done
+[ -n "$KERNEL" -a -f "$KERNEL" ] || usage
+while [ -L "$KERNEL" ]; do KERNEL="$(readlink "$KERNEL")"; done
+if [ $(( $FORMAT % $TRACKS )) -ne 0 ]; then
+	echo "Invalid track count for format $FORMAT."
+	usage
+fi
+[ 0$MEM -lt 2  ] && MEM=2
+
+patch()
+{
+	echo -en $(echo ":$2" | sed 's/:/\\x/g') | \
+		ddq bs=1 conv=notrunc of=$3 seek=$((0x$1))
+	trace "patch $1 $2		$4"
+}
+
+error()
+{
+	rm -f $bs
+	die $@
+}
+
+floppyset()
+{
+	# boot+setup address
+	SetupBase=0x90000
+
+	bs=/tmp/bs$$
+
+	# Get and patch boot sector
+	# See http://hg.slitaz.org/wok/raw-file/13835bce7189/syslinux/stuff/iso2exe/bootloader.S
+	trace "Read bootsector..."
+	ddq if=$KERNEL bs=512 count=1 of=$bs
+
+	[ $(get 0x1FE $bs) -eq 43605 ] || error "Not bootable"
+	
+	uudecode <<EOT | ddq of=$bs conv=notrunc
+begin-base64 644 -
+v8adaACQF4n8FgcxwLk7APOqWx+g8X1AD6H6xXd4XwZXvQAAsQbzpRYfZGaP
+R3jGRfg/l1hB6CQBMfYLNu8BdAzoggF0B+hgATwbdfS+AAKBTBAggMZEJZvo
+ZwEx9gt3G3Q6x0cZP6PoWwGwIOgtASwYc/lO6DEBmDwIdAOIBK05dxt08OgV
+ATwKdd+IfP4WB78AgIn+h3cbtQLzpFuJ5v9IEMdAFAiTgPMIdfO79AGxBaEV
+AmaLH2ZLZtPrZkOJRBtmv4AAAABmKfuccwIB31BTVjHbaACAB+hwAF5bjMG0
+hxYHzRVYBQABEEwfnXfPuQkCuxwCOE/+che0iM0VPQCwcgaIbB+Ib/+hGQLT
+b+J1o5fNE+oAACCQWjjBdzRgzRP56HMAYVJQKMh3ArABOfhyAon4ULQCzRNa
+WHLclQHRjukA1wDXKddadE2M6ZU4wXXUiMixATDOdcz+xYD9UHXFtQBgvtEB
+U7sPAIAg8Ev+AIA4OXf16EwAW4n16CkAdRVSmM0TuAECzRNa0NQ6Zv516kVI
+debrjbAxHAO0DrsHAM0QPA1088O/bARkxgWmuA0BZDoldArNFnT0mM0WjudH
+wwN0DrAN6NL/rDwAf/jDSW5zZXJ0IGRpc2sgMDAxIGFuZCBFbnRlci4HDQAA
+AAA=
+====
+EOT
+	# Get setup
+	setupsz=$(get $SetupSzOfs $bs 1)
+	if [ $setupsz -eq 0 ]; then
+		setupsz=4
+		store 8 $SetupSzOfs $setupsz $bs "setup size $setupsz"
+	fi
+	trace "Read setup ($setupsz sectors) ..."
+	ddq if=$KERNEL bs=512 skip=1 count=$setupsz >> $bs
+
+	Version=$(get 0x206 $bs)
+	[ $(get $Magic $bs 4) != 1400005704 ] && Version=0
+	feature=""
+	while read prot kern info ; do
+		[ $Version -lt $((0x$prot)) ] && continue
+		feature="features $prot starting from kernel $kern "
+	done <<EOT
+200	1.3.73	kernel_version, bzImage, initrd, loadflags/type_of_loader
+201	1.3.76	heap_end_ptr
+202	2.4.0	new cmdline + relocatable setup
+204	2.6.14	long syssize
+206	2.6.22	cmdline maxsize $(get 0x238 $bs 4)
+EOT
+	trace "Protocol %X $feature" $Version
+	
+	# Old kernels need bootsector patches to disable rescent features
+	while read minversion maxversion offset bytes rem; do
+		[ $Version -gt $(( 0x$maxversion )) ] && continue
+		[ $Version -lt $(( 0x$minversion )) ] && continue
+		patch $offset $bytes $bs "$rem"
+	done <<EOT
+000 1FF 0B2	B8:00:01			force zImage (movw \$0x100, %ax)
+000 1FF 0F9	EB				skip initrd code 
+000 1FF 059	90:90:90			no kernel version
+000 1FF 050	90:90:90:90:90			type_of_loader
+000 200 055	90:90:90:90			heap_end_ptr
+000 203 1F6	00:00 				syssize32
+EOT
+	[ -n "$CMDLINE" ] || patch 061 EB $bs "No cmdline"
+	[ -n "$HIDE" ] && patch 058 90 90 90 $bs "Hide version"
+	[ -n "$NOEDIT" ] && patch 075 B0:0D:90 $bs 'mov CR,%al ; nop'
+	[ 1$TRACKS -ne 180 ] &&	store	8	0x15F		$TRACKS $bs TRACKS
+	
+	[ -n "$FLAGS" ] &&	store	16	$FlagsOfs	$FLAGS $bs FLAGS
+	[ -n "$VIDEO" ] &&	store	16	$VideoModeOfs	$VIDEO $bs VIDEO
+	[ -n "$RDEV" ] || case "$FORMAT" in
+		1200)	RDEV=0x0208 ;;
+		1440)	RDEV=0x021C ;;
+		2880)	RDEV=0x0220 ;;
+		*)	RDEV=0x0200 ;;
+	esac
+	while [ -L "$RDEV" ]; do RDEV="$(readlink "$RDEV")"; done
+	[ -b "$RDEV" ] && RDEV=$(stat -c '0x%02t%02T' $RDEV 2> /dev/null)
+	[ "$(echo $RDEV | tr '[0-9A-FXa-fx]' 0 | sed 's/0//g')" ] ||
+	store 16 $RootDevOfs $RDEV $bs RDEV
+
+	[ $FORMAT -lt 720  ] && store 8 0x15F 40	 $bs	360K
+	[ $FORMAT -lt 320  ] && store 8 0x158 237	 $bs	160K
+	
+	extra=0
+	# Store cmdline after setup for kernels >= 0.99
+	if [ -n "$CMDLINE" ]; then
+		CmdlineOfs=$(stat -c '%s' $bs)
+		store 16 0x22 $CmdlineOfs $bs "Cmdline @$CmdlineOfs '$CMDLINE'"
+		[ $Version -ge 514 ] &&
+		store 32 0x228 $(( $SetupBase + 0x8000 )) $bs "Cmdline32"
+		echo -n "$CMDLINE" | ddq bs=512 count=1 conv=sync >> $bs
+		extra=$(($extra+1))
+		store 8 0x1F1  $(($setupsz+$extra))	 $bs	setup size
+		[ $Version -ge 512 ] && [ -n "$QUIET" ] &&
+		store 8 0x211 $(($(get 0x211 $bs 1) | 32)) $bs suppress early messages
+	fi
+
+	# Info text after setup
+	if [ -s "$INFOFILE" ]; then
+		InfoOfs=$(stat -c '%s' $bs)
+		sed -e ':a;N;$!ba;s/\r\n/\r/g;s/\n/\r/g' \
+		    -e 's/'$(echo -e "\f/\xff/g;s/$/\xff\xff")'/' \
+			< "$INFOFILE" > $bs.infotext
+		ddq if=/dev/zero bs=512 count=1 >>$bs.infotext
+		infolen=$(($(stat -c %s $bs.infotext)/512))
+		ddq if=$bs.infotext count=$infolen bs=512 >> $bs
+		extra=$(($extra+$infolen))
+		rm -f $bs.infotext
+		store 8 0x1F1  $(($setupsz+$extra))	$bs	setup size
+		store 16 0x1EF  $InfoOfs $bs	update infoptr
+	fi
+
+	syssz=$((($(stat -c %s $KERNEL)+15)/16-32*(1+$setupsz)))
+	#syssz=$(get 0x1F4 $bs 4)
+	sysszsect=$((($syssz+31)/32))
+	store 16 $OldRamfsLenOfs 0 $bs clear oldramfs
+	INITRD="${INITRD# }"
+	INITRDPAD=4
+	[ -n "$INITRD" ] &&
+	if [ $Version -lt 512 ]; then
+		# Compute initramfs location (protocol < 2.00)
+		[ $syssz -gt 32768 ] && syssz=$(get 0x1F4 $bs 2)
+		[ $syssz -eq 0 ] && syssz=$((0x7F00))
+		sysszsect=$((($syssz+31)/32))
+		INITRD="${INITRD%% *}"
+		initrdlen=$(stat -c %s "$INITRD")
+		store 16 $OldRamfsLenOfs $(($initrdlen/1024)) $bs set oldramfs
+		INITRDDISKALIGN=$((0x40000))
+		[ $(($initrdlen+$INITRDDISKALIGN)) -gt $(($FORMAT*1024)) -o \
+		  $(((512*$sysszsect) + $(stat -c %s $bs))) -gt $INITRDDISKALIGN -o \
+		  -n "$ADRSRD" ] && INITRDDISKALIGN=$(($FORMAT*1024))
+	else
+INITRDRAMALIGN=0x1000
+		# Compute initramfs size (protocol >= 2.00)
+		initrdlen=0
+		INITRDDISKALIGN=0
+		for i in ${INITRD//,/ }; do
+			[ -s "$i" ] || continue
+			while [ -L "$i" ]; do i="$(readlink $i)"; done
+			size=$(stat -c %s "$i")
+			trace "initrd $i $size "
+			initrdlen=$(((($initrdlen + $INITRDPAD - 1) & -$INITRDPAD) + $size))
+			ADRSRD2=$(( (($MEM * 0x100000) - $initrdlen) & -$INITRDRAMALIGN ))
+			store 32 $RamfsAdrOfs $(( ${ADRSRD:-$ADRSRD2} )) $bs initrd adrs
+			store 32 $RamfsLenOfs $initrdlen $bs initrdlen
+		done
+	fi
+
+	[ -n "$NOSYSSIZEFIX" ] || store 32 0x1F4 $syssz $bs fix system size
+
+	# Output boot sector + setup + cmdline + info
+	ddq if=$bs
+
+	# Output kernel code
+	[ $INITRDDISKALIGN -ne 0 ] &&
+	INITRDDISKALIGN=$(($INITRDDISKALIGN/512-$sysszsect-$extra-$setupsz-1))
+	cat $KERNEL /dev/zero | ddq bs=512 skip=$(( $setupsz+1 )) \
+		count=$(($sysszsect+$INITRDDISKALIGN)) conv=sync
+
+	# Output initramfs
+	padding=$INITRDPAD
+	for i in ${INITRD//,/ }; do
+		[ -s "$i" ] || continue
+		[ $padding -eq $INITRDPAD ] || ddq if=/dev/zero bs=1 count=$padding
+		ddq if=$i
+		trace "initrd $i ($(stat -c %s $i) bytes) padding $INITRDPAD"
+		padding=$(( $INITRDPAD - ($(stat -c %s $i) % $INITRDPAD) ))
+	done
+
+	# Cleanup
+	rm -f $bs
+}
+
+if [ "$FORMAT" == "0" ]; then # unsplitted
+	floppyset > $PREFIX
+	PAD=$(( 512 - ($(stat -c %s $PREFIX) % 512) ))
+	[ $PAD -ne 512 ] && ddq if=/dev/zero bs=1 count=$PAD >> $PREFIX
+	exit
+fi
+floppyset | split -b ${FORMAT}k /dev/stdin floppy$$
+i=1
+ls floppy$$* 2> /dev/null | while read file ; do
+	output=$PREFIX$(printf "%03d" $i)
+	cat $file /dev/zero | ddq bs=1k count=$FORMAT conv=sync of=$output
+	echo $output
+	rm -f $file
+	i=$(( $i + 1 ))
+done

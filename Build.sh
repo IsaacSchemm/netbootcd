@@ -41,10 +41,6 @@ dialog.tcz ncurses.tcz;do
 		NO=1
 	fi
 done
-if $FLOPPY && [ ! -e blank-bootable-1440-floppy.gz ];then
-	echo "Couldn't find blank-bootable-1440-floppy.gz!"
-	NO=1
-fi
 if $FLOPPY && [ ! -f bootloader ];then
 	echo "Couldn't find bootloader! Get it from http://mirror.slitaz.org/floppies/builder"
 	NO=1

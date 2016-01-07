@@ -9,11 +9,9 @@ See http://netbootcd.us for more information.
 ----------------------------------------
 
 The files needed to run Build.sh are:
-blank-bootable-1440-floppy.gz
+bootloader
 CorePlus-6.4.1.iso (get it from http://www.tinycorelinux.com)
 dialog.tcz (from http://distro.ibiblio.org/tinycorelinux/6.x/x86/tcz)
-disksplit.sh
-dosfiles.tar.gz
 grub.exe (grub4dos - the version included here is 0.4.6a 2015-12-16)
 kexec.tgz (kexec-tools 2.0.9 binaries for tinycore)
 nbscript.sh
