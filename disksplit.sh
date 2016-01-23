@@ -56,7 +56,7 @@ fi
 	NUM_DISKS=$(( $FILESIZE / 1457644 + 1))
 	MEMNEEDED=32768
 	echo $NUM_DISKS
-	if [ $(($FILESIZE%1457644)) -gt 1264128 ];then
+	if [ $(($FILESIZE%1457644)) -gt $((1264128-$(wc -c grub.exe | sed -e 's/ .*//g'))) ];then
 		echo extradisk
 		EXTRADISK="true"
 		NUM_DISKS=$(($NUM_DISKS+1))
@@ -105,6 +105,7 @@ fi
 	fi
 
 	tar -xvf dosfiles.tar.gz -C $TMPDIR/1
+	cp grub.exe $TMPDIR/1
 	echo "DEVICE=HIMEMX.EXE
 	LASTDRIVE=Z" > $TMPDIR/1/fdconfig.sys
 	echo "@ECHO OFF
@@ -115,7 +116,11 @@ fi
 	@ECHO OFF
 	REM PART.000 is on Disk 2, PART.001 on Disk 3, etc
 
-	ECHO This is disk $STARTINGDISK of a 1440KB $NUM_DISKS-disk set
+	ECHO This is disk $STARTINGDISK of a 1440KB $NUM_DISKS-disk set.
+	ECHO.
+	ECHO You can press Ctrl+C to quit to DOS. From there, you can run GRUB4DOS with the
+	ECHO command \"GRUB\".
+	ECHO.
 	IF EXIST A:\PART.$EXT GOTO DISK1IN
 	:DISK1
 	ECHO Please insert disk 1 and press ENTER.
