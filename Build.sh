@@ -46,12 +46,18 @@ if $FLOPPY && [ ! -e blank-bootable-1440-floppy.gz ];then
 	echo "Couldn't find blank-bootable-1440-floppy.gz!"
 	NO=1
 fi
-for i in zip mkdosfs unsquashfs genisoimage isohybrid;do
+for i in mkdosfs unsquashfs isohybrid;do
 	if ! which $i > /dev/null;then
 		echo "Please install $i!"
 		NO=1
 	fi
 done
+if ! which genisoimage > /dev/null;then
+	if ! which mkisofs > /dev/null;then
+		echo "Please install genisoimage or mkisofs!"
+		NO=1
+	fi
+fi
 if [ $NO = 1 ];then
 	exit 1
 fi
