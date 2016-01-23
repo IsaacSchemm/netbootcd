@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
-## disksplit 1.2 - Make a Linux kernel/initrd bootable from floppy with FreeDOS
-## Copyright (C) 2014 Isaac Schemm <isaacschemm@gmail.com>
+## disksplit 1.3 - Make a Linux kernel/initrd bootable from floppy with FreeDOS
+## Copyright (C) 2016 Isaac Schemm <isaacschemm@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License
@@ -26,6 +26,7 @@ INITRD="$2"
 CAT="/tmp/disksplit"
 TMPDIR="/tmp/splitfiles"
 DONE=$(pwd)/done/floppy
+SPACE_ON_DISK1=650000 #estimate
 
 if [ ! -f $KERNEL ] || [ ! -f $INITRD ];then
 	echo "Could not find both $KERNEL and $INITRD"
@@ -56,7 +57,7 @@ fi
 	NUM_DISKS=$(( $FILESIZE / 1457644 + 1))
 	MEMNEEDED=32768
 	echo $NUM_DISKS
-	if [ $(($FILESIZE%1457644)) -gt $((1264128-$(wc -c grub.exe | sed -e 's/ .*//g'))) ];then
+	if [ $(($FILESIZE%1457644)) -gt $SPACE_ON_DISK1 ];then
 		echo extradisk
 		EXTRADISK="true"
 		NUM_DISKS=$(($NUM_DISKS+1))
@@ -105,7 +106,25 @@ fi
 	fi
 
 	tar -xvf dosfiles.tar.gz -C $TMPDIR/1
-	cp grub.exe $TMPDIR/1
+	cp grldr $TMPDIR/1
+	cp ipxe.krn $TMPDIR/1/ipxe
+	echo -e "timeout 10
+	default 0
+	
+	title Load NetbootCD from netbootcd.us
+	kernel (fd0)/ipxe dhcp \&\& chain http://netbootcd.us/downloads/script.ipxe
+	
+	title Load NetbootCD from $NUM_DISKS-disk set or run FreeDOS
+	chainloader (fd0)/kernel.sys
+	
+	title Load netbootcd.xyz
+	kernel (fd0)/ipxe dhcp \&\& chain http://boot.netboot.xyz
+	
+	title Load boot.salstar.sk
+	kernel (fd0)/ipxe dhcp \&\& chain http://boot.salstar.sk
+	
+	title Boot from hard drive
+	chainloader (hd0)+1" > $TMPDIR/1/menu.lst
 	echo "DEVICE=HIMEMX.EXE
 	LASTDRIVE=Z" > $TMPDIR/1/fdconfig.sys
 	echo "@ECHO OFF
@@ -117,10 +136,6 @@ fi
 	REM PART.000 is on Disk 2, PART.001 on Disk 3, etc
 
 	ECHO This is disk $STARTINGDISK of a 1440KB $NUM_DISKS-disk set.
-	ECHO.
-	ECHO You can press Ctrl+C to quit to DOS. From there, you can run GRUB4DOS with the
-	ECHO command \"GRUB\".
-	ECHO.
 	IF EXIST A:\PART.$EXT GOTO DISK1IN
 	:DISK1
 	ECHO Please insert disk 1 and press ENTER.
@@ -151,7 +166,9 @@ fi
 	CHUNK.EXE /S${BIGGER_SIZE} NBCD4.CAT FILE
 	LINLD.COM image=FILE.001 initrd=FILE.000 cl=quiet
 	" >> $TMPDIR/1/tinycore.not
-	gzip -cd blank-bootable-1440-floppy.gz > $TMPDIR/1.img 
+	dd if=/dev/zero bs=1474560 count=1 of=$TMPDIR/1.img
+	mkdosfs $TMPDIR/1.img
+	./bootlace.com --floppy $TMPDIR/1.img
 	mkdir $TMPDIR/a1
 	mount -o loop $TMPDIR/1.img $TMPDIR/a1
 	cp $TMPDIR/1/* $TMPDIR/a1/
