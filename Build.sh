@@ -123,7 +123,7 @@ echo "Type \"netboot\" to return to the menu."
 EOF
 chmod +x ${NBINIT}/usr/bin/netboot
 #patch /etc/init.d/tc-config
-cd ${NBINIT}/..
+cd ${NBINIT}/etc/init.d
 patch -p0 < ${FDIR}/tc-config.diff
 cd -
 #copy nbscript

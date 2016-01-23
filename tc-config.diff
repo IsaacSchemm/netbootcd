@@ -1,15 +1,15 @@
---- nbinit/etc/init.d/tc-config	2011-11-27 12:32:55.244721880 -0600
-+++ tc-config	2011-11-27 12:30:56.680720252 -0600
+--- tc-config.orig	2016-01-23 11:37:39.384533903 -0600
++++ tc-config	2016-01-23 11:37:39.388535904 -0600
 @@ -2,6 +2,7 @@
  # RC Script for Tiny Core Linux
- # (c) Robert Shingledecker 2004-2010
+ # (c) Robert Shingledecker 2004-2012
  # Several modifications for speed by Curaga
-+# Customized by Isaac Schemm for NetbootCD 5.0 (netbootcd.tuxfamily.org)
++# Customized by Isaac Schemm for NetbootCD 6.x (http://netbootcd.us)
  . /etc/init.d/tc-functions
+ useBusybox
  
- USER="tc"
-@@ -445,13 +438,7 @@
- 	echo " ${GREEN}Laptop options enabled (AC,Battery, & PCMCIA).${NORMAL}"
+@@ -487,13 +488,7 @@
+ 	echo "${GREEN}Laptop options enabled (AC, Battery and PCMCIA).${NORMAL}"
  fi
  
 -if [ -n "$NOSWAP" ]; then
