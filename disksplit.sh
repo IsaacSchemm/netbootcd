@@ -61,44 +61,9 @@ chainloader (hd0)+1" > $TMPDIR/1/menu.lst
 echo "DEVICE=HIMEMX.EXE
 LASTDRIVE=Z" > $TMPDIR/1/fdconfig.sys
 echo "@ECHO OFF
-XMSDSK.EXE $MEMNEEDED T: /Y
+XMSDSK.EXE 32768 T: /Y
 COPY TINYCORE.NOT T:\TINYCORE.BAT
 T:\TINYCORE.BAT" > $TMPDIR/1/autoexec.bat
-echo "
-@ECHO OFF
-REM PART.000 is on Disk 2, PART.001 on Disk 3, etc
-
-ECHO This is disk $STARTINGDISK of a 1440KB $NUM_DISKS-disk set.
-IF EXIST A:\PART.$EXT GOTO DISK1IN
-:DISK1
-ECHO Please insert disk 1 and press ENTER.
-PAUSE
-IF NOT EXIST A:\PART.$EXT GOTO DISK1
-:DISK1IN
-COPY A:\PART.$EXT T:\\
-COPY A:\CHUNK.EXE T:\\
-COPY A:\LINLD.COM T:\\
-" > $TMPDIR/1/tinycore.not
-for i in $(seq 2 $NUM_DISKS);do
-	if [ $(($i-2)) -lt 10 ];then
-		EXT=00$(($i-2))
-	else
-		EXT=0$(($i-2))
-	fi
-	LETTER="$(echo $i | tr 23456789 abcdefgh)"
-	echo ":DISK${i}
-	ECHO Please insert disk ${i} and press ENTER.
-	PAUSE
-	IF NOT EXIST A:\PART.$EXT GOTO DISK${i}
-	COPY A:\PART.$EXT T:\\
-	" >> $TMPDIR/1/tinycore.not
-done
-echo "ECHO You may now remove the floppy disk from the drive.
-T:
-CHUNK.EXE /C PART NBCD4.CAT
-CHUNK.EXE /S${BIGGER_SIZE} NBCD4.CAT FILE
-LINLD.COM image=FILE.001 initrd=FILE.000 cl=quiet
-" >> $TMPDIR/1/tinycore.not
 
 KERNEL_SIZE=$(wc -c $KERNEL|awk '{print $1}')
 INITRD_SIZE=$(wc -c $INITRD|awk '{print $1}')
@@ -113,9 +78,8 @@ else
 fi
 FILESIZE=$(wc -c $CAT|awk '{print $1}')
 NUM_DISKS=$(( $FILESIZE / 1457644 + 1))
-MEMNEEDED=32768
 echo $NUM_DISKS
-if [ $(($FILESIZE%1457644)) -gt $(du -b $TMPDIR/1 | tail -n 1 | awk '{print $1}') ];then
+if [ $(($FILESIZE%1457644)) -gt $(($(du -b $TMPDIR/1 | tail -n 1 | awk '{print $1}')+750)) ];then
 	echo extradisk
 	EXTRADISK="true"
 	NUM_DISKS=$(($NUM_DISKS+1))
@@ -157,6 +121,42 @@ if ! $EXTRADISK;then
 	echo "Copying lastpart to PART.$EXT"
 	cp $TMPDIR/lastpart $TMPDIR/1/PART.$EXT
 fi
+
+echo "
+@ECHO OFF
+REM PART.000 is on Disk 2, PART.001 on Disk 3, etc
+
+ECHO This is disk $STARTINGDISK of a 1440KB $NUM_DISKS-disk set.
+IF EXIST A:\PART.$EXT GOTO DISK1IN
+:DISK1
+ECHO Please insert disk 1 and press ENTER.
+PAUSE
+IF NOT EXIST A:\PART.$EXT GOTO DISK1
+:DISK1IN
+COPY A:\PART.$EXT T:\\
+COPY A:\CHUNK.EXE T:\\
+COPY A:\LINLD.COM T:\\
+" > $TMPDIR/1/tinycore.not
+for i in $(seq 2 $NUM_DISKS);do
+	if [ $(($i-2)) -lt 10 ];then
+		EXT=00$(($i-2))
+	else
+		EXT=0$(($i-2))
+	fi
+	LETTER="$(echo $i | tr 23456789 abcdefgh)"
+	echo ":DISK${i}
+	ECHO Please insert disk ${i} and press ENTER.
+	PAUSE
+	IF NOT EXIST A:\PART.$EXT GOTO DISK${i}
+	COPY A:\PART.$EXT T:\\
+	" >> $TMPDIR/1/tinycore.not
+done
+echo "ECHO You may now remove the floppy disk from the drive.
+T:
+CHUNK.EXE /C PART NBCD4.CAT
+CHUNK.EXE /S${BIGGER_SIZE} NBCD4.CAT FILE
+LINLD.COM image=FILE.001 initrd=FILE.000 cl=quiet
+" >> $TMPDIR/1/tinycore.not
 
 dd if=/dev/zero bs=1474560 count=1 of=$TMPDIR/1.img
 mkdosfs $TMPDIR/1.img
