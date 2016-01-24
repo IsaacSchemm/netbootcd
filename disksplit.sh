@@ -47,17 +47,14 @@ mkdir $TMPDIR/1
 tar -xvf dosfiles.tar.gz -C $TMPDIR/1
 cp grldr $TMPDIR/1
 cp ipxe.krn $TMPDIR/1/ipxe
-echo -e "default 0
+echo "default 0
 timeout 10
 
 title Download newest NetbootCD or chain other netboot sites
 kernel (fd0)/ipxe dhcp \&\& chain http://netbootcd.us/downloads/script.ipxe
 
 title Load NetbootCD from multi-disk set (or run FreeDOS)
-chainloader (fd0)/kernel.sys
-
-title Boot from hard drive
-chainloader (hd0)+1" > $TMPDIR/1/menu.lst
+chainloader (fd0)/kernel.sys" > $TMPDIR/1/menu.lst
 echo "DEVICE=HIMEMX.EXE
 LASTDRIVE=Z" > $TMPDIR/1/fdconfig.sys
 echo "@ECHO OFF
@@ -79,7 +76,7 @@ fi
 FILESIZE=$(wc -c $CAT|awk '{print $1}')
 NUM_DISKS=$(( $FILESIZE / 1457644 + 1))
 echo $NUM_DISKS
-if [ $(($FILESIZE%1457644)) -gt $(($(du -b $TMPDIR/1 | tail -n 1 | awk '{print $1}')+750)) ];then
+if [ $(($FILESIZE%1457644)) -gt $(($(du -b $TMPDIR/1 | tail -n 1 | awk '{print $1}')+1024)) ];then
 	echo extradisk
 	EXTRADISK="true"
 	NUM_DISKS=$(($NUM_DISKS+1))
