@@ -31,6 +31,10 @@ FLOPPY=true
 NBCDVER=6.4.1.a
 COREVER=6.4.1
 
+if [ ! -f CorePlus-$COREVER.iso ];then
+	wget http://tinycorelinux.net/6.x/x86/release/CorePlus-$COREVER.iso
+fi
+
 NO=0
 for i in CorePlus-$COREVER.iso \
 nbscript.sh tc-config.diff kexec.tgz \

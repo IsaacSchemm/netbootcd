@@ -1,0 +1,7 @@
+sudo: true
+language: c
+before_install:
+- sudo apt-get update -qq
+- sudo apt-get install -qq dosfstools squashfs-tools syslinux-utils genisoimage
+script:
+- "./Build.sh"
