@@ -4,4 +4,4 @@ before_install:
 - sudo apt-get update -qq
 - sudo apt-get install -qq dosfstools squashfs-tools syslinux genisoimage
 script:
-- "./Build.sh"
+- "sudo ./Build.sh"
