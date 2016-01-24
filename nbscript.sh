@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-## nbscript.sh 6.4.1.1 - Download netboot images and launch them with kexec
+## nbscript.sh 6.4.1.2 - Download netboot images and launch them with kexec
 ## Copyright (C) 2016 Isaac Schemm <isaacschemm@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 6.4.1.1 - January 6, 2016"
+TITLE="NetbootCD Script 6.4.1.2 - January 24, 2016"
 
 getversion ()
 {
@@ -454,8 +454,8 @@ rm /tmp/nb-distro
 #What version?
 if [ $DISTRO = "grub4dos" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a version to download:" 20 70 13 \
-	0.4.6a-2015-12-16 "grub4dos-chenall fork (0.4.6a branch)" \
-	0.4.5c-2015-12-24 "grub4dos-chenall fork (0.4.5c branch)" \
+	0.4.6a-2016-01-19 "grub4dos-chenall fork (0.4.6a branch)" \
+	0.4.5c-2016-01-18 "grub4dos-chenall fork (0.4.5c branch)" \
 	0.4.4-2009-06-20 "Latest version of original - June 20, 2009" 2>/tmp/nb-version
 	getversion
 elif [ $DISTRO = "slitaz" ];then
