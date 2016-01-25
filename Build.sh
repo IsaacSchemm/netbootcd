@@ -32,7 +32,7 @@ NBCDVER=7.0beta3
 COREVER=7.0beta3
 
 if [ ! -f CorePlus-$COREVER.iso ];then
-	wget http://tinycorelinux.net/6.x/x86/release/CorePlus-$COREVER.iso
+	wget http://www.tinycorelinux.net/7.x/x86/release_candidates/CorePlus-$COREVER.iso
 fi
 
 NO=0
