@@ -1,5 +1,5 @@
 #!/bin/sh
-#Build.sh 6.4.1 for netbootcd
+#Build.sh 7.0beta3 for netbootcd
 
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License
@@ -28,8 +28,8 @@ NBINIT2=${WORK}/nbinit2 #for floppy
 
 #Set to false to not build floppy images
 FLOPPY=true
-NBCDVER=6.4.1.a
-COREVER=6.4.1
+NBCDVER=7.0beta3
+COREVER=7.0beta3
 
 if [ ! -f CorePlus-$COREVER.iso ];then
 	wget http://tinycorelinux.net/6.x/x86/release/CorePlus-$COREVER.iso
@@ -305,15 +305,15 @@ MENU LABEL Boot from hard disk
 localboot 0x80
 
 LABEL nbcd-coreplus
-menu label Start CorePlus $COREVER on top of NetbootCD $NBCDVER
+menu label Start Core Plus $COREVER on top of NetbootCD $NBCDVER
 menu default
 kernel /boot/vmlinuz
 initrd /boot/nbinit4.gz
 append loglevel=3 cde showapps desktop=flwm_topside
 text help
-Uses the core of NetbootCD with the TCZ extensions of
-CorePlus. The result is that CorePlus is loaded first,
-and NetbootCD is run when you choose \"Exit To Prompt\".
+Uses the core of NetbootCD with the TCZ extensions of Core Plus. The
+result is that Core Plus is loaded first, and NetbootCD is run when you
+choose \"Exit To Prompt\".
 endtext
 
 LABEL nbcd
@@ -325,8 +325,8 @@ Runs NetbootCD on its own, without loading GUI or extensions.
 Boot media is removable.
 endtext
 
-LABEL coreplus
-menu label Start Core $COREVER with default FLWM topside (Core^Plus)
+LABEL plus
+menu label Boot Core Plus $COREVER with default FLWM topside.
 TEXT HELP
 Boot Core plus support extensions of networking, installation and remastering.
 All extensions are loaded mount mode. Boot media is not removable.
@@ -335,26 +335,131 @@ kernel /boot/vmlinuz
 initrd /boot/core.gz
 append loglevel=3 cde showapps desktop=flwm_topside
 
-LABEL tinycore
-menu label Start Core $COREVER with only X/GUI (^TinyCore)
+MENU BEGIN Other Core Plus options
+
+LABEL plus
+MENU DEFAULT
+MENU LABEL Boot Core Plus with default FLWM topside.
+TEXT HELP
+Boot Core plus support extensions of networking, installation and remastering.
+All extensions are loaded mount mode. Boot media is not removable.
+ENDTEXT
+KERNEL /boot/vmlinuz
+APPEND initrd=/boot/core.gz loglevel=3 cde showapps desktop=flwm_topside
+
+LABEL jwm
+MENU LABEL Boot Core Plus with Joe's Window Manager.
+TEXT HELP
+Boot Core with JWM plus networking, installation and remastering.
+All extensions are loaded mount mode. Boot media is not removable.
+ENDTEXT
+KERNEL /boot/vmlinuz
+APPEND initrd=/boot/core.gz loglevel=3 cde showapps desktop=jwm
+
+LABEL icewm
+MENU LABEL Boot Core Plus with ICE Window Manager.
+TEXT HELP
+Boot Core with ICE window manager plus networking, installation and remastering.
+All extensions are loaded mount mode. Boot media is not removable.
+ENDTEXT
+KERNEL /boot/vmlinuz
+APPEND initrd=/boot/core.gz loglevel=3 cde showapps desktop=icewm
+
+LABEL fluxbox
+MENU LABEL Boot Core Plus with Fluxbox Window Manager.
+TEXT HELP
+Boot Core with Fluxbox plus networking, installation and remastering.
+All extensions are loaded mount mode. Boot media is not removable.
+ENDTEXT
+KERNEL /boot/vmlinuz
+APPEND initrd=/boot/core.gz loglevel=3 cde showapps desktop=fluxbox
+
+LABEL hackedbox
+MENU LABEL Boot Core Plus with Hackedbox Window Manager.
+TEXT HELP
+Boot Core with hackedbox plus networking, installation and remastering.
+All extensions are loaded mount mode. Boot media is not removable.
+ENDTEXT
+KERNEL /boot/vmlinuz
+APPEND initrd=/boot/core.gz loglevel=3 cde showapps desktop=hackedbox
+
+LABEL openbox
+MENU LABEL Boot Core Plus with Openbox Window Manager.
+TEXT HELP
+Boot Core with openbox plus networking, installation and remastering.
+All extensions are loaded mount mode. Boot media is not removable.
+ENDTEXT
+KERNEL /boot/vmlinuz
+APPEND initrd=/boot/core.gz loglevel=3 cde showapps desktop=openbox
+
+LABEL flwm
+MENU LABEL Boot Core Plus with FLWM Classic Window Manager.
+TEXT HELP
+Boot Core with flwm plus networking, installation and remastering.
+All extensions are loaded mount mode. Boot media is not removable.
+ENDTEXT
+KERNEL /boot/vmlinuz
+APPEND initrd=/boot/core.gz loglevel=3 cde showapps desktop=flwm
+
+LABEL tiny
+MENU LABEL Boot Core with only X/GUI (TinyCore).
 TEXT HELP
 Boot Core with flwm_topside. Both user and support extensions are not loaded.
 All X/GUI extensions are loaded mount mode. Boot media is not removable.
 Use TAB to edit desktop= to boot to alternate window manager.
 ENDTEXT
-kernel /boot/vmlinuz
-initrd /boot/core.gz
-append loglevel=3 cde showapps lst=xbase.lst base desktop=flwm_topside
+KERNEL /boot/vmlinuz
+APPEND initrd=/boot/core.gz loglevel=3 cde showapps lst=xbase.lst base desktop=flwm_topside
+
+LABEL cxi
+MENU LABEL Boot Core with X/GUI (TinyCore) + Installation Extension.
+TEXT HELP
+Boot Core with flwm_topside, X/GUI, and the installation extension.
+Extensions are loaded mount mode. Boot media is not removable.
+Use TAB to edit desktop= to boot to alternate window manager.
+ENDTEXT
+KERNEL /boot/vmlinuz
+APPEND initrd=/boot/core.gz loglevel=3 cde showapps lst=xibase.lst base desktop=flwm_topside
+
+LABEL cxw
+MENU LABEL Boot Core with X/GUI (TinyCore) + Wifi Extension.
+TEXT HELP
+Boot Core with flwm_topside with X/GUI and the Wifi Extension.
+Extensions are loaded mount mode. Boot media is not removable.
+Use TAB to edit desktop= to boot to alternate window manager.
+ENDTEXT
+KERNEL /boot/vmlinuz
+APPEND initrd=/boot/core.gz loglevel=3 cde showapps lst=xwbase.lst base desktop=flwm_topside
+
+LABEL cxf
+MENU LABEL Boot Core with X/GUI (TinyCore) + Wifi + Firmware.
+TEXT HELP
+Boot Core with flwm_topside with X/GUI, Wifi, and firmware extensions.
+Extensions are loaded mount mode. Boot media is not removable.
+Use TAB to edit desktop= to boot to alternate window manager.
+ENDTEXT
+KERNEL /boot/vmlinuz
+APPEND initrd=/boot/core.gz loglevel=3 cde showapps lst=xfbase.lst base desktop=flwm_topside
 
 LABEL core
-menu label Start ^Core $COREVER (no X/GUI or extensions)
+MENU LABEL Boot Core to command line only. No X/GUI or extensions.
 TEXT HELP
 Boot Core character text mode to ram. No user or support extensions are loaded.
 Boot media is removable.
 ENDTEXT
-kernel /boot/vmlinuz
-initrd /boot/core.gz
-append loglevel=3 base
+KERNEL /boot/vmlinuz
+APPEND initrd=/boot/core.gz loglevel=3 base
+
+LABEL nocde
+MENU LABEL Boot Core without embedded extensions with waitusb=5.
+TEXT HELP
+Boot Core to base system. No embedded support extensions are loaded. User extensions
+scanned or specified will be loaded and will need to provide X/GUI if required.
+ENDTEXT
+KERNEL /boot/vmlinuz
+APPEND initrd=/boot/core.gz loglevel=3 waitusb=5
+
+MENU END
 
 LABEL ipxe-nbcd
 MENU LABEL Download and run newest NetbootCD (and other options)
@@ -362,7 +467,7 @@ kernel /boot/ipxe
 append dhcp && chain http://netbootcd.us/downloads/script.ipxe
 
 LABEL grub4dos
-menu label ^GRUB4DOS 0.4.6a-2015-12-16
+menu label ^GRUB4DOS 0.4.6a-2016-01-19
 kernel /boot/grub.exe
 " > ${WORK}/iso/boot/isolinux/isolinux.cfg
 $MAKER --no-emul-boot --boot-info-table --boot-load-size 4 \
