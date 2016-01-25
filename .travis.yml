@@ -13,4 +13,4 @@ deploy:
   file: done/NetbootCD-*
   on:
     repo: IsaacSchemm/netbootcd
-    branch: test-travis
+    tags: true
