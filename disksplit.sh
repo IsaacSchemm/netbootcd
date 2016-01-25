@@ -58,7 +58,7 @@ chainloader (fd0)/kernel.sys" > $TMPDIR/1/menu.lst
 echo "DEVICE=HIMEMX.EXE
 LASTDRIVE=Z" > $TMPDIR/1/fdconfig.sys
 echo "@ECHO OFF
-XMSDSK.EXE 32768 T: /Y
+XMSDSK.EXE 38912 T: /Y
 COPY TINYCORE.NOT T:\TINYCORE.BAT
 T:\TINYCORE.BAT" > $TMPDIR/1/autoexec.bat
 
@@ -80,11 +80,9 @@ if [ $(($FILESIZE%1457644)) -gt $(($(du -b $TMPDIR/1 | tail -n 1 | awk '{print $
 	echo extradisk
 	EXTRADISK="true"
 	NUM_DISKS=$(($NUM_DISKS+1))
-	STARTINGDISK=0
 else
 	echo no extradisk
 	EXTRADISK="false"
-	STARTINGDISK=1
 fi
 for i in $(seq 2 $NUM_DISKS);do
 	if [ -d $TMPDIR/$i ];then
@@ -123,17 +121,21 @@ echo "
 @ECHO OFF
 REM PART.000 is on Disk 2, PART.001 on Disk 3, etc
 
-ECHO This is disk $STARTINGDISK of a 1440KB $NUM_DISKS-disk set.
-IF EXIST A:\PART.$EXT GOTO DISK1IN
-:DISK1
-ECHO Please insert disk 1 and press ENTER.
-PAUSE
-IF NOT EXIST A:\PART.$EXT GOTO DISK1
-:DISK1IN
-COPY A:\PART.$EXT T:\\
+ECHO This is disk 1 of a 1440KB $NUM_DISKS-disk set.
 COPY A:\CHUNK.EXE T:\\
 COPY A:\LINLD.COM T:\\
 " > $TMPDIR/1/tinycore.not
+if ! $EXTRADISK;then
+	echo "
+	IF EXIST A:\PART.$EXT GOTO DISK1IN
+	:DISK1
+	ECHO Please insert disk 1 and press ENTER.
+	PAUSE
+	IF NOT EXIST A:\PART.$EXT GOTO DISK1
+	:DISK1IN
+	COPY A:\PART.$EXT T:\\
+	" >> $TMPDIR/1/tinycore.not
+fi
 for i in $(seq 2 $NUM_DISKS);do
 	if [ $(($i-2)) -lt 10 ];then
 		EXT=00$(($i-2))
@@ -156,7 +158,7 @@ LINLD.COM image=FILE.001 initrd=FILE.000 cl=quiet
 " >> $TMPDIR/1/tinycore.not
 
 dd if=/dev/zero bs=1474560 count=1 of=$TMPDIR/1.img
-mkdosfs $TMPDIR/1.img
+mkdosfs -n NetbootCD1 $TMPDIR/1.img
 ./bootlace.com --floppy $TMPDIR/1.img
 mkdir $TMPDIR/a1
 mount -o loop $TMPDIR/1.img $TMPDIR/a1
@@ -167,7 +169,7 @@ rmdir $TMPDIR/a1
 mv $TMPDIR/1.img ${DONE}/1.img
 for i in $(seq 2 $NUM_DISKS);do
 	dd if=/dev/zero bs=1474560 count=1 of=$TMPDIR/$i.img
-	mkdosfs $TMPDIR/$i.img
+	mkdosfs -n NetbootCD$i $TMPDIR/$i.img
 	mkdir $TMPDIR/a$i
 	mount -o loop $TMPDIR/$i.img $TMPDIR/a$i
 	cp -v $TMPDIR/$i/* $TMPDIR/a$i/
