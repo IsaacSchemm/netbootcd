@@ -158,7 +158,7 @@ LINLD.COM image=FILE.001 initrd=FILE.000 cl=quiet
 " >> $TMPDIR/1/tinycore.not
 
 dd if=/dev/zero bs=1474560 count=1 of=$TMPDIR/1.img
-mkdosfs $TMPDIR/1.img
+mkdosfs -n NetbootCD1 $TMPDIR/1.img
 ./bootlace.com --floppy $TMPDIR/1.img
 mkdir $TMPDIR/a1
 mount -o loop $TMPDIR/1.img $TMPDIR/a1
@@ -169,7 +169,7 @@ rmdir $TMPDIR/a1
 mv $TMPDIR/1.img ${DONE}/1.img
 for i in $(seq 2 $NUM_DISKS);do
 	dd if=/dev/zero bs=1474560 count=1 of=$TMPDIR/$i.img
-	mkdosfs $TMPDIR/$i.img
+	mkdosfs -n NetbootCD$i $TMPDIR/$i.img
 	mkdir $TMPDIR/a$i
 	mount -o loop $TMPDIR/$i.img $TMPDIR/a$i
 	cp -v $TMPDIR/$i/* $TMPDIR/a$i/
