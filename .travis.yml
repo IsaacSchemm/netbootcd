@@ -4,4 +4,13 @@ before_install:
 - sudo apt-get update -qq
 - sudo apt-get install -qq dosfstools squashfs-tools syslinux genisoimage
 script:
-- "sudo ./Build.sh"
+- sudo ./Build.sh
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key:
+    secure: X3WcspOQkVDlXkjQJO/jzhTa6ksBqtsHyo6vgbufX3MwN9VJaYYojL+pH4t7Ds++kTQx88t9IDuqXIIzgwvhmt8lCIdbyCy9M1aTpfs+zFyprzMLbEPqAYcaEPWWxz5lelJQVD/2kmcA/jtpf6U7d2kCNH7tUpKgPUNYt+tYa1qEHDhqF+0UwuE/HHTwAAZeHlgGaFsMN2sg1ntzw+gaeTb7ggQWtxo9ngki7f3jD+KeAtM/5+E3QfedvPQefs5cnUYB7HfZoOlc2BUccAAT9MfdTZthmNuXr3UyBnDqyY5Rl7gTgA5HIsOhBBqfVvODXQgZtQLCaNn+cV27uHpPUmNeF8JkYNyJBNtf/rp1//sE8NwW/9uLs9ufotBXdKWGIBqdNXqFXcCUvUPklfyNnLlA6SFsAU3X8KQdh/zYQpiZ5WtAqguZDfrnQCz486Sy0rLPOmq0my1mYjxLVf8/e3pLPI5/qAr6B0FTbNnCRenZVM/78Ta41/5ZgYrnnEQlVjEY3vF784qdGn7/z79t3/GPwGXtPtpBanLDWYr/qEBpEHs6FP7lFUovLvaOD8sFYytueNFiIKZsTMfAXnHGUsylvapVih3CGSakwOA5nlc08uEEZe5q1Q0pTew94ND6T32Htz3cKhpOOKCC1TcIN8L3349WhvCfD28ohPpXzcc=
+  file: done/NetbootCD-*
+  on:
+    repo: IsaacSchemm/netbootcd
+    branch: test-travis
