@@ -75,6 +75,9 @@ fi
 if [ -d ${WORK} ];then
 	rm -r ${WORK}
 fi
+if [ -d ${DONE} ];then
+	rm -r ${DONE}
+fi
 
 mkdir -p ${WORK} ${DONE} ${NBINIT}
 
