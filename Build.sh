@@ -238,6 +238,8 @@ if $FLOPPY;then
 	cp 1.img ../NetbootCD-$NBCDVER-floppy.img
 	zip ../NetbootCD-$NBCDVER-floppy-set.zip *.img
 	cd -
+	ln -s ${DONE}/NetbootCD-$NBCDVER-floppy.img ${DONE}/NetbootCD-floppy.img
+	ln -s ${DONE}/NetbootCD-$NBCDVER-floppy-set.zip ${DONE}/NetbootCD-floppy-set.zip
 fi
 
 if [ -d ${WORK}/iso ];then
@@ -297,6 +299,8 @@ $MAKER --no-emul-boot --boot-info-table --boot-load-size 4 \
 
 chown -R 1000.1000 $DONE
 isohybrid ${DONE}/NetbootCD-$NBCDVER.iso
+
+ln -s ${DONE}/NetbootCD-$NBCDVER.iso ${DONE}/NetbootCD.iso
 
 cp -r ${TCISO}/cde ${WORK}/iso
 cp ${TCISO}/boot/core.gz ${WORK}/iso/boot
@@ -483,5 +487,7 @@ $MAKER --no-emul-boot --boot-info-table --boot-load-size 4 \
 
 chown -R 1000.1000 $DONE
 isohybrid ${DONE}/NetbootCD-$NBCDVER+CorePlus-$COREVER.iso
+
+ln -s ${DONE}/NetbootCD-$NBCDVER+CorePlus-$COREVER.iso ${DONE}/NetbootCD+CorePlus.iso
 	
 rm -r ${WORK}/iso
