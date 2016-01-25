@@ -134,7 +134,7 @@ if ! $EXTRADISK;then
 	IF NOT EXIST A:\PART.$EXT GOTO DISK1
 	:DISK1IN
 	COPY A:\PART.$EXT T:\\
-	" > $TMPDIR/1/tinycore.not
+	" >> $TMPDIR/1/tinycore.not
 fi
 for i in $(seq 2 $NUM_DISKS);do
 	if [ $(($i-2)) -lt 10 ];then
