@@ -50,7 +50,7 @@ if $FLOPPY && [ ! -e blank-bootable-1440-floppy.gz ];then
 	echo "Couldn't find blank-bootable-1440-floppy.gz!"
 	NO=1
 fi
-for i in mkdosfs unsquashfs isohybrid;do
+for i in mkdosfs unsquashfs isohybrid zip;do
 	if ! which $i > /dev/null;then
 		echo "Please install $i!"
 		NO=1
@@ -82,7 +82,7 @@ mkdir -p ${WORK} ${DONE} ${NBINIT}
 TCISO=${WORK}/tciso
 mkdir ${TCISO} ${WORK}/tcisomnt
 mount -o loop CorePlus-$COREVER.iso ${WORK}/tcisomnt
-cp -rv ${WORK}/tcisomnt/* ${TCISO}
+cp -r ${WORK}/tcisomnt/* ${TCISO}
 umount ${WORK}/tcisomnt
 rmdir ${WORK}/tcisomnt
 
@@ -215,7 +215,7 @@ if [ -f pxe-kexec/pxe-kexec.tgz ] && [ -f pxe-kexec/readline.tcz ] && \
 			ln -s ../local/lib/$BASENAME ${WORK}/pxe-kexec/usr/lib/$BASENAME
 		fi
 	done
-	cp -av ${WORK}/pxe-kexec/* ${NBINIT}
+	cp -a ${WORK}/pxe-kexec/* ${NBINIT}
 	rm -r ${WORK}/pxe-kexec
 else
 	echo "pxe-kexec not included"
@@ -234,6 +234,10 @@ echo "Made initrd:" $(wc -c ${DONE}/nbinit4.gz)
 if $FLOPPY;then
 	#Split up the kernel and floppy initrd for several disks
 	./disksplit.sh ${DONE}/vmlinuz ${DONE}/nbflop4.gz
+	cd done/floppy
+	cp 1.img ../NetbootCD-$NBCDVER-floppy.img
+	zip ../NetbootCD-$NBCDVER-floppy-set.zip *.img
+	cd -
 fi
 
 if [ -d ${WORK}/iso ];then
@@ -248,6 +252,7 @@ for i in vmlinuz nbinit4.gz;do
 	cp ${DONE}/$i ${WORK}/iso/boot
 done
 cp ipxe.krn ${WORK}/iso/boot/ipxe
+cp grub.exe ${WORK}/iso/boot
 
 echo "DEFAULT menu.c32
 PROMPT 0
@@ -269,6 +274,10 @@ LABEL ipxe-nbcd
 MENU LABEL Download and run newest NetbootCD (and other options)
 kernel /boot/ipxe
 append dhcp && chain http://netbootcd.us/downloads/script.ipxe
+
+LABEL grub4dos
+menu label ^GRUB4DOS 0.4.6a-2016-01-19
+kernel /boot/grub.exe
 " >> ${WORK}/iso/boot/isolinux/isolinux.cfg
 
 if which mkisofs>/dev/null;then
@@ -291,8 +300,6 @@ isohybrid ${DONE}/NetbootCD-$NBCDVER.iso
 
 cp -r ${TCISO}/cde ${WORK}/iso
 cp ${TCISO}/boot/core.gz ${WORK}/iso/boot
-
-cp grub.exe ${WORK}/iso/boot
 
 echo "DEFAULT menu.c32
 PROMPT 0
