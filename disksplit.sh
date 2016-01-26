@@ -51,7 +51,7 @@ echo "default 0
 timeout 10
 
 title Download newest NetbootCD or chain other netboot sites
-kernel (fd0)/ipxe dhcp \&\& chain http://netbootcd.us/downloads/script.ipxe
+kernel (fd0)/ipxe dhcp \&\& chain http://netbootcd.us/downloads/script.ipxe \|\| chain https://boot.netboot.xyz
 
 title Load NetbootCD from multi-disk set (or run FreeDOS)
 chainloader (fd0)/kernel.sys" > $TMPDIR/1/menu.lst
