@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-## nbscript.sh 6.4.1.2 - Download netboot images and launch them with kexec
+## nbscript.sh 7.0rc1 - Download netboot images and launch them with kexec
 ## Copyright (C) 2016 Isaac Schemm <isaacschemm@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 6.4.1.2 - January 24, 2016"
+TITLE="NetbootCD Script 7.0rc1 - February 12, 2016"
 
 getversion ()
 {
@@ -447,7 +447,8 @@ grub4dos "GRUB4DOS - a versitle bootloader that can be loaded from kexec" \
 slitaz "SliTaz" \
 core "Core 6.x" \
 tinycore "Core 6.x (add TinyCore packages: Xvesa Xlibs Xprogs aterm flwm_topside wbar)" \
-gparted "Core 6.x (above plus: gparted ntfsprogs dosfstools reiserfsprogs)" 2>/tmp/nb-distro
+firefox "Core 6.x (TinyCore plus: firefox-ESR)" \
+gparted "Core 6.x (TinyCore plus: gparted ntfsprogs dosfstools reiserfsprogs)" 2>/tmp/nb-distro
 #Read their choice, save it, and delete the old file
 DISTRO=$(cat /tmp/nb-distro)
 rm /tmp/nb-distro
@@ -522,7 +523,7 @@ elif [ $DISTRO = "slitaz" ];then
 		ln -s /tmp/slitaz/boot/rootfs.gz /tmp/nb-initrd
 		echo -n "--append=rw --append=root=/dev/null --append=autologin" >>/tmp/nb-options
 	fi
-elif [ $DISTRO = "core" ] || [ $DISTRO = "tinycore" ] || [ $DISTRO = "gparted" ];then
+elif [ $DISTRO = "core" ] || [ $DISTRO = "tinycore" ] || [ $DISTRO = "firefox" ] || [ $DISTRO = "gparted" ];then
 	if [ "$VERSION" == "64" ];then
 		wget http://distro.ibiblio.org/tinycorelinux/6.x/x86_64/release/distribution_files/vmlinuz64 -O /tmp/nb-linux
 		wget http://distro.ibiblio.org/tinycorelinux/6.x/x86_64/release/distribution_files/corepure64.gz -O /tmp/nb-initrd
@@ -530,7 +531,7 @@ elif [ $DISTRO = "core" ] || [ $DISTRO = "tinycore" ] || [ $DISTRO = "gparted" ]
 		wget http://distro.ibiblio.org/tinycorelinux/6.x/x86/release/distribution_files/vmlinuz -O /tmp/nb-linux
 		wget http://distro.ibiblio.org/tinycorelinux/6.x/x86/release/distribution_files/core.gz -O /tmp/nb-initrd
 	fi
-	if [ $DISTRO = "tinycore" ] || [ $DISTRO = "gparted" ];then
+	if [ $DISTRO = "tinycore" ] || [ $DISTRO = "firefox" ] || [ $DISTRO = "gparted" ];then
 		mkdir -p /tmp/build
 		cd /tmp/build
 		gzip -cd /tmp/nb-initrd | cpio -id
@@ -547,6 +548,9 @@ elif [ $DISTRO = "core" ] || [ $DISTRO = "tinycore" ] || [ $DISTRO = "gparted" ]
 		for i in Xvesa Xlibs Xprogs aterm flwm_topside wbar;do # xbase.lst from CorePlus-6.1
 			echo "tce-load -wi $i" >> script.sh
 		done
+		if [ $DISTRO = "firefox" ];then
+			echo "tce-load -wi firefox-ESR" >> script.sh
+		fi
 		if [ $DISTRO = "gparted" ];then
 			for i in gparted ntfsprogs dosfstools reiserfsprogs;do
 				echo "tce-load -wi $i" >> script.sh
