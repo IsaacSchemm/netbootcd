@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-## nbscript.sh 7.0rc1 - Download netboot images and launch them with kexec
+## nbscript.sh 7.0 - Download netboot images and launch them with kexec
 ## Copyright (C) 2016 Isaac Schemm <isaacschemm@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 7.0rc1 - February 12, 2016"
+TITLE="NetbootCD Script 7.0 - February 23, 2016"
 
 getversion ()
 {
@@ -115,6 +115,7 @@ rm /tmp/nb-distro
 if [ $DISTRO = "ubuntu" ];then
 	#Ask about version
 	dialog --menu "Choose a system to install:" 20 70 13 \
+	xenial "Ubuntu 16.04 LTS (to be released on April 21, 2016)" \
 	wily "Ubuntu 15.10" \
 	vivid "Ubuntu 15.04" \
 	trusty "Ubuntu 14.04 LTS" \
@@ -141,6 +142,7 @@ fi
 if [ $DISTRO = "ubuntu64" ];then
 	#Ask about version
 	dialog --menu "Choose a system to install:" 20 70 13 \
+	xenial "Ubuntu 16.04 LTS (to be released on April 21, 2016)" \
 	wily "Ubuntu 15.10" \
 	vivid "Ubuntu 15.04" \
 	trusty "Ubuntu 14.04 LTS" \
