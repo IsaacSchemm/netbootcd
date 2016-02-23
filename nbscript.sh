@@ -447,10 +447,10 @@ utilsmenu ()
 dialog --backtitle "$TITLE" --menu "Choose a utility:" 20 70 13 \
 grub4dos "GRUB4DOS - a versitle bootloader that can be loaded from kexec" \
 slitaz "SliTaz" \
-core "Core 6.x" \
-tinycore "Core 6.x (add TinyCore packages: Xvesa Xlibs Xprogs aterm flwm_topside wbar)" \
-firefox "Core 6.x (TinyCore plus: firefox-ESR)" \
-gparted "Core 6.x (TinyCore plus: gparted ntfsprogs dosfstools reiserfsprogs)" 2>/tmp/nb-distro
+core "Core 7.x" \
+tinycore "Core 7.x (add TinyCore packages: Xvesa Xlibs Xprogs aterm flwm_topside wbar)" \
+firefox "Core 7.x (TinyCore plus: firefox-ESR)" \
+gparted "Core 7.x (TinyCore plus: gparted ntfsprogs dosfstools reiserfsprogs)" 2>/tmp/nb-distro
 #Read their choice, save it, and delete the old file
 DISTRO=$(cat /tmp/nb-distro)
 rm /tmp/nb-distro
@@ -472,8 +472,8 @@ elif [ $DISTRO = "slitaz" ];then
 	getversion
 else
 	dialog --backtitle "$TITLE" --menu "Choose a version to download:" 20 70 13 \
-	32 "Core 6.x - 32-bit" \
-	64 "Core 6.x - 64-bit" 2>/tmp/nb-version
+	32 "Core 7.x - 32-bit" \
+	64 "Core 7.x - 64-bit" 2>/tmp/nb-version
 	getversion
 fi
 if [ $DISTRO != "grub4dos" ];then
@@ -527,11 +527,11 @@ elif [ $DISTRO = "slitaz" ];then
 	fi
 elif [ $DISTRO = "core" ] || [ $DISTRO = "tinycore" ] || [ $DISTRO = "firefox" ] || [ $DISTRO = "gparted" ];then
 	if [ "$VERSION" == "64" ];then
-		wget http://distro.ibiblio.org/tinycorelinux/6.x/x86_64/release/distribution_files/vmlinuz64 -O /tmp/nb-linux
-		wget http://distro.ibiblio.org/tinycorelinux/6.x/x86_64/release/distribution_files/corepure64.gz -O /tmp/nb-initrd
+		wget http://tinycorelinux.net/7.x/x86/release/distribution_files/vmlinuz64 -O /tmp/nb-linux
+		wget http://tinycorelinux.net/7.x/x86/release/distribution_files/corepure64.gz -O /tmp/nb-initrd
 	else
-		wget http://distro.ibiblio.org/tinycorelinux/6.x/x86/release/distribution_files/vmlinuz -O /tmp/nb-linux
-		wget http://distro.ibiblio.org/tinycorelinux/6.x/x86/release/distribution_files/core.gz -O /tmp/nb-initrd
+		wget http://tinycorelinux.net/7.x/x86/release/distribution_files/vmlinuz -O /tmp/nb-linux
+		wget http://tinycorelinux.net/7.x/x86/release/distribution_files/core.gz -O /tmp/nb-initrd
 	fi
 	if [ $DISTRO = "tinycore" ] || [ $DISTRO = "firefox" ] || [ $DISTRO = "gparted" ];then
 		mkdir -p /tmp/build
