@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 7.0 - February 23, 2016"
+TITLE="NetbootCD Script 7.0.1 - April 23, 2016"
 
 getversion ()
 {
@@ -115,7 +115,7 @@ rm /tmp/nb-distro
 if [ $DISTRO = "ubuntu" ];then
 	#Ask about version
 	dialog --menu "Choose a system to install:" 20 70 13 \
-	xenial "Ubuntu 16.04 LTS (to be released on April 21, 2016)" \
+	xenial "Ubuntu 16.04 LTS" \
 	wily "Ubuntu 15.10" \
 	vivid "Ubuntu 15.04" \
 	trusty "Ubuntu 14.04 LTS" \
@@ -142,7 +142,7 @@ fi
 if [ $DISTRO = "ubuntu64" ];then
 	#Ask about version
 	dialog --menu "Choose a system to install:" 20 70 13 \
-	xenial "Ubuntu 16.04 LTS (to be released on April 21, 2016)" \
+	xenial "Ubuntu 16.04 LTS" \
 	wily "Ubuntu 15.10" \
 	vivid "Ubuntu 15.04" \
 	trusty "Ubuntu 14.04 LTS" \
@@ -450,7 +450,7 @@ slitaz "SliTaz" \
 core "Core 7.x" \
 tinycore "Core 7.x (add TinyCore packages: Xvesa Xlibs Xprogs aterm flwm_topside wbar)" \
 firefox "Core 7.x (TinyCore plus: firefox-ESR)" \
-gparted "Core 7.x (TinyCore plus: gparted ntfsprogs dosfstools reiserfsprogs)" 2>/tmp/nb-distro
+gparted "Core 7.x (TinyCore plus: gparted ntfsprogs dosfstools reiserfsprogs e2fsprogs xfsprogs)" 2>/tmp/nb-distro
 #Read their choice, save it, and delete the old file
 DISTRO=$(cat /tmp/nb-distro)
 rm /tmp/nb-distro
@@ -554,7 +554,7 @@ elif [ $DISTRO = "core" ] || [ $DISTRO = "tinycore" ] || [ $DISTRO = "firefox" ]
 			echo "tce-load -wi firefox-ESR" >> script.sh
 		fi
 		if [ $DISTRO = "gparted" ];then
-			for i in gparted ntfsprogs dosfstools reiserfsprogs;do
+			for i in gparted ntfsprogs dosfstools reiserfsprogs e2fsprogs xfsprogs;do
 				echo "tce-load -wi $i" >> script.sh
 			done
 		fi
