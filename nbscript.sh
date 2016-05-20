@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 7.0.1 - April 23, 2016"
+TITLE="NetbootCD Script 7.0.2 - May 20, 2016"
 
 getversion ()
 {
@@ -134,7 +134,7 @@ if [ $DISTRO = "ubuntu" ];then
 	#These options are good for all Ubuntu installers.
 	echo -n '--append=vga=normal --append=quiet '>>/tmp/nb-options
 	#If the user wants a command-line install, then add some more kernel arguments. The CLI install is akin to "standard system" in Debian.
-	if ! dialog --yesno "Would you like to install language packs?\n(Choose no for a command-line system.)" 7 43;then
+	if dialog --yesno "Would you like to install language packs?\n(Choose no for a command-line system.)" 7 43;then
 		#These arguments appear to just prevent the system from installing language packs. Not sure if they work, but Ubuntu's mini.iso has them.
 		echo -n '--append=tasks=standard --append=pkgsel/language-pack-patterns= --append=pkgsel/install-language-support=false'>>/tmp/nb-options
 	fi
@@ -161,7 +161,7 @@ if [ $DISTRO = "ubuntu64" ];then
 	#These options are good for all Ubuntu installers.
 	echo -n '--append=vga=normal --append=quiet '>>/tmp/nb-options
 	#If the user wants a command-line install, then add some more kernel arguments. The CLI install is akin to "standard system" in Debian.
-	if ! dialog --yesno "Would you like to install language packs?\n(Choose no for a command-line system.)" 7 43;then
+	if dialog --yesno "Would you like to install language packs?\n(Choose no for a command-line system.)" 7 43;then
 		echo -n '--append=tasks=standard --append=pkgsel/language-pack-patterns= --append=pkgsel/install-language-support=false'>>/tmp/nb-options
 	fi
 fi
