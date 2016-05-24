@@ -1,5 +1,5 @@
 #!/bin/sh
-#Build.sh 7.0 for netbootcd
+#Build.sh 7.1 for netbootcd
 
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License
@@ -28,8 +28,8 @@ NBINIT2=${WORK}/nbinit2 #for floppy
 
 #Set to false to not build floppy images
 FLOPPY=true
-NBCDVER=7.0
-COREVER=7.0
+NBCDVER=7.1
+COREVER=7.1
 
 if [ ! -f CorePlus-$COREVER.iso ];then
 	wget http://www.tinycorelinux.net/7.x/x86/release/CorePlus-$COREVER.iso
