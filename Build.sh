@@ -281,7 +281,7 @@ kernel /boot/ipxe
 append dhcp && chain http://netbootcd.us/downloads/script.ipxe
 
 LABEL grub4dos
-menu label ^GRUB4DOS 0.4.6a-2016-01-19
+menu label ^GRUB4DOS 0.4.6a-2016-05-18
 kernel /boot/grub.exe
 " >> ${WORK}/iso/boot/isolinux/isolinux.cfg
 
@@ -481,7 +481,7 @@ kernel /boot/ipxe
 append dhcp && chain http://netbootcd.us/downloads/script.ipxe
 
 LABEL grub4dos
-menu label ^GRUB4DOS 0.4.6a-2016-01-19
+menu label ^GRUB4DOS 0.4.6a-2016-05-18
 kernel /boot/grub.exe
 " > ${WORK}/iso/boot/isolinux/isolinux.cfg
 $MAKER --no-emul-boot --boot-info-table --boot-load-size 4 \
