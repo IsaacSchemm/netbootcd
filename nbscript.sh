@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-## nbscript.sh 7.0 - Download netboot images and launch them with kexec
+## nbscript.sh 7.1 - Download netboot images and launch them with kexec
 ## Copyright (C) 2016 Isaac Schemm <isaacschemm@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 7.0.2 - May 20, 2016"
+TITLE="NetbootCD Script 7.1 - May 24, 2016"
 
 getversion ()
 {
@@ -117,8 +117,8 @@ if [ $DISTRO = "ubuntu" ];then
 	dialog --menu "Choose a system to install:" 20 70 13 \
 	xenial "Ubuntu 16.04 LTS" \
 	wily "Ubuntu 15.10" \
-	vivid "Ubuntu 15.04" \
 	trusty "Ubuntu 14.04 LTS" \
+	precise "Ubuntu 12.04 LTS" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	#Run the getversion() function above
 	getversion
@@ -144,8 +144,8 @@ if [ $DISTRO = "ubuntu64" ];then
 	dialog --menu "Choose a system to install:" 20 70 13 \
 	xenial "Ubuntu 16.04 LTS" \
 	wily "Ubuntu 15.10" \
-	vivid "Ubuntu 15.04" \
 	trusty "Ubuntu 14.04 LTS" \
+	precise "Ubuntu 12.04 LTS" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	#Run the getversion() function above
 	getversion
@@ -457,7 +457,7 @@ rm /tmp/nb-distro
 #What version?
 if [ $DISTRO = "grub4dos" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a version to download:" 20 70 13 \
-	0.4.6a-2016-01-19 "grub4dos-chenall fork (0.4.6a branch)" \
+	0.4.6a-2016-05-18 "grub4dos-chenall fork (0.4.6a branch)" \
 	0.4.5c-2016-01-18 "grub4dos-chenall fork (0.4.5c branch)" \
 	0.4.4-2009-06-20 "Latest version of original - June 20, 2009" 2>/tmp/nb-version
 	getversion
