@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-## nbscript.sh 7.1 - Download netboot images and launch them with kexec
+## nbscript.sh 7.1.1 - Download netboot images and launch them with kexec
 ## Copyright (C) 2016 Isaac Schemm <isaacschemm@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 7.1 - May 24, 2016"
+TITLE="NetbootCD Script 7.1.1 - July 7, 2016"
 
 getversion ()
 {
@@ -463,6 +463,7 @@ if [ $DISTRO = "grub4dos" ];then
 	getversion
 elif [ $DISTRO = "slitaz" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a version to download:" 20 70 13 \
+	rolling "SliTaz 5.0 rolling release" \
 	5.0-rc3 "SliTaz 5.0 rc3" \
 	4.0-httpfs "SliTaz 4.0 (GUI mode, mounted over HTTP)" \
 	4.0-full "SliTaz 4.0 (GUI mode, download and copy to RAM)" \
@@ -524,6 +525,19 @@ elif [ $DISTRO = "slitaz" ];then
 		ln -s /tmp/slitaz/boot/vmlinuz* /tmp/nb-linux
 		ln -s /tmp/slitaz/boot/rootfs.gz /tmp/nb-initrd
 		echo -n "--append=rw --append=root=/dev/null --append=autologin" >>/tmp/nb-options
+	elif [ "$VERSION" = "rolling" ];then
+		sudo -u tc tce-load -wi xz
+		wget http://mirror.slitaz.org/iso/rolling/slitaz-rolling.iso -O /tmp/slitaz.iso
+		mkdir /tmp/slitaz
+		mount -o loop /tmp/slitaz.iso /tmp/slitaz
+		ln -s /tmp/slitaz/boot/vmlinuz* /tmp/nb-linux
+		if [ -f /tmp/nb-initrd ];then
+			rm /tmp/nb-initrd
+		fi
+		for i in 4 3 2 1;do
+			cat /tmp/slitaz/boot/rootfs$i.gz | /usr/local/bin/xz --single-stream -cd >> /tmp/nb-initrd
+		done
+		echo -n "--append=rw --append=root=/dev/null --append=video=-32 --append=autologin" >>/tmp/nb-options
 	fi
 elif [ $DISTRO = "core" ] || [ $DISTRO = "tinycore" ] || [ $DISTRO = "firefox" ] || [ $DISTRO = "gparted" ];then
 	if [ "$VERSION" == "64" ];then
