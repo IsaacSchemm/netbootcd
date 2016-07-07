@@ -82,6 +82,7 @@ if wget -O /tmp/nbscript.sh $1;then
 else
 	rm /tmp/nbscript.sh
 	echo "Downloading the new script was not successful."
+	return 1
 fi
 
 }
@@ -612,7 +613,8 @@ fi
 #We are going to need /tmp/nb-options empty later.
 true>/tmp/nb-options
 if [ $MAINMENU = "download" ];then
-	downloadandrun http://netbootcd.us/downloads/nbscript.sh
+	su -c "tce-load -wi openssl" tc
+	downloadandrun https://raw.githubusercontent.com/IsaacSchemm/netbootcd/master/nbscript.sh || downloadandrun http://netbootcd.us/downloads/nbscript.sh
 fi
 if [ $MAINMENU = "utils" ];then
 	utilsmenu
