@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 7.1.1 - July 7, 2016"
+TITLE="NetbootCD Script 7.1.2 - July 8, 2016"
 
 getversion ()
 {
@@ -569,6 +569,7 @@ elif [ $DISTRO = "core" ] || [ $DISTRO = "tinycore" ] || [ $DISTRO = "firefox" ]
 			echo "tce-load -wi firefox-ESR" >> script.sh
 		fi
 		if [ $DISTRO = "gparted" ];then
+			OPTIONS="--append=noswap"
 			for i in gparted ntfsprogs dosfstools reiserfsprogs e2fsprogs xfsprogs;do
 				echo "tce-load -wi $i" >> script.sh
 			done
