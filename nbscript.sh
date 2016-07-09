@@ -537,6 +537,19 @@ elif [ $DISTRO = "slitaz" ];then
 		echo -n "rw root=/dev/null video=-32 autologin" >>/tmp/nb-options
 	fi
 elif [ $DISTRO = "core" ] || [ $DISTRO = "tinycore" ] || [ $DISTRO = "firefox" ] || [ $DISTRO = "gparted" ];then
+	if [ $DISTRO = "tinycore" ] || [ $DISTRO = "firefox" ] || [ $DISTRO = "gparted" ];then
+		echo flwm_topside > /tmp/nb-wm
+		dialog --backtitle "$TITLE" --menu "Choose a window manager:" 20 70 13 \
+			flwm_topside "FLWM topside" \
+			jwm "JWM" \
+			icewm "ICEwm" \
+			fluxbox "Fluxbox" \
+			hackedbox "Hackedbox" \
+			openbox "Openbox" \
+			flwm "FLWM classic" \
+			dwm "dwm" \
+			pekwm "pekwm" 2>/tmp/nb-wm
+	fi
 	if [ "$VERSION" == "64" ];then
 		wget http://tinycorelinux.net/7.x/x86/release/distribution_files/vmlinuz64 -O /tmp/nb-linux
 		wget http://tinycorelinux.net/7.x/x86/release/distribution_files/corepure64.gz -O /tmp/nb-initrd
@@ -558,7 +571,7 @@ elif [ $DISTRO = "core" ] || [ $DISTRO = "tinycore" ] || [ $DISTRO = "firefox" ]
 			wget -q --spider http://www.example.com > /dev/null
 		done
 		echo > /tmp/internet-is-up' > script.sh
-		for i in Xvesa Xlibs Xprogs aterm flwm_topside wbar;do # xbase.lst from CorePlus-6.1
+		for i in Xvesa Xlibs Xprogs aterm wbar $(cat /tmp/nb-wm);do # xbase.lst from CorePlus-6.1
 			echo "tce-load -wi $i" >> script.sh
 		done
 		if [ $DISTRO = "firefox" ];then
