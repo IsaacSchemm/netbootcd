@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-## nbscript.sh 7.1.2 - Download netboot images and launch them with kexec
+## nbscript.sh 7.1.3 - Download netboot images and launch them with kexec
 ## Copyright (C) 2016 Isaac Schemm <isaacschemm@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 7.1.2 - July 8, 2016"
+TITLE="NetbootCD Script 7.1.3 - July 9, 2016"
 
 getversion ()
 {
@@ -38,9 +38,7 @@ getversion ()
 askforopts ()
 {
 #Extra kernel options can be useful in some cases; i.e. hardware problems, Debian preseeding, or maybe you just want to utilise your whole 1280x1024 monitor (use: vga=794).
-dialog --backtitle "$TITLE" --inputbox "Would you like to pass any extra kernel options?\n(Note: it is OK to leave this field blank)\nUse the syntax: --append=option1=asdf --append=option2=hi" 9 64 2>/tmp/nb-custom
-CUSTOM=$(cat /tmp/nb-custom)
-rm /tmp/nb-custom
+dialog --backtitle "$TITLE" --inputbox "Would you like to pass any extra kernel options?\n(Note: it is OK to leave this field blank)" 9 64 2>/tmp/nb-custom
 }
 
 probe_and_provision () {
@@ -133,11 +131,11 @@ if [ $DISTRO = "ubuntu" ];then
 		INITRDURL="http://archive.ubuntu.com/ubuntu/dists/$VERSION/main/installer-i386/current/images/netboot/ubuntu-installer/i386/initrd.gz"
 	fi
 	#These options are good for all Ubuntu installers.
-	echo -n '--append=vga=normal --append=quiet '>>/tmp/nb-options
+	echo -n 'vga=normal quiet '>>/tmp/nb-options
 	#If the user wants a command-line install, then add some more kernel arguments. The CLI install is akin to "standard system" in Debian.
 	if dialog --yesno "Would you like to install language packs?\n(Choose no for a command-line system.)" 7 43;then
 		#These arguments appear to just prevent the system from installing language packs. Not sure if they work, but Ubuntu's mini.iso has them.
-		echo -n '--append=tasks=standard --append=pkgsel/language-pack-patterns= --append=pkgsel/install-language-support=false'>>/tmp/nb-options
+		echo -n 'tasks=standard pkgsel/language-pack-patterns= pkgsel/install-language-support=false'>>/tmp/nb-options
 	fi
 fi
 if [ $DISTRO = "ubuntu64" ];then
@@ -160,10 +158,10 @@ if [ $DISTRO = "ubuntu64" ];then
 		INITRDURL="http://archive.ubuntu.com/ubuntu/dists/$VERSION/main/installer-amd64/current/images/netboot/ubuntu-installer/amd64/initrd.gz"
 	fi
 	#These options are good for all Ubuntu installers.
-	echo -n '--append=vga=normal --append=quiet '>>/tmp/nb-options
+	echo -n 'vga=normal quiet '>>/tmp/nb-options
 	#If the user wants a command-line install, then add some more kernel arguments. The CLI install is akin to "standard system" in Debian.
 	if dialog --yesno "Would you like to install language packs?\n(Choose no for a command-line system.)" 7 43;then
-		echo -n '--append=tasks=standard --append=pkgsel/language-pack-patterns= --append=pkgsel/install-language-support=false'>>/tmp/nb-options
+		echo -n 'tasks=standard pkgsel/language-pack-patterns= pkgsel/install-language-support=false'>>/tmp/nb-options
 	fi
 fi
 if [ $DISTRO = "debian" ];then
@@ -174,7 +172,7 @@ if [ $DISTRO = "debian" ];then
 	getversion
 	KERNELURL="http://http.us.debian.org/debian/dists/$VERSION/main/installer-i386/current/images/netboot/debian-installer/i386/linux"
 	INITRDURL="http://http.us.debian.org/debian/dists/$VERSION/main/installer-i386/current/images/netboot/debian-installer/i386/initrd.gz"
-	echo -n '--append=vga=normal --append=quiet '>>/tmp/nb-options
+	echo -n 'vga=normal quiet '>>/tmp/nb-options
 	#Testing and unstable use the same kernel. See: https://wiki.debian.org/DebianUnstable#How_do_I_install_Sid.3F
 fi
 if [ $DISTRO = "debian64" ];then
@@ -185,7 +183,7 @@ if [ $DISTRO = "debian64" ];then
 	getversion
 	KERNELURL="http://http.us.debian.org/debian/dists/$VERSION/main/installer-amd64/current/images/netboot/debian-installer/amd64/linux"
 	INITRDURL="http://http.us.debian.org/debian/dists/$VERSION/main/installer-amd64/current/images/netboot/debian-installer/amd64/initrd.gz"
-	echo -n '--append=vga=normal --append=quiet" '>>/tmp/nb-options
+	echo -n 'vga=normal quiet" '>>/tmp/nb-options
 fi
 if [ $DISTRO = "debiandaily" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
@@ -195,9 +193,9 @@ if [ $DISTRO = "debiandaily" ];then
 	getversion
 	KERNELURL="http://d-i.debian.org/daily-images/i386/daily/netboot/debian-installer/i386/linux"
 	INITRDURL="http://d-i.debian.org/daily-images/i386/daily/netboot/debian-installer/i386/initrd.gz"
-	echo -n '--append=vga=normal --append=quiet '>>/tmp/nb-options
+	echo -n 'vga=normal quiet '>>/tmp/nb-options
 	if [ $VERSION = "testing-expert" ];then
-		echo -n '--append=priority=low '>>/tmp/nb-options
+		echo -n 'priority=low '>>/tmp/nb-options
 	fi
 fi
 if [ $DISTRO = "debiandaily64" ];then
@@ -208,9 +206,9 @@ if [ $DISTRO = "debiandaily64" ];then
 	getversion
 	KERNELURL="http://d-i.debian.org/daily-images/amd64/daily/netboot/debian-installer/amd64/linux"
 	INITRDURL="http://d-i.debian.org/daily-images/amd64/daily/netboot/debian-installer/amd64/initrd.gz"
-	echo -n '--append=vga=normal --append=quiet '>>/tmp/nb-options
+	echo -n 'vga=normal quiet '>>/tmp/nb-options
 	if [ $VERSION = "testing-expert" ];then
-		echo -n '--append=priority=low '>>/tmp/nb-options
+		echo -n 'priority=low '>>/tmp/nb-options
 	fi
 fi
 if [ $DISTRO = "fedora" ];then
@@ -225,7 +223,7 @@ if [ $DISTRO = "fedora" ];then
 	dialog --inputbox "Where do you want to install Fedora from?" 8 70 "http://mirrors.kernel.org/fedora/$VERSION/i386/os/" 2>/tmp/nb-server
 	KERNELURL="$(cat /tmp/nb-server)/images/pxeboot/vmlinuz"
 	INITRDURL="$(cat /tmp/nb-server)/images/pxeboot/initrd.img"
-	echo -n "--append=inst.stage2=$(cat /tmp/nb-server)" >>/tmp/nb-options
+	echo -n "inst.stage2=$(cat /tmp/nb-server)" >>/tmp/nb-options
 	rm /tmp/nb-server
 fi
 if [ $DISTRO = "fedora64" ];then
@@ -240,7 +238,7 @@ if [ $DISTRO = "fedora64" ];then
 	dialog --inputbox "Where do you want to install Fedora from?" 8 70 "http://mirrors.kernel.org/fedora/$VERSION/x86_64/os/" 2>/tmp/nb-server
 	KERNELURL="$(cat /tmp/nb-server)/images/pxeboot/vmlinuz"
 	INITRDURL="$(cat /tmp/nb-server)/images/pxeboot/initrd.img"
-	echo -n "--append=inst.stage2=$(cat /tmp/nb-server)" >>/tmp/nb-options
+	echo -n "inst.stage2=$(cat /tmp/nb-server)" >>/tmp/nb-options
 	rm /tmp/nb-server
 fi
 if [ $DISTRO = "opensuse" ];then
@@ -259,10 +257,10 @@ if [ $DISTRO = "opensuse" ];then
 	KERNELURL="http://download.opensuse.org/$VERSION/repo/oss/boot/i386/loader/linux"
 	INITRDURL="http://download.opensuse.org/$VERSION/repo/oss/boot/i386/loader/initrd"
 	#These options are common to openSUSE.
-	echo -n '--append=splash=silent --append=showopts '>>/tmp/nb-options
+	echo -n 'splash=silent showopts '>>/tmp/nb-options
 	#Ask the user which server to use (the installer doesn't have a built-in list like Ubuntu and Debian do.)
 	dialog --inputbox "Where do you want to install openSUSE from?" 8 70 http://download.opensuse.org/$VERSION/repo/oss 2>/tmp/nb-server
-	echo -n "--append=install=$(cat /tmp/nb-server)" >>/tmp/nb-options
+	echo -n "install=$(cat /tmp/nb-server)" >>/tmp/nb-options
 	rm /tmp/nb-server
 fi
 if [ $DISTRO = "opensuse64" ];then
@@ -281,10 +279,10 @@ if [ $DISTRO = "opensuse64" ];then
 	KERNELURL="http://download.opensuse.org/$VERSION/repo/oss/boot/x86_64/loader/linux"
 	INITRDURL="http://download.opensuse.org/$VERSION/repo/oss/boot/x86_64/loader/initrd"
 	#These options are common to openSUSE.
-	echo -n '--append=splash=silent --append=showopts '>>/tmp/nb-options
+	echo -n 'splash=silent showopts '>>/tmp/nb-options
 	#Ask the user which server to use (the installer doesn't have a built-in list like Ubuntu and Debian do.)
 	dialog --inputbox "Where do you want to install openSUSE from?" 8 70 http://download.opensuse.org/$VERSION/repo/oss 2>/tmp/nb-server
-	echo -n "--append=install=$(cat /tmp/nb-server)" >>/tmp/nb-options
+	echo -n "install=$(cat /tmp/nb-server)" >>/tmp/nb-options
 	rm /tmp/nb-server
 fi
 if [ $DISTRO = "mageia" ];then
@@ -297,7 +295,7 @@ if [ $DISTRO = "mageia" ];then
 	getversion
 	KERNELURL="http://mirrors.kernel.org/mageia/distrib/$VERSION/i586/isolinux/i386/vmlinuz"
 	INITRDURL="http://mirrors.kernel.org/mageia/distrib/$VERSION/i586/isolinux/i386/all.rdz"
-	echo -n '--append=automatic=method:http' >>/tmp/nb-options
+	echo -n 'automatic=method:http' >>/tmp/nb-options
 fi
 if [ $DISTRO = "mageia64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
@@ -309,7 +307,7 @@ if [ $DISTRO = "mageia64" ];then
 	getversion
 	KERNELURL="http://mirrors.kernel.org/mageia/distrib/$VERSION/x86_64/isolinux/x86_64/vmlinuz"
 	INITRDURL="http://mirrors.kernel.org/mageia/distrib/$VERSION/x86_64/isolinux/x86_64/all.rdz"
-	echo -n '--append=automatic=method:http' >>/tmp/nb-options
+	echo -n 'automatic=method:http' >>/tmp/nb-options
 fi
 if [ $DISTRO = "rhel-type-7-64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
@@ -328,7 +326,7 @@ if [ $DISTRO = "rhel-type-7-64" ];then
 	SERVER=$(cat /tmp/nb-server)
 	KERNELURL="$SERVER/isolinux/vmlinuz"
 	INITRDURL="$SERVER/isolinux/initrd.img"
-	echo -n "--append=xdriver=vesa --append=nomodeset --append=repo=$(cat /tmp/nb-server)" >>/tmp/nb-options
+	echo -n "xdriver=vesa nomodeset repo=$(cat /tmp/nb-server)" >>/tmp/nb-options
 	rm /tmp/nb-server
 	askforopts
 fi
@@ -349,7 +347,7 @@ if [ $DISTRO = "rhel-type-6" ];then
 	SERVER=$(cat /tmp/nb-server)
 	KERNELURL="$SERVER/isolinux/vmlinuz"
 	INITRDURL="$SERVER/isolinux/initrd.img"
-	echo -n "--append=ide=nodma --append=method=$(cat /tmp/nb-server)" >>/tmp/nb-options
+	echo -n "ide=nodma method=$(cat /tmp/nb-server)" >>/tmp/nb-options
 	rm /tmp/nb-server
 	askforopts
 fi
@@ -370,7 +368,7 @@ if [ $DISTRO = "rhel-type-6-64" ];then
 	SERVER=$(cat /tmp/nb-server)
 	KERNELURL="$SERVER/isolinux/vmlinuz"
 	INITRDURL="$SERVER/isolinux/initrd.img"
-	echo -n "--append=ide=nodma --append=method=$(cat /tmp/nb-server)" >>/tmp/nb-options
+	echo -n "ide=nodma method=$(cat /tmp/nb-server)" >>/tmp/nb-options
 	rm /tmp/nb-server
 	askforopts
 fi
@@ -392,7 +390,7 @@ if [ $DISTRO = "rhel-type-5" ];then
 	SERVER=$(cat /tmp/nb-server)
 	KERNELURL="$SERVER/isolinux/vmlinuz"
 	INITRDURL="$SERVER/isolinux/initrd.img"
-	echo -n "--append=method=$(cat /tmp/nb-server)" >>/tmp/nb-options
+	echo -n "method=$(cat /tmp/nb-server)" >>/tmp/nb-options
 	rm /tmp/nb-server
 fi
 if [ $DISTRO = "rhel-type-5-64" ];then
@@ -413,7 +411,7 @@ if [ $DISTRO = "rhel-type-5-64" ];then
 	SERVER=$(cat /tmp/nb-server)
 	KERNELURL="$SERVER/isolinux/vmlinuz"
 	INITRDURL="$SERVER/isolinux/initrd.img"
-	echo -n "--append=method=$(cat /tmp/nb-server)" >>/tmp/nb-options
+	echo -n "method=$(cat /tmp/nb-server)" >>/tmp/nb-options
 	rm /tmp/nb-server
 fi
 if [ $DISTRO = "slackware" ];then
@@ -433,10 +431,8 @@ if [ $DISTRO = "slackware" ];then
 	rm /tmp/nb-kerntype
 	KERNELURL="http://slackware.cs.utah.edu/pub/slackware/$VERSION/kernels/$KERNTYPE/bzImage"
 	INITRDURL="http://slackware.cs.utah.edu/pub/slackware/$VERSION/isolinux/initrd.img"
-	echo -n "--append=load_ramdisk=1 --append=prompt_ramdisk=0 --append=rw --append=SLACK_KERNEL=$KERNTYPE" >>/tmp/nb-options
+	echo -n "load_ramdisk=1 prompt_ramdisk=0 rw SLACK_KERNEL=$KERNTYPE" >>/tmp/nb-options
 fi
-OPTIONS=$(cat /tmp/nb-options)
-rm /tmp/nb-options
 #Now download the kernel and initrd.
 wget $KERNELURL -O /tmp/nb-linux
 wget $INITRDURL -O /tmp/nb-initrd
@@ -506,26 +502,26 @@ elif [ $DISTRO = "slitaz" ];then
 		for i in 4 3 2 1;do
 			wget http://mirror.slitaz.org/boot/4.0/rootfs$i.gz -O - | /usr/local/bin/xz -cd >> /tmp/nb-initrd
 		done
-		OPTIONS="--append=rw --append=root=/dev/null --append=vga=normal --append=autologin"
+		echo -n "rw root=/dev/null vga=normal autologin" >>/tmp/nb-options
 	elif [ "$VERSION" = "4.0-text" ];then
 		wget http://mirror.slitaz.org/boot/4.0/bzImage -O /tmp/nb-linux
 		wget http://mirror.slitaz.org/boot/4.0/rootfs4.gz -O /tmp/nb-initrd
-		OPTIONS="--append=rw --append=root=/dev/null --append=vga=normal --append=autologin"
+		echo -n "rw root=/dev/null vga=normal autologin" >>/tmp/nb-options
 	elif [ "$VERSION" = "4.0-httpfs" ];then
 		wget http://mirror.slitaz.org/boot/4.0/bzImage -O /tmp/nb-linux
 		wget http://mirror.slitaz.org/boot/4.0/rootfstiny.gz -O /tmp/nb-initrd
-		OPTIONS="--append=rw --append=root=/dev/null --append=vga=normal --append=autologin"
+		echo -n "rw root=/dev/null vga=normal autologin" >>/tmp/nb-options
 	elif [ "$VERSION" = "vnc" ];then
 		wget http://mirror.slitaz.org/pxe/tiny/vnc/bzImage.gz -O /tmp/nb-linux
 		wget http://mirror.slitaz.org/pxe/tiny/vnc/rootfs.gz -O /tmp/nb-initrd
-		OPTIONS="--append=vga=ask"
+		echo -n "vga=ask" >>/tmp/nb-options
 	elif [ "$VERSION" = "5.0-rc3" ];then
 		wget http://mirror.slitaz.org/iso/5.0/slitaz-5.0-rc3.iso -O /tmp/slitaz.iso
 		mkdir /tmp/slitaz
 		mount -o loop /tmp/slitaz.iso /tmp/slitaz
 		ln -s /tmp/slitaz/boot/vmlinuz* /tmp/nb-linux
 		ln -s /tmp/slitaz/boot/rootfs.gz /tmp/nb-initrd
-		OPTIONS="--append=rw --append=root=/dev/null --append=autologin"
+		echo -n "rw root=/dev/null autologin" >>/tmp/nb-options
 	elif [ "$VERSION" = "rolling" ];then
 		sudo -u tc tce-load -wi xz
 		wget http://mirror.slitaz.org/iso/rolling/slitaz-rolling.iso -O /tmp/slitaz.iso
@@ -538,7 +534,7 @@ elif [ $DISTRO = "slitaz" ];then
 		for i in 4 3 2 1;do
 			cat /tmp/slitaz/boot/rootfs$i.gz | /usr/local/bin/xz --single-stream -cd >> /tmp/nb-initrd
 		done
-		OPTIONS="--append=rw --append=root=/dev/null --append=video=-32 --append=autologin"
+		echo -n "rw root=/dev/null video=-32 autologin" >>/tmp/nb-options
 	fi
 elif [ $DISTRO = "core" ] || [ $DISTRO = "tinycore" ] || [ $DISTRO = "firefox" ] || [ $DISTRO = "gparted" ];then
 	if [ "$VERSION" == "64" ];then
@@ -613,6 +609,7 @@ if [ $MAINMENU = quit ];then
 fi
 #We are going to need /tmp/nb-options empty later.
 true>/tmp/nb-options
+true>/tmp/nb-custom
 if [ $MAINMENU = "download" ];then
 	su -c "tce-load -wi openssl" tc
 	downloadandrun https://raw.githubusercontent.com/IsaacSchemm/netbootcd/master/nbscript.sh || downloadandrun http://netbootcd.us/downloads/nbscript.sh
@@ -661,8 +658,8 @@ if [ $DISTRO = "rhel-type-5" ];then
 fi
 #This checks to make sure you are indeed on a TCB system.
 if [ -d /home/tc ];then
-	echo kexec $ARGS
-	kexec $ARGS
+	echo kexec $ARGS --command-line="$(cat /tmp/nb-options) $(cat /tmp/nb-custom)"
+	kexec $ARGS --command-line="$(cat /tmp/nb-options) $(cat /tmp/nb-custom)"
 	sleep 5
 	sync
 	kexec -e
