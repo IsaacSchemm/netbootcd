@@ -446,6 +446,7 @@ grub4dos "GRUB4DOS - a versitle bootloader that can be loaded from kexec" \
 slitaz "SliTaz" \
 core "Core 7.x" \
 tinycore "Core 7.x (add TinyCore packages: Xvesa Xlibs Xprogs aterm flwm_topside wbar)" \
+dillo "Core 7.x (TinyCore plus: dillo)" \
 firefox "Core 7.x (TinyCore plus: firefox-ESR)" \
 gparted "Core 7.x (TinyCore plus: gparted ntfsprogs dosfstools reiserfsprogs e2fsprogs xfsprogs)" 2>/tmp/nb-distro
 #Read their choice, save it, and delete the old file
@@ -536,8 +537,8 @@ elif [ $DISTRO = "slitaz" ];then
 		done
 		echo -n "rw root=/dev/null video=-32 autologin" >>/tmp/nb-options
 	fi
-elif [ $DISTRO = "core" ] || [ $DISTRO = "tinycore" ] || [ $DISTRO = "firefox" ] || [ $DISTRO = "gparted" ];then
-	if [ $DISTRO = "tinycore" ] || [ $DISTRO = "firefox" ] || [ $DISTRO = "gparted" ];then
+elif [ $DISTRO = "core" ] || [ $DISTRO = "tinycore" ] || [ $DISTRO = "dillo" ] || [ $DISTRO = "firefox" ] || [ $DISTRO = "gparted" ];then
+	if [ $DISTRO != "core" ];then
 		echo flwm_topside > /tmp/nb-wm
 		dialog --backtitle "$TITLE" --menu "Choose a window manager:" 20 70 13 \
 			flwm_topside "FLWM topside" \
@@ -557,7 +558,7 @@ elif [ $DISTRO = "core" ] || [ $DISTRO = "tinycore" ] || [ $DISTRO = "firefox" ]
 		wget http://tinycorelinux.net/7.x/x86/release/distribution_files/vmlinuz -O /tmp/nb-linux
 		wget http://tinycorelinux.net/7.x/x86/release/distribution_files/core.gz -O /tmp/nb-initrd
 	fi
-	if [ $DISTRO = "tinycore" ] || [ $DISTRO = "firefox" ] || [ $DISTRO = "gparted" ];then
+	if [ $DISTRO != "core" ];then
 		mkdir -p /tmp/build
 		cd /tmp/build
 		gzip -cd /tmp/nb-initrd | cpio -id
@@ -576,6 +577,9 @@ elif [ $DISTRO = "core" ] || [ $DISTRO = "tinycore" ] || [ $DISTRO = "firefox" ]
 		done
 		if [ $DISTRO = "firefox" ];then
 			echo "tce-load -wi firefox-ESR" >> script.sh
+		fi
+		if [ $DISTRO = "dillo" ];then
+			echo "tce-load -wi dillo" >> script.sh
 		fi
 		if [ $DISTRO = "gparted" ];then
 			for i in gparted ntfsprogs dosfstools reiserfsprogs e2fsprogs xfsprogs;do
