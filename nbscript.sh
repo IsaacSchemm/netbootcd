@@ -569,10 +569,10 @@ elif [ $DISTRO = "core" ] || [ $DISTRO = "tinycore" ] || [ $DISTRO = "firefox" ]
 			echo "tce-load -wi firefox-ESR" >> script.sh
 		fi
 		if [ $DISTRO = "gparted" ];then
-			OPTIONS="--append=noswap"
 			for i in gparted ntfsprogs dosfstools reiserfsprogs e2fsprogs xfsprogs;do
 				echo "tce-load -wi $i" >> script.sh
 			done
+			echo "sudo swapoff -a" >> script.sh
 		fi
 		chmod +x script.sh
 		echo "/script.sh && startx" >> etc/skel/.profile
