@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-## nbscript.sh 7.1.1 - Download netboot images and launch them with kexec
+## nbscript.sh 7.1.2 - Download netboot images and launch them with kexec
 ## Copyright (C) 2016 Isaac Schemm <isaacschemm@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
@@ -506,26 +506,26 @@ elif [ $DISTRO = "slitaz" ];then
 		for i in 4 3 2 1;do
 			wget http://mirror.slitaz.org/boot/4.0/rootfs$i.gz -O - | /usr/local/bin/xz -cd >> /tmp/nb-initrd
 		done
-		echo -n "--append=rw --append=root=/dev/null --append=vga=normal --append=autologin" >>/tmp/nb-options
+		OPTIONS="--append=rw --append=root=/dev/null --append=vga=normal --append=autologin"
 	elif [ "$VERSION" = "4.0-text" ];then
 		wget http://mirror.slitaz.org/boot/4.0/bzImage -O /tmp/nb-linux
 		wget http://mirror.slitaz.org/boot/4.0/rootfs4.gz -O /tmp/nb-initrd
-		echo -n "--append=rw --append=root=/dev/null --append=vga=normal --append=autologin" >>/tmp/nb-options
+		OPTIONS="--append=rw --append=root=/dev/null --append=vga=normal --append=autologin"
 	elif [ "$VERSION" = "4.0-httpfs" ];then
 		wget http://mirror.slitaz.org/boot/4.0/bzImage -O /tmp/nb-linux
 		wget http://mirror.slitaz.org/boot/4.0/rootfstiny.gz -O /tmp/nb-initrd
-		echo -n "--append=rw --append=root=/dev/null --append=vga=normal --append=autologin" >>/tmp/nb-options
+		OPTIONS="--append=rw --append=root=/dev/null --append=vga=normal --append=autologin"
 	elif [ "$VERSION" = "vnc" ];then
 		wget http://mirror.slitaz.org/pxe/tiny/vnc/bzImage.gz -O /tmp/nb-linux
 		wget http://mirror.slitaz.org/pxe/tiny/vnc/rootfs.gz -O /tmp/nb-initrd
-		echo -n "--append=vga=ask" >>/tmp/nb-options
+		OPTIONS="--append=vga=ask"
 	elif [ "$VERSION" = "5.0-rc3" ];then
 		wget http://mirror.slitaz.org/iso/5.0/slitaz-5.0-rc3.iso -O /tmp/slitaz.iso
 		mkdir /tmp/slitaz
 		mount -o loop /tmp/slitaz.iso /tmp/slitaz
 		ln -s /tmp/slitaz/boot/vmlinuz* /tmp/nb-linux
 		ln -s /tmp/slitaz/boot/rootfs.gz /tmp/nb-initrd
-		echo -n "--append=rw --append=root=/dev/null --append=autologin" >>/tmp/nb-options
+		OPTIONS="--append=rw --append=root=/dev/null --append=autologin"
 	elif [ "$VERSION" = "rolling" ];then
 		sudo -u tc tce-load -wi xz
 		wget http://mirror.slitaz.org/iso/rolling/slitaz-rolling.iso -O /tmp/slitaz.iso
@@ -538,7 +538,7 @@ elif [ $DISTRO = "slitaz" ];then
 		for i in 4 3 2 1;do
 			cat /tmp/slitaz/boot/rootfs$i.gz | /usr/local/bin/xz --single-stream -cd >> /tmp/nb-initrd
 		done
-		echo -n "--append=rw --append=root=/dev/null --append=video=-32 --append=autologin" >>/tmp/nb-options
+		OPTIONS="--append=rw --append=root=/dev/null --append=video=-32 --append=autologin"
 	fi
 elif [ $DISTRO = "core" ] || [ $DISTRO = "tinycore" ] || [ $DISTRO = "firefox" ] || [ $DISTRO = "gparted" ];then
 	if [ "$VERSION" == "64" ];then
