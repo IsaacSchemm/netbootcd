@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-## nbscript.sh 7.1.3 - Download netboot images and launch them with kexec
+## nbscript.sh 7.2 - Download netboot images and launch them with kexec
 ## Copyright (C) 2016 Isaac Schemm <isaacschemm@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 7.1.3 - July 9, 2016"
+TITLE="NetbootCD Script 7.2 - July 10, 2016"
 
 getversion ()
 {
@@ -577,15 +577,18 @@ elif [ $DISTRO = "core" ] || [ $DISTRO = "tinycore" ] || [ $DISTRO = "dillo" ] |
 		done
 		if [ $DISTRO = "firefox" ];then
 			echo "tce-load -wi firefox-ESR" >> script.sh
+			echo "sed -i -e 's/WM_PID=\$!$/WM_PID=$!\nfirefox \&/g' .xsession" >> script.sh
 		fi
 		if [ $DISTRO = "dillo" ];then
 			echo "tce-load -wi dillo" >> script.sh
+			echo "sed -i -e 's/WM_PID=\$!$/WM_PID=$!\ndillo \&/g' .xsession" >> script.sh
 		fi
 		if [ $DISTRO = "gparted" ];then
 			for i in gparted ntfsprogs dosfstools reiserfsprogs e2fsprogs xfsprogs;do
 				echo "tce-load -wi $i" >> script.sh
 			done
 			echo "sudo swapoff -a" >> script.sh
+			echo "sed -i -e 's/WM_PID=\$!$/WM_PID=$!\nsudo gparted \&/g' .xsession" >> script.sh
 		fi
 		chmod +x script.sh
 		echo "/script.sh && startx" >> etc/skel/.profile
