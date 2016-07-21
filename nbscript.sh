@@ -244,7 +244,6 @@ fi
 if [ $DISTRO = "opensuse" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
 	tumbleweed "openSUSE Tumbleweed" \
-	leap/42.1 "openSUSE Leap 42.1" \
 	13.2 "openSUSE 13.2" \
 	13.1 "openSUSE 13.1" \
 	12.3 "openSUSE 12.3" \
