@@ -1,5 +1,5 @@
 #!/bin/sh
-#Build.sh 7.2 for netbootcd
+#Build.sh 7.2.1 for netbootcd
 
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License
@@ -28,7 +28,7 @@ NBINIT2=${WORK}/nbinit2 #for floppy
 
 #Set to false to not build floppy images
 FLOPPY=true
-NBCDVER=7.2
+NBCDVER=7.2.1
 COREVER=7.2
 
 if [ ! -f CorePlus-$COREVER.iso ];then
