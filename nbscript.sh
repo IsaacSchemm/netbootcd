@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 7.2 - July 10, 2016"
+TITLE="NetbootCD Script 7.2.1 - October 26, 2016"
 
 getversion ()
 {
@@ -114,8 +114,8 @@ rm /tmp/nb-distro
 if [ $DISTRO = "ubuntu" ];then
 	#Ask about version
 	dialog --menu "Choose a system to install:" 20 70 13 \
+	yakkety "Ubuntu 16.10" \
 	xenial "Ubuntu 16.04 LTS" \
-	wily "Ubuntu 15.10" \
 	trusty "Ubuntu 14.04 LTS" \
 	precise "Ubuntu 12.04 LTS" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
@@ -141,8 +141,8 @@ fi
 if [ $DISTRO = "ubuntu64" ];then
 	#Ask about version
 	dialog --menu "Choose a system to install:" 20 70 13 \
+	yakkety "Ubuntu 16.10" \
 	xenial "Ubuntu 16.04 LTS" \
-	wily "Ubuntu 15.10" \
 	trusty "Ubuntu 14.04 LTS" \
 	precise "Ubuntu 12.04 LTS" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
@@ -213,9 +213,8 @@ if [ $DISTRO = "debiandaily64" ];then
 fi
 if [ $DISTRO = "fedora" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	releases/24/Server "Fedora 24" \
 	releases/23/Server "Fedora 23" \
-	releases/22/Server "Fedora 22" \
-	releases/21/Server "Fedora 21" \
 	development/rawhide "Rawhide" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
@@ -228,9 +227,8 @@ if [ $DISTRO = "fedora" ];then
 fi
 if [ $DISTRO = "fedora64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	releases/24/Server "Fedora 24" \
 	releases/23/Server "Fedora 23" \
-	releases/22/Server "Fedora 22" \
-	releases/21/Server "Fedora 21" \
 	development/rawhide "Rawhide" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
@@ -246,7 +244,6 @@ if [ $DISTRO = "opensuse" ];then
 	tumbleweed "openSUSE Tumbleweed" \
 	13.2 "openSUSE 13.2" \
 	13.1 "openSUSE 13.1" \
-	12.3 "openSUSE 12.3" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
 	#All versions of openSUSE are in the "distribution" folder, except for factory/tumbleweed.
@@ -269,7 +266,6 @@ if [ $DISTRO = "opensuse64" ];then
 	leap/42.1 "openSUSE Leap 42.1" \
 	13.2 "openSUSE 13.2" \
 	13.1 "openSUSE 13.1" \
-	12.3 "openSUSE 12.3" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
 	#All versions of openSUSE are in the "distribution" folder, except for factory/tumbleweed.
@@ -418,8 +414,8 @@ if [ $DISTRO = "slackware" ];then
 	SLACKASK="Slackware can't be installed from a web server.\nContinue?"
 	if ! dialog --yesno "$SLACKASK" 0 0;then exec $0 $*;fi #Go back to main menu if no
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
-	slackware-14.1 "Slackware 14.1 (32-bit)" \
-	slackware64-14.1 "Slackware 14.1 (64-bit)" \
+	slackware-14.2 "Slackware 14.2 (32-bit)" \
+	slackware64-14.2 "Slackware 14.2 (64-bit)" \
 	slackware-current "Slackware current (32-bit)" \
 	slackware64-current "Slackware current (64-bit)" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
