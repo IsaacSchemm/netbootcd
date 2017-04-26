@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
-## nbscript.sh 7.2 - Download netboot images and launch them with kexec
-## Copyright (C) 2016 Isaac Schemm <isaacschemm@gmail.com>
+## nbscript.sh 7.2.2 - Download netboot images and launch them with kexec
+## Copyright (C) 2017 Isaac Schemm <isaacschemm@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License
@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 7.2.1 - October 26, 2016"
+TITLE="NetbootCD Script 7.2.2 - April 26, 2017"
 
 getversion ()
 {
@@ -114,6 +114,7 @@ rm /tmp/nb-distro
 if [ $DISTRO = "ubuntu" ];then
 	#Ask about version
 	dialog --menu "Choose a system to install:" 20 70 13 \
+	zesty "Ubuntu 17.04" \
 	yakkety "Ubuntu 16.10" \
 	xenial "Ubuntu 16.04 LTS" \
 	trusty "Ubuntu 14.04 LTS" \
@@ -141,6 +142,7 @@ fi
 if [ $DISTRO = "ubuntu64" ];then
 	#Ask about version
 	dialog --menu "Choose a system to install:" 20 70 13 \
+	zesty "Ubuntu 17.04" \
 	yakkety "Ubuntu 16.10" \
 	xenial "Ubuntu 16.04 LTS" \
 	trusty "Ubuntu 14.04 LTS" \
@@ -213,6 +215,7 @@ if [ $DISTRO = "debiandaily64" ];then
 fi
 if [ $DISTRO = "fedora" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	releases/25/Server "Fedora 25" \
 	releases/24/Server "Fedora 24" \
 	releases/23/Server "Fedora 23" \
 	development/rawhide "Rawhide" \
@@ -227,6 +230,7 @@ if [ $DISTRO = "fedora" ];then
 fi
 if [ $DISTRO = "fedora64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	releases/25/Server "Fedora 25" \
 	releases/24/Server "Fedora 24" \
 	releases/23/Server "Fedora 23" \
 	development/rawhide "Rawhide" \
