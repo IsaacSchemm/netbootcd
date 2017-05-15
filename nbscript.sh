@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-## nbscript.sh 7.2.2 - Download netboot images and launch them with kexec
+## nbscript.sh 7.2.3 - Download netboot images and launch them with kexec
 ## Copyright (C) 2017 Isaac Schemm <isaacschemm@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 7.2.2 - April 26, 2017"
+TITLE="NetbootCD Script 7.2.3 - May 15, 2017"
 
 getversion ()
 {
@@ -266,10 +266,9 @@ fi
 if [ $DISTRO = "opensuse64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
 	tumbleweed "openSUSE Tumbleweed" \
+	leap/42.3 "openSUSE Leap 42.3" \
 	leap/42.2 "openSUSE Leap 42.2" \
-	leap/42.1 "openSUSE Leap 42.1" \
 	13.2 "openSUSE 13.2" \
-	13.1 "openSUSE 13.1" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
 	#All versions of openSUSE are in the "distribution" folder, except for factory/tumbleweed.
