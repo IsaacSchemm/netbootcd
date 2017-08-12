@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 7.2.3 - August 12, 2017"
+TITLE="NetbootCD Script 7.2.4 - August 12, 2017"
 
 getversion ()
 {
@@ -443,11 +443,11 @@ utilsmenu ()
 dialog --backtitle "$TITLE" --menu "Choose a utility:" 20 70 13 \
 grub4dos "GRUB4DOS - a versitle bootloader that can be loaded from kexec" \
 slitaz "SliTaz" \
-core "Core 7.x" \
-tinycore "Core 7.x (add TinyCore packages: Xvesa Xlibs Xprogs aterm flwm_topside wbar)" \
-dillo "Core 7.x (TinyCore plus: dillo)" \
-firefox "Core 7.x (TinyCore plus: firefox-ESR)" \
-gparted "Core 7.x (TinyCore plus: gparted ntfsprogs dosfstools reiserfsprogs e2fsprogs xfsprogs)" 2>/tmp/nb-distro
+core "Core 8.x" \
+tinycore "Core 8.x (add TinyCore packages: Xvesa Xlibs Xprogs aterm flwm_topside wbar)" \
+dillo "Core 8.x (TinyCore plus: dillo)" \
+firefox "Core 8.x (TinyCore plus: firefox-ESR)" \
+gparted "Core 8.x (TinyCore plus: gparted ntfsprogs dosfstools reiserfsprogs e2fsprogs xfsprogs)" 2>/tmp/nb-distro
 #Read their choice, save it, and delete the old file
 DISTRO=$(cat /tmp/nb-distro)
 rm /tmp/nb-distro
@@ -470,8 +470,8 @@ elif [ $DISTRO = "slitaz" ];then
 	getversion
 else
 	dialog --backtitle "$TITLE" --menu "Choose a version to download:" 20 70 13 \
-	32 "Core 7.x - 32-bit" \
-	64 "Core 7.x - 64-bit" 2>/tmp/nb-version
+	32 "Core 8.x - 32-bit" \
+	64 "Core 8.x - 64-bit" 2>/tmp/nb-version
 	getversion
 fi
 if [ $DISTRO != "grub4dos" ];then
@@ -551,11 +551,11 @@ elif [ $DISTRO = "core" ] || [ $DISTRO = "tinycore" ] || [ $DISTRO = "dillo" ] |
 			pekwm "pekwm" 2>/tmp/nb-wm
 	fi
 	if [ "$VERSION" == "64" ];then
-		wget http://tinycorelinux.net/7.x/x86/release/distribution_files/vmlinuz64 -O /tmp/nb-linux
-		wget http://tinycorelinux.net/7.x/x86/release/distribution_files/corepure64.gz -O /tmp/nb-initrd
+		wget http://tinycorelinux.net/8.x/x86_64/release/distribution_files/vmlinuz64 -O /tmp/nb-linux
+		wget http://tinycorelinux.net/8.x/x86_64/release/distribution_files/corepure64.gz -O /tmp/nb-initrd
 	else
-		wget http://tinycorelinux.net/7.x/x86/release/distribution_files/vmlinuz -O /tmp/nb-linux
-		wget http://tinycorelinux.net/7.x/x86/release/distribution_files/core.gz -O /tmp/nb-initrd
+		wget http://tinycorelinux.net/8.x/x86/release/distribution_files/vmlinuz -O /tmp/nb-linux
+		wget http://tinycorelinux.net/8.x/x86/release/distribution_files/core.gz -O /tmp/nb-initrd
 	fi
 	if [ $DISTRO != "core" ];then
 		mkdir -p /tmp/build
@@ -571,7 +571,8 @@ elif [ $DISTRO = "core" ] || [ $DISTRO = "tinycore" ] || [ $DISTRO = "dillo" ] |
 			wget -q --spider http://www.example.com > /dev/null
 		done
 		echo > /tmp/internet-is-up' > script.sh
-		for i in Xvesa Xlibs Xprogs aterm wbar $(cat /tmp/nb-wm);do # xbase.lst from CorePlus-6.1
+		echo "tce-load Xvesa || tce-load Xorg-7.7" >> script.sh
+		for i in Xlibs Xprogs aterm wbar $(cat /tmp/nb-wm);do # xbase.lst from CorePlus-6.1
 			echo "tce-load -wi $i" >> script.sh
 		done
 		if [ $DISTRO = "firefox" ];then
