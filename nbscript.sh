@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-## nbscript.sh 7.2.3 - Download netboot images and launch them with kexec
+## nbscript.sh 7.2.4 - Download netboot images and launch them with kexec
 ## Copyright (C) 2017 Isaac Schemm <isaacschemm@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 7.2.3 - May 15, 2017"
+TITLE="NetbootCD Script 7.2.3 - August 12, 2017"
 
 getversion ()
 {
@@ -215,9 +215,9 @@ if [ $DISTRO = "debiandaily64" ];then
 fi
 if [ $DISTRO = "fedora" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	releases/26/Server "Fedora 26" \
 	releases/25/Server "Fedora 25" \
 	releases/24/Server "Fedora 24" \
-	releases/23/Server "Fedora 23" \
 	development/rawhide "Rawhide" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
@@ -230,9 +230,9 @@ if [ $DISTRO = "fedora" ];then
 fi
 if [ $DISTRO = "fedora64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	releases/26/Server "Fedora 26" \
 	releases/25/Server "Fedora 25" \
 	releases/24/Server "Fedora 24" \
-	releases/23/Server "Fedora 23" \
 	development/rawhide "Rawhide" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
@@ -286,9 +286,9 @@ if [ $DISTRO = "opensuse64" ];then
 fi
 if [ $DISTRO = "mageia" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	6 "Mageia 6" \
 	5 "Mageia 5" \
 	4 "Mageia 4" \
-	3 "Mageia 3" \
 	cauldron "Mageia cauldron" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
@@ -298,9 +298,9 @@ if [ $DISTRO = "mageia" ];then
 fi
 if [ $DISTRO = "mageia64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	6 "Mageia 6" \
 	5 "Mageia 5" \
 	4 "Mageia 4" \
-	3 "Mageia 3" \
 	cauldron "Mageia cauldron" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
