@@ -571,7 +571,7 @@ elif [ $DISTRO = "core" ] || [ $DISTRO = "tinycore" ] || [ $DISTRO = "dillo" ] |
 			wget -q --spider http://www.example.com > /dev/null
 		done
 		echo > /tmp/internet-is-up' > script.sh
-		echo "tce-load Xvesa || tce-load Xorg-7.7" >> script.sh
+		echo "tce-load -wi Xvesa || tce-load -wi Xorg-7.7" >> script.sh
 		for i in Xlibs Xprogs aterm wbar $(cat /tmp/nb-wm);do # xbase.lst from CorePlus-6.1
 			echo "tce-load -wi $i" >> script.sh
 		done
