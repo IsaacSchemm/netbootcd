@@ -246,8 +246,6 @@ fi
 if [ $DISTRO = "opensuse" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
 	tumbleweed "openSUSE Tumbleweed" \
-	13.2 "openSUSE 13.2" \
-	13.1 "openSUSE 13.1" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
 	#All versions of openSUSE are in the "distribution" folder, except for factory/tumbleweed.
@@ -266,8 +264,8 @@ fi
 if [ $DISTRO = "opensuse64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
 	tumbleweed "openSUSE Tumbleweed" \
+	leap/15.0 "openSUSE Leap 15.0" \
 	leap/42.3 "openSUSE Leap 42.3" \
-	leap/42.2 "openSUSE Leap 42.2" \
 	13.2 "openSUSE 13.2" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
