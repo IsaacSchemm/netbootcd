@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 7.2.4 - August 12, 2017"
+TITLE="NetbootCD Script 7.2.5 - December 18, 2017"
 
 getversion ()
 {
@@ -114,11 +114,10 @@ rm /tmp/nb-distro
 if [ $DISTRO = "ubuntu" ];then
 	#Ask about version
 	dialog --menu "Choose a system to install:" 20 70 13 \
+	artful "Ubuntu 17.10" \
 	zesty "Ubuntu 17.04" \
-	yakkety "Ubuntu 16.10" \
 	xenial "Ubuntu 16.04 LTS" \
 	trusty "Ubuntu 14.04 LTS" \
-	precise "Ubuntu 12.04 LTS" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	#Run the getversion() function above
 	getversion
@@ -142,11 +141,10 @@ fi
 if [ $DISTRO = "ubuntu64" ];then
 	#Ask about version
 	dialog --menu "Choose a system to install:" 20 70 13 \
+	artful "Ubuntu 17.10" \
 	zesty "Ubuntu 17.04" \
-	yakkety "Ubuntu 16.10" \
 	xenial "Ubuntu 16.04 LTS" \
 	trusty "Ubuntu 14.04 LTS" \
-	precise "Ubuntu 12.04 LTS" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	#Run the getversion() function above
 	getversion
