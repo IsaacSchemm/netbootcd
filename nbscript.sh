@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
-## nbscript.sh 7.2.4 - Download netboot images and launch them with kexec
-## Copyright (C) 2017 Isaac Schemm <isaacschemm@gmail.com>
+## nbscript.sh 7.2.6 - Download netboot images and launch them with kexec
+## Copyright (C) 2018 Isaac Schemm <isaacschemm@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License
@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 7.2.5 - December 18, 2017"
+TITLE="NetbootCD Script 7.2.6 - March 16, 2018"
 
 getversion ()
 {
@@ -114,8 +114,8 @@ rm /tmp/nb-distro
 if [ $DISTRO = "ubuntu" ];then
 	#Ask about version
 	dialog --menu "Choose a system to install:" 20 70 13 \
+	bionic "Ubuntu 18.04 (released Apirl 2018)" \
 	artful "Ubuntu 17.10" \
-	zesty "Ubuntu 17.04" \
 	xenial "Ubuntu 16.04 LTS" \
 	trusty "Ubuntu 14.04 LTS" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
@@ -141,8 +141,8 @@ fi
 if [ $DISTRO = "ubuntu64" ];then
 	#Ask about version
 	dialog --menu "Choose a system to install:" 20 70 13 \
+	bionic "Ubuntu 18.04 (released Apirl 2018)" \
 	artful "Ubuntu 17.10" \
-	zesty "Ubuntu 17.04" \
 	xenial "Ubuntu 16.04 LTS" \
 	trusty "Ubuntu 14.04 LTS" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
@@ -213,10 +213,7 @@ if [ $DISTRO = "debiandaily64" ];then
 fi
 if [ $DISTRO = "fedora" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
-	releases/26/Server "Fedora 26" \
 	releases/25/Server "Fedora 25" \
-	releases/24/Server "Fedora 24" \
-	development/rawhide "Rawhide" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
 	#Ask the user which server to use (the installer doesn't have a built-in list like Ubuntu and Debian do.)
@@ -228,9 +225,9 @@ if [ $DISTRO = "fedora" ];then
 fi
 if [ $DISTRO = "fedora64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	releases/27/Server "Fedora 27" \
 	releases/26/Server "Fedora 26" \
 	releases/25/Server "Fedora 25" \
-	releases/24/Server "Fedora 24" \
 	development/rawhide "Rawhide" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
@@ -264,7 +261,6 @@ if [ $DISTRO = "opensuse64" ];then
 	tumbleweed "openSUSE Tumbleweed" \
 	leap/15.0 "openSUSE Leap 15.0" \
 	leap/42.3 "openSUSE Leap 42.3" \
-	13.2 "openSUSE 13.2" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
 	#All versions of openSUSE are in the "distribution" folder, except for factory/tumbleweed.
@@ -439,11 +435,11 @@ utilsmenu ()
 dialog --backtitle "$TITLE" --menu "Choose a utility:" 20 70 13 \
 grub4dos "GRUB4DOS - a versitle bootloader that can be loaded from kexec" \
 slitaz "SliTaz" \
-core "Core 8.x" \
-tinycore "Core 8.x (add TinyCore packages: Xvesa Xlibs Xprogs aterm flwm_topside wbar)" \
-dillo "Core 8.x (TinyCore plus: dillo)" \
-firefox "Core 8.x (TinyCore plus: firefox-ESR)" \
-gparted "Core 8.x (TinyCore plus: gparted ntfsprogs dosfstools reiserfsprogs e2fsprogs xfsprogs)" 2>/tmp/nb-distro
+core "Core 9.x" \
+tinycore "Core 9.x (add TinyCore packages: Xvesa Xlibs Xprogs aterm flwm_topside wbar)" \
+dillo "Core 9.x (TinyCore plus: dillo)" \
+firefox "Core 9.x (TinyCore plus: firefox-ESR)" \
+gparted "Core 9.x (TinyCore plus: gparted ntfsprogs dosfstools reiserfsprogs e2fsprogs xfsprogs)" 2>/tmp/nb-distro
 #Read their choice, save it, and delete the old file
 DISTRO=$(cat /tmp/nb-distro)
 rm /tmp/nb-distro
@@ -466,8 +462,8 @@ elif [ $DISTRO = "slitaz" ];then
 	getversion
 else
 	dialog --backtitle "$TITLE" --menu "Choose a version to download:" 20 70 13 \
-	32 "Core 8.x - 32-bit" \
-	64 "Core 8.x - 64-bit" 2>/tmp/nb-version
+	32 "Core 9.x - 32-bit" \
+	64 "Core 9.x - 64-bit" 2>/tmp/nb-version
 	getversion
 fi
 if [ $DISTRO != "grub4dos" ];then
@@ -547,11 +543,11 @@ elif [ $DISTRO = "core" ] || [ $DISTRO = "tinycore" ] || [ $DISTRO = "dillo" ] |
 			pekwm "pekwm" 2>/tmp/nb-wm
 	fi
 	if [ "$VERSION" == "64" ];then
-		wget http://tinycorelinux.net/8.x/x86_64/release/distribution_files/vmlinuz64 -O /tmp/nb-linux
-		wget http://tinycorelinux.net/8.x/x86_64/release/distribution_files/corepure64.gz -O /tmp/nb-initrd
+		wget http://tinycorelinux.net/9.x/x86_64/release/distribution_files/vmlinuz64 -O /tmp/nb-linux
+		wget http://tinycorelinux.net/9.x/x86_64/release/distribution_files/corepure64.gz -O /tmp/nb-initrd
 	else
-		wget http://tinycorelinux.net/8.x/x86/release/distribution_files/vmlinuz -O /tmp/nb-linux
-		wget http://tinycorelinux.net/8.x/x86/release/distribution_files/core.gz -O /tmp/nb-initrd
+		wget http://tinycorelinux.net/9.x/x86/release/distribution_files/vmlinuz -O /tmp/nb-linux
+		wget http://tinycorelinux.net/9.x/x86/release/distribution_files/core.gz -O /tmp/nb-initrd
 	fi
 	if [ $DISTRO != "core" ];then
 		mkdir -p /tmp/build
