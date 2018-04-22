@@ -38,7 +38,7 @@ fi
 NO=0
 for i in CorePlus-$COREVER.iso \
 nbscript.sh tc-config.diff kexec.tgz \
-grub.exe ipxe.krn \
+grub.exe \
 dialog.tcz ncurses.tcz \
 disksplit.sh;do
 	if [ ! -e $i ];then
@@ -256,7 +256,6 @@ cp ${TCISO}/boot/isolinux/menu.c32 ${WORK}/iso/boot/isolinux #get menu.c32 from 
 for i in vmlinuz nbinit4.gz;do
 	cp ${DONE}/$i ${WORK}/iso/boot
 done
-cp ipxe.krn ${WORK}/iso/boot/ipxe
 cp grub.exe ${WORK}/iso/boot
 
 echo "DEFAULT menu.c32
@@ -274,11 +273,6 @@ menu default
 kernel /boot/vmlinuz
 initrd /boot/nbinit4.gz
 append quiet
-
-LABEL ipxe-nbcd
-MENU LABEL Download and run newest NetbootCD (and other options)
-kernel /boot/ipxe
-append dhcp && chain http://netbootcd.us/downloads/script.ipxe
 
 LABEL grub4dos
 menu label ^GRUB4DOS 0.4.6a-2018-04-11
@@ -474,11 +468,6 @@ KERNEL /boot/vmlinuz
 APPEND initrd=/boot/core.gz loglevel=3 waitusb=5
 
 MENU END
-
-LABEL ipxe-nbcd
-MENU LABEL Download and run newest NetbootCD (and other options)
-kernel /boot/ipxe
-append dhcp && chain http://netbootcd.us/downloads/script.ipxe
 
 LABEL grub4dos
 menu label ^GRUB4DOS 0.4.6a-2018-04-11

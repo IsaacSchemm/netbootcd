@@ -46,18 +46,11 @@ mkdir $TMPDIR/1
 
 tar -xvf dosfiles.tar.gz -C $TMPDIR/1
 cp grldr $TMPDIR/1
-cp ipxe.krn $TMPDIR/1/ipxe
 echo "default 0
 timeout 10
 
 title Load NetbootCD from multi-disk set (or run FreeDOS)
-chainloader (fd0)/kernel.sys
-
-title Download newest NetbootCD
-kernel (fd0)/ipxe dhcp \&\& chain http://netbootcd.us/downloads/script.ipxe
-
-title Load menu from boot.netboot.xyz
-kernel (fd0)/ipxe dhcp \&\& chain https://boot.netboot.xyz" > $TMPDIR/1/menu.lst
+chainloader (fd0)/kernel.sys" > $TMPDIR/1/menu.lst
 echo "DEVICE=HIMEMX.EXE
 LASTDRIVE=Z" > $TMPDIR/1/fdconfig.sys
 echo "@ECHO OFF
