@@ -281,7 +281,7 @@ kernel /boot/ipxe
 append dhcp && chain http://netbootcd.us/downloads/script.ipxe
 
 LABEL grub4dos
-menu label ^GRUB4DOS 0.4.6a-2016-05-18
+menu label ^GRUB4DOS 0.4.6a-2018-04-11
 kernel /boot/grub.exe
 " >> ${WORK}/iso/boot/isolinux/isolinux.cfg
 
