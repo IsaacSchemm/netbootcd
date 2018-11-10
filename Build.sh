@@ -184,19 +184,6 @@ if $FLOPPY;then
 	echo "Made smaller floppy initrd:" $(wc -c ${DONE}/nbflop4.gz)
 fi
 
-#change background
-if [ -f nbcd-bg.png ];then
-	mkdir -p ${NBINIT}/usr/local/share/pixmaps/
-	cp nbcd-bg.png ${NBINIT}/usr/local/share/pixmaps/
-	echo "#!/bin/sh
-	hsetroot -add \"#25972d\" -add \"#a2c18f\" -gradient 0 -center /usr/local/share/pixmaps/nbcd-bg.png
-	" > ${NBINIT}/etc/skel/.set-nbcd-background
-	chmod +x ${NBINIT}/etc/skel/.set-nbcd-background
-	sed -i -e 's/startx/mv -f .set-nbcd-background .setbackground\nstartx||netboot\nsleep 5\necho \*\* Type \"netboot\" and press enter to launch the NetbootCD main menu. \*\*/g' ${NBINIT}/etc/skel/.profile
-else
-	echo "NOTE: will not be changing background logo"
-fi
-
 #Add pxe-kexec to nbinit, if it exists in this folder
 if [ -f pxe-kexec/pxe-kexec.tgz ] && [ -f pxe-kexec/readline.tcz ] && \
    [ -f pxe-kexec/curl.tcz ] && [ -f pxe-kexec/openssl.tcz ] && \
