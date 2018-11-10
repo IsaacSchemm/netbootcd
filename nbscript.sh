@@ -425,7 +425,7 @@ if [ $DISTRO = "slitaz" ];then
 		wget http://mirror.slitaz.org/boot/4.0/bzImage -O /tmp/nb-linux
 		wget http://mirror.slitaz.org/boot/4.0/rootfstiny.gz -O /tmp/nb-initrd
 		echo -n "rw root=/dev/null vga=normal autologin" >>/tmp/nb-options
-	elif [ "$VERSION" = "vnc" ];then
+	elif [ "$VERSION" = "fbvnc" ];then
 		wget http://mirror.slitaz.org/pxe/tiny/vnc/bzImage.gz -O /tmp/nb-linux
 		wget http://mirror.slitaz.org/pxe/tiny/vnc/rootfs.gz -O /tmp/nb-initrd
 		echo -n "vga=ask" >>/tmp/nb-options
