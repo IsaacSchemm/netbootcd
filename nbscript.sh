@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-## nbscript.sh 7.2.6 - Download netboot images and launch them with kexec
+## nbscript.sh 7.3 - Download netboot images and launch them with kexec
 ## Copyright (C) 2018 Isaac Schemm <isaacschemm@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 7.2.6 - March 16, 2018"
+TITLE="NetbootCD Script 7.3 - November 10, 2018"
 
 getversion ()
 {
@@ -96,7 +96,6 @@ debian "  (i386) Debian GNU/Linux" \
 debiandaily64 " (amd64) Debian GNU/Linux - daily installers" \
 debiandaily "  (i386) Debian GNU/Linux - daily installers" \
 fedora64 "(x86_64) Fedora" \
-fedora "  (i386) Fedora" \
 opensuse64 "(x86_64) openSUSE" \
 opensuse "  (i386) openSUSE" \
 mageia64 "(x86_64) Mageia" \
@@ -104,8 +103,6 @@ mageia "  (i386) Mageia" \
 rhel-type-7-64 "(x86_64) CentOS 7 and Scientific Linux 7" \
 rhel-type-6-64 "(x86_64) CentOS 6 and Scientific Linux 6" \
 rhel-type-6 "  (i386) CentOS 6 and Scientific Linux 6" \
-rhel-type-5-64 "(x86_64) CentOS 5 and Scientific Linux 5" \
-rhel-type-5 "  (i386) CentOS 5 and Scientific Linux 5" \
 slackware "Slackware" 2>/tmp/nb-distro
 #Read their choice, save it, and delete the old file
 DISTRO=$(cat /tmp/nb-distro)
@@ -114,8 +111,8 @@ rm /tmp/nb-distro
 if [ $DISTRO = "ubuntu" ];then
 	#Ask about version
 	dialog --menu "Choose a system to install:" 20 70 13 \
-	bionic "Ubuntu 18.04 (released Apirl 2018)" \
-	artful "Ubuntu 17.10" \
+	cosmic "Ubuntu 18.10" \
+	bionic "Ubuntu 18.04 LTS" \
 	xenial "Ubuntu 16.04 LTS" \
 	trusty "Ubuntu 14.04 LTS" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
@@ -141,8 +138,8 @@ fi
 if [ $DISTRO = "ubuntu64" ];then
 	#Ask about version
 	dialog --menu "Choose a system to install:" 20 70 13 \
-	bionic "Ubuntu 18.04 (released Apirl 2018)" \
-	artful "Ubuntu 17.10" \
+	cosmic "Ubuntu 18.10" \
+	bionic "Ubuntu 18.04 LTS" \
 	xenial "Ubuntu 16.04 LTS" \
 	trusty "Ubuntu 14.04 LTS" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
@@ -211,23 +208,11 @@ if [ $DISTRO = "debiandaily64" ];then
 		echo -n 'priority=low '>>/tmp/nb-options
 	fi
 fi
-if [ $DISTRO = "fedora" ];then
-	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
-	releases/25/Server "Fedora 25" \
-	Manual "Manually enter a version to install" 2>/tmp/nb-version
-	getversion
-	#Ask the user which server to use (the installer doesn't have a built-in list like Ubuntu and Debian do.)
-	dialog --inputbox "Where do you want to install Fedora from?" 8 70 "http://mirrors.kernel.org/fedora/$VERSION/i386/os/" 2>/tmp/nb-server
-	KERNELURL="$(cat /tmp/nb-server)/images/pxeboot/vmlinuz"
-	INITRDURL="$(cat /tmp/nb-server)/images/pxeboot/initrd.img"
-	echo -n "inst.stage2=$(cat /tmp/nb-server)" >>/tmp/nb-options
-	rm /tmp/nb-server
-fi
 if [ $DISTRO = "fedora64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	releases/29/Server "Fedora 29" \
+	releases/28/Server "Fedora 28" \
 	releases/27/Server "Fedora 27" \
-	releases/26/Server "Fedora 26" \
-	releases/25/Server "Fedora 25" \
 	development/rawhide "Rawhide" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
@@ -259,6 +244,7 @@ fi
 if [ $DISTRO = "opensuse64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
 	tumbleweed "openSUSE Tumbleweed" \
+	leap/15.1 "openSUSE Leap 15.1" \
 	leap/15.0 "openSUSE Leap 15.0" \
 	leap/42.3 "openSUSE Leap 42.3" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
@@ -278,9 +264,8 @@ if [ $DISTRO = "opensuse64" ];then
 fi
 if [ $DISTRO = "mageia" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	6.1 "Mageia 6.1" \
 	6 "Mageia 6" \
-	5 "Mageia 5" \
-	4 "Mageia 4" \
 	cauldron "Mageia cauldron" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
@@ -290,9 +275,8 @@ if [ $DISTRO = "mageia" ];then
 fi
 if [ $DISTRO = "mageia64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	6.1 "Mageia 6.1" \
 	6 "Mageia 6" \
-	5 "Mageia 5" \
-	4 "Mageia 4" \
 	cauldron "Mageia cauldron" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
@@ -363,51 +347,7 @@ if [ $DISTRO = "rhel-type-6-64" ];then
 	rm /tmp/nb-server
 	askforopts
 fi
-if [ $DISTRO = "rhel-type-5" ];then
-	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
-	c_5 "Latest version of CentOS 5" \
-	s_5x "Latest version of Scientific Linux 5" \
-	Manual "Manually enter a version to install (prefix with s_ or c_)" 2>/tmp/nb-version
-	getversion
-	TYPE=$(echo $VERSION|head -c 1)
-	VERSION=$(echo $VERSION|tail -c +3)
-	#Ask the user which server to use (the installer doesn't have a built-in list like Ubuntu and Debian do.)
-	if [ $TYPE = s ];then
-		VERSION=$(echo $VERSION|sed -e 's/\.//g')
-		dialog --inputbox "Where do you want to install Scientific Linux from?" 8 70 "http://linux1.fnal.gov/linux/scientific/$VERSION/i386" 2>/tmp/nb-server
-	else
-		dialog --inputbox "Where do you want to install CentOS from?" 8 70 "http://mirrors.kernel.org/centos/$VERSION/os/i386" 2>/tmp/nb-server
-	fi
-	SERVER=$(cat /tmp/nb-server)
-	KERNELURL="$SERVER/isolinux/vmlinuz"
-	INITRDURL="$SERVER/isolinux/initrd.img"
-	echo -n "method=$(cat /tmp/nb-server)" >>/tmp/nb-options
-	rm /tmp/nb-server
-fi
-if [ $DISTRO = "rhel-type-5-64" ];then
-	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
-	c_5 "Latest version of CentOS 5" \
-	s_5x "Latest version of Scientific Linux 5" \
-	Manual "Manually enter a version to install (prefix with s_ or c_)" 2>/tmp/nb-version
-	getversion
-	TYPE=$(echo $VERSION|head -c 1)
-	VERSION=$(echo $VERSION|tail -c +3)
-	#Ask the user which server to use (the installer doesn't have a built-in list like Ubuntu and Debian do.)
-	if [ $TYPE = s ];then
-		VERSION=$(echo $VERSION|sed -e 's/\.//g')
-		dialog --inputbox "Where do you want to install Scientific Linux from?" 8 70 "http://linux1.fnal.gov/linux/scientific/$VERSION/x86_64" 2>/tmp/nb-server
-	else
-		dialog --inputbox "Where do you want to install CentOS from?" 8 70 "http://mirrors.kernel.org/centos/$VERSION/os/x86_64" 2>/tmp/nb-server
-	fi
-	SERVER=$(cat /tmp/nb-server)
-	KERNELURL="$SERVER/isolinux/vmlinuz"
-	INITRDURL="$SERVER/isolinux/initrd.img"
-	echo -n "method=$(cat /tmp/nb-server)" >>/tmp/nb-options
-	rm /tmp/nb-server
-fi
 if [ $DISTRO = "slackware" ];then
-	SLACKASK="Slackware can't be installed from a web server.\nContinue?"
-	if ! dialog --yesno "$SLACKASK" 0 0;then exec $0 $*;fi #Go back to main menu if no
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
 	slackware-14.2 "Slackware 14.2 (32-bit)" \
 	slackware64-14.2 "Slackware 14.2 (64-bit)" \
@@ -446,8 +386,7 @@ rm /tmp/nb-distro
 #What version?
 if [ $DISTRO = "grub4dos" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a version to download:" 20 70 13 \
-	0.4.6a-2016-05-18 "grub4dos-chenall fork (0.4.6a branch)" \
-	0.4.5c-2016-01-18 "grub4dos-chenall fork (0.4.5c branch)" \
+	0.4.6a-2018-09-19 "grub4dos-chenall fork (0.4.6a branch)" \
 	0.4.4-2009-06-20 "Latest version of original - June 20, 2009" 2>/tmp/nb-version
 	getversion
 elif [ $DISTRO = "slitaz" ];then
@@ -478,7 +417,7 @@ if [ $DISTRO = "grub4dos" ];then
 		mv /tmp/grub4dos-*/grub.exe /tmp/nb-linux
 		rm -r /tmp/grub4dos-*
 	else
-		wget -O /tmp/nb-linux http://netbootcd.us/downloads/grub4dos/$VERSION/grub.exe
+		wget -O /tmp/nb-linux http://lakora.us/netbootcd/downloads/grub4dos-$VERSION/grub.exe
 	fi
 	true>/tmp/nb-initrd
 elif [ $DISTRO = "slitaz" ];then
@@ -624,7 +563,7 @@ true>/tmp/nb-options
 true>/tmp/nb-custom
 if [ $MAINMENU = "download" ];then
 	su -c "tce-load -wi openssl" tc
-	downloadandrun https://raw.githubusercontent.com/IsaacSchemm/netbootcd/master/nbscript.sh || downloadandrun http://netbootcd.us/downloads/nbscript.sh
+	downloadandrun https://raw.githubusercontent.com/IsaacSchemm/netbootcd/master/nbscript.sh
 fi
 if [ $MAINMENU = "utils" ];then
 	utilsmenu
