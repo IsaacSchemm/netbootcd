@@ -373,7 +373,6 @@ utilsmenu ()
 {
 #Ask the user to choose a distro, save the choice to /tmp/nb-distro
 dialog --backtitle "$TITLE" --menu "Choose a utility:" 20 70 13 \
-grub4dos "GRUB4DOS - a versitle bootloader that can be loaded from kexec" \
 slitaz "SliTaz" \
 core "Core 9.x" \
 tinycore "Core 9.x (add TinyCore packages: Xvesa Xlibs Xprogs aterm flwm_topside wbar)" \
@@ -384,12 +383,7 @@ gparted "Core 9.x (TinyCore plus: gparted ntfsprogs dosfstools reiserfsprogs e2f
 DISTRO=$(cat /tmp/nb-distro)
 rm /tmp/nb-distro
 #What version?
-if [ $DISTRO = "grub4dos" ];then
-	dialog --backtitle "$TITLE" --menu "Choose a version to download:" 20 70 13 \
-	0.4.6a-2018-09-19 "grub4dos-chenall fork (0.4.6a branch)" \
-	0.4.4-2009-06-20 "Latest version of original - June 20, 2009" 2>/tmp/nb-version
-	getversion
-elif [ $DISTRO = "slitaz" ];then
+if [ $DISTRO = "slitaz" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a version to download:" 20 70 13 \
 	rolling "SliTaz 5.0 rolling release" \
 	5.0-rc3 "SliTaz 5.0 rc3" \
@@ -409,18 +403,7 @@ if [ $DISTRO != "grub4dos" ];then
 	askforopts
 fi
 #Now for downloading.
-if [ $DISTRO = "grub4dos" ];then
-	if [ "$VERSION" = "0.4.4-2009-06-20" ];then
-		wget http://download.gna.org/grub4dos/grub4dos-$VERSION.zip -O /tmp/g4d.zip
-		unzip /tmp/g4d.zip -d /tmp
-		rm /tmp/g4d.zip
-		mv /tmp/grub4dos-*/grub.exe /tmp/nb-linux
-		rm -r /tmp/grub4dos-*
-	else
-		wget -O /tmp/nb-linux http://lakora.us/netbootcd/downloads/grub4dos-$VERSION/grub.exe
-	fi
-	true>/tmp/nb-initrd
-elif [ $DISTRO = "slitaz" ];then
+if [ $DISTRO = "slitaz" ];then
 	if [ "$VERSION" = "tiny" ];then
 		wget http://mirror.slitaz.org/pxe/tiny/bzImage.gz -O /tmp/nb-linux
 		wget http://mirror.slitaz.org/pxe/tiny/rootfs.gz -O /tmp/nb-initrd
