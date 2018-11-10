@@ -16,8 +16,7 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 ##
 ## The full text of the GNU GPL, versions 2 or 3, can be found at
-## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
-## <http://netbootcd.tuxfamily.org>, or on the CD itself.
+## <http://www.gnu.org/copyleft/gpl.html> or on the CD itself.
 
 set -e
 PATH=$PATH:/sbin
@@ -256,7 +255,7 @@ cp ${TCISO}/boot/isolinux/menu.c32 ${WORK}/iso/boot/isolinux #get menu.c32 from 
 for i in vmlinuz nbinit4.gz;do
 	cp ${DONE}/$i ${WORK}/iso/boot
 done
-cp grub.exe ${WORK}/iso/boot
+wget -O ${WORK}/iso/boot/grub.exe https://www.lakora.us/netbootcd/downloads/grub4dos-0.4.6a-2018-09-19/grub.exe
 
 echo "DEFAULT menu.c32
 PROMPT 0
@@ -275,7 +274,7 @@ initrd /boot/nbinit4.gz
 append quiet
 
 LABEL grub4dos
-menu label ^GRUB4DOS 0.4.6a-2018-04-11
+menu label ^GRUB4DOS 0.4.6a-2018-09-19
 kernel /boot/grub.exe
 " >> ${WORK}/iso/boot/isolinux/isolinux.cfg
 
@@ -481,5 +480,5 @@ chown -R 1000.1000 $DONE
 isohybrid ${DONE}/NetbootCD-$NBCDVER+CorePlus-$COREVER.iso
 
 ln -s ${DONE}/NetbootCD-$NBCDVER+CorePlus-$COREVER.iso ${DONE}/NetbootCD+CorePlus.iso
-	
+
 rm -r ${WORK}/iso

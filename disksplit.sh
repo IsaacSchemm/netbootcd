@@ -18,8 +18,7 @@ set -e
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 ##
 ## The full text of the GNU GPL, versions 2 or 3, can be found at
-## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
-## <http://netbootcd.tuxfamily.org>, or on the CD itself.
+## <http://www.gnu.org/copyleft/gpl.html> or on the CD itself.
 
 KERNEL="$1"
 INITRD="$2"
