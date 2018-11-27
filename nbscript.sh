@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-## nbscript.sh 7.3 - Download netboot images and launch them with kexec
+## nbscript.sh 9.0 - Download netboot images and launch them with kexec
 ## Copyright (C) 2018 Isaac Schemm <isaacschemm@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
