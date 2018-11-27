@@ -184,7 +184,7 @@ if $FLOPPY;then
 	echo "Made smaller floppy initrd:" $(wc -c ${DONE}/nbflop4.gz)
 fi
 
-echo "if ! which startx;then netboot;else sleep 5;fi;echo \*\* Type \"netboot\" and press enter to launch the NetbootCD main menu. \*\*" >> ${NBINIT}/etc/skel/.profile
+echo "if ! which startx;then netboot;else sleep 5;echo \*\* Type \"netboot\" and press enter to launch the NetbootCD main menu. \*\*;fi" >> ${NBINIT}/etc/skel/.profile
 
 #Add pxe-kexec to nbinit, if it exists in this folder
 if [ -f pxe-kexec/pxe-kexec.tgz ] && [ -f pxe-kexec/readline.tcz ] && \
