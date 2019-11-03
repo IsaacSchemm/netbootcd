@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-## nbscript.sh 9.0 - Download netboot images and launch them with kexec
+## nbscript.sh 9.0.1 - Download netboot images and launch them with kexec
 ## Copyright (C) 2018 Isaac Schemm <isaacschemm@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 9.0 - November 27, 2018"
+TITLE="NetbootCD Script 9.0.1 - November 3, 2019"
 
 getversion ()
 {
@@ -111,10 +111,11 @@ rm /tmp/nb-distro
 if [ $DISTRO = "ubuntu" ];then
 	#Ask about version
 	dialog --menu "Choose a system to install:" 20 70 13 \
+	eoan "Ubuntu 19.10" \
+	disco "Ubuntu 19.04" \
 	cosmic "Ubuntu 18.10" \
 	bionic "Ubuntu 18.04 LTS" \
 	xenial "Ubuntu 16.04 LTS" \
-	trusty "Ubuntu 14.04 LTS" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	#Run the getversion() function above
 	getversion
@@ -138,10 +139,11 @@ fi
 if [ $DISTRO = "ubuntu64" ];then
 	#Ask about version
 	dialog --menu "Choose a system to install:" 20 70 13 \
+	eoan "Ubuntu 19.10" \
+	disco "Ubuntu 19.04" \
 	cosmic "Ubuntu 18.10" \
 	bionic "Ubuntu 18.04 LTS" \
 	xenial "Ubuntu 16.04 LTS" \
-	trusty "Ubuntu 14.04 LTS" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	#Run the getversion() function above
 	getversion
@@ -210,6 +212,7 @@ if [ $DISTRO = "debiandaily64" ];then
 fi
 if [ $DISTRO = "fedora64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	releases/30/Server "Fedora 30" \
 	releases/29/Server "Fedora 29" \
 	releases/28/Server "Fedora 28" \
 	releases/27/Server "Fedora 27" \
