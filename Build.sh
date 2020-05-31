@@ -139,6 +139,7 @@ cp -v nbscript.sh ${NBINIT}/usr/bin
 if [ -e squashfs-root ];then
 	rm -r squashfs-root
 fi
+
 for i in dialog.tcz ncurses.tcz;do
 	unsquashfs $i
 	cp -a squashfs-root/* ${NBINIT}
@@ -244,7 +245,7 @@ cp ${TCISO}/boot/isolinux/menu.c32 ${WORK}/iso/boot/isolinux #get menu.c32 from 
 for i in vmlinuz nbinit4.gz;do
 	cp ${DONE}/$i ${WORK}/iso/boot
 done
-wget -O ${WORK}/iso/boot/grub.exe https://www.lakora.us/netbootcd/downloads/grub4dos-0.4.6a-2018-09-19/grub.exe
+wget -O ${WORK}/iso/boot/grub.exe https://www.lakora.us/netbootcd/downloads/grub4dos-0.4.6a-2020-02-29/grub.exe
 
 echo "DEFAULT menu.c32
 PROMPT 0
@@ -263,7 +264,7 @@ initrd /boot/nbinit4.gz
 append quiet
 
 LABEL grub4dos
-menu label ^GRUB4DOS 0.4.6a-2018-09-19
+menu label ^GRUB4DOS 0.4.6a-2020-02-29
 kernel /boot/grub.exe
 " >> ${WORK}/iso/boot/isolinux/isolinux.cfg
 
@@ -458,7 +459,7 @@ APPEND initrd=/boot/core.gz loglevel=3 waitusb=5
 MENU END
 
 LABEL grub4dos
-menu label ^GRUB4DOS 0.4.6a-2018-04-11
+menu label ^GRUB4DOS 0.4.6a-2020-02-29
 kernel /boot/grub.exe
 " > ${WORK}/iso/boot/isolinux/isolinux.cfg
 $MAKER --no-emul-boot --boot-info-table --boot-load-size 4 \
