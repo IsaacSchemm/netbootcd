@@ -13,7 +13,6 @@ deploy:
   file:
     - "done/NetbootCD.iso"
     - "done/NetbootCD+CorePlus.iso"
-    - "done/NetbootCD-floppy-set.zip"
   on:
     repo: IsaacSchemm/netbootcd
     tags: true

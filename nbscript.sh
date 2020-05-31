@@ -395,11 +395,11 @@ utilsmenu ()
 #Ask the user to choose a distro, save the choice to /tmp/nb-distro
 dialog --backtitle "$TITLE" --menu "Choose a utility:" 20 70 13 \
 slitaz "SliTaz" \
-core "Core 10.x" \
-tinycore "Core 10.x (add TinyCore packages: Xvesa Xlibs Xprogs aterm flwm_topside wbar)" \
-dillo "Core 10.x (TinyCore plus: dillo)" \
-firefox "Core 10.x (TinyCore plus: firefox-ESR)" \
-gparted "Core 10.x (TinyCore plus: gparted ntfsprogs dosfstools reiserfsprogs e2fsprogs xfsprogs)" 2>/tmp/nb-distro
+core "Core 11.x" \
+tinycore "Core 11.x (add TinyCore packages: Xvesa Xlibs Xprogs aterm flwm_topside wbar)" \
+dillo "Core 11.x (TinyCore plus: dillo)" \
+firefox "Core 11.x (TinyCore plus: firefox-ESR)" \
+gparted "Core 11.x (TinyCore plus: gparted ntfsprogs dosfstools reiserfsprogs e2fsprogs xfsprogs)" 2>/tmp/nb-distro
 #Read their choice, save it, and delete the old file
 DISTRO=$(cat /tmp/nb-distro)
 rm /tmp/nb-distro
@@ -416,8 +416,8 @@ if [ $DISTRO = "slitaz" ];then
 	getversion
 else
 	dialog --backtitle "$TITLE" --menu "Choose a version to download:" 20 70 13 \
-	32 "Core 10.x - 32-bit" \
-	64 "Core 10.x - 64-bit" 2>/tmp/nb-version
+	32 "Core 11.x - 32-bit" \
+	64 "Core 11.x - 64-bit" 2>/tmp/nb-version
 	getversion
 fi
 if [ $DISTRO != "grub4dos" ];then
@@ -486,11 +486,11 @@ elif [ $DISTRO = "core" ] || [ $DISTRO = "tinycore" ] || [ $DISTRO = "dillo" ] |
 			pekwm "pekwm" 2>/tmp/nb-wm
 	fi
 	if [ "$VERSION" == "64" ];then
-		wget http://tinycorelinux.net/10.x/x86_64/release/distribution_files/vmlinuz64 -O /tmp/nb-linux
-		wget http://tinycorelinux.net/10.x/x86_64/release/distribution_files/corepure64.gz -O /tmp/nb-initrd
+		wget http://tinycorelinux.net/11.x/x86_64/release/distribution_files/vmlinuz64 -O /tmp/nb-linux
+		wget http://tinycorelinux.net/11.x/x86_64/release/distribution_files/corepure64.gz -O /tmp/nb-initrd
 	else
-		wget http://tinycorelinux.net/10.x/x86/release/distribution_files/vmlinuz -O /tmp/nb-linux
-		wget http://tinycorelinux.net/10.x/x86/release/distribution_files/core.gz -O /tmp/nb-initrd
+		wget http://tinycorelinux.net/11.x/x86/release/distribution_files/vmlinuz -O /tmp/nb-linux
+		wget http://tinycorelinux.net/11.x/x86/release/distribution_files/core.gz -O /tmp/nb-initrd
 	fi
 	if [ $DISTRO != "core" ];then
 		mkdir -p /tmp/build
