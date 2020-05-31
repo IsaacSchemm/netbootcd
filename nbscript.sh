@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-## nbscript.sh 11.1 - Download netboot images and launch them with kexec
+## nbscript.sh - Download netboot images and launch them with kexec
 ## Copyright (C) 2020 Isaac Schemm <isaacschemm@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 11.1 - May 31, 2020"
+TITLE="NetbootCD Script 11.1.1 - May 31, 2020"
 
 getversion ()
 {
@@ -297,7 +297,7 @@ if [ $DISTRO = "rhel-type-8-64" ];then
 	TYPE=$(echo $VERSION|head -c 1)
 	VERSION=$(echo $VERSION|tail -c +3)
 	#Ask the user which server to use (the installer doesn't have a built-in list like Ubuntu and Debian do.)
-	dialog --inputbox "Where do you want to install CentOS from?" 8 70 "http://mirrors.kernel.org/centos/$VERSION/os/x86_64" 2>/tmp/nb-server
+	dialog --inputbox "Where do you want to install CentOS from?" 8 70 "http://mirrors.kernel.org/centos/$VERSION/BaseOS/x86_64/os" 2>/tmp/nb-server
 	SERVER=$(cat /tmp/nb-server)
 	KERNELURL="$SERVER/isolinux/vmlinuz"
 	INITRDURL="$SERVER/isolinux/initrd.img"
