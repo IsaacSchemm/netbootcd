@@ -89,8 +89,8 @@ installmenu ()
 {
 #Ask the user to choose a distro, save the choice to /tmp/nb-distro
 dialog --backtitle "$TITLE" --menu "Choose a distribution:" 20 70 13 \
-ubuntu64 " (amd64) Ubuntu" \
-ubuntu "  (i386) Ubuntu" \
+ubuntu64 " (amd64) Ubuntu [d-i]" \
+ubuntu "  (i386) Ubuntu [d-i]" \
 debian64 " (amd64) Debian GNU/Linux" \
 debian "  (i386) Debian GNU/Linux" \
 debiandaily64 " (amd64) Debian GNU/Linux - daily installers" \
@@ -100,6 +100,7 @@ opensuse64 "(x86_64) openSUSE" \
 opensuse "  (i386) openSUSE" \
 mageia64 "(x86_64) Mageia" \
 mageia "  (i386) Mageia" \
+rhel-type-8-64 "(x86_64) CentOS 8" \
 rhel-type-7-64 "(x86_64) CentOS 7 and Scientific Linux 7" \
 rhel-type-6-64 "(x86_64) CentOS 6 and Scientific Linux 6" \
 rhel-type-6 "  (i386) CentOS 6 and Scientific Linux 6" \
