@@ -48,7 +48,7 @@ cp grldr $TMPDIR/1
 echo "default 0
 timeout 10
 
-title Load NetbootCD from multi-disk set (or run FreeDOS)
+title Chainload FreeDOS -> Core 5.4 -> NetbootCD 9.0
 chainloader (fd0)/kernel.sys" > $TMPDIR/1/menu.lst
 echo "DEVICE=HIMEMX.EXE
 LASTDRIVE=Z" > $TMPDIR/1/fdconfig.sys

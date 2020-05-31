@@ -23,7 +23,6 @@ PATH=$PATH:/sbin
 WORK=$(pwd)/work
 DONE=$(pwd)/done
 NBINIT=${WORK}/nbinit #for CD/USB
-NBINIT2=${WORK}/nbinit2 #for floppy
 
 #Set to false to not build floppy images
 FLOPPY=true
@@ -38,8 +37,7 @@ NO=0
 for i in CorePlus-$COREVER.iso \
 nbscript.sh tc-config.diff kexec.tgz \
 grub.exe \
-dialog.tcz ncurses.tcz \
-disksplit.sh;do
+dialog.tcz ncurses.tcz;do
 	if [ ! -e $i ];then
 		echo "Couldn't find $i!"
 		NO=1
@@ -148,43 +146,6 @@ done
 
 tar -C ${NBINIT} -xvf kexec.tgz
 
-#workaround for libraries. I don't remember what this was for.
-#for i in ${NBINIT}/usr/local/lib/*;do
-#	BASENAME=$(basename $i)
-#	if [ ! -e ${NBINIT}/usr/lib/$BASENAME ];then
-#		ln -s ../local/lib/$BASENAME ${NBINIT}/usr/lib/$BASENAME
-#	fi
-#done
-
-if $FLOPPY;then
-	#Make the floppy disk version of the initrd.
-	cp -a ${NBINIT} ${NBINIT2}
-	#now we remove things in a dirty way.
-	#remove filesystem utils
-	##rm ${NBINIT2}/sbin/*fsck*
-	##rm ${NBINIT2}/sbin/mke2fs ${NBINIT2}/sbin/mkfs*
-	##rm ${NBINIT2}/sbin/tune2fs
-	#remove ext2/3/4 libraries
-	##rm ${NBINIT2}/lib/libext2fs*
-	#remove filesystem modules
-	##rm -r ${NBINIT2}/lib/modules/*/kernel/fs
-	#remove device drivers
-	##for i in parport scsi usb;do
-		##rm -r ${NBINIT2}/lib/modules/*tinycore/kernel/drivers/$i || true
-	##done
-
-	#NetbootCD > .profile
-	echo "netboot" >> ${NBINIT2}/etc/skel/.profile
-	cd ${NBINIT2}
-	find . | cpio -o -H 'newc' | gzip -c > ${DONE}/nbflop4.gz
-	cd -
-	if which advdef 2> /dev/null;then
-		advdef -z ${DONE}/nbflop4.gz #extra compression
-	fi
-	#rm -r ${NBINIT2}
-	echo "Made smaller floppy initrd:" $(wc -c ${DONE}/nbflop4.gz)
-fi
-
 echo "if ! which startx;then netboot;else sleep 5;echo \*\* Type \"netboot\" and press enter to launch the NetbootCD main menu. \*\*;fi" >> ${NBINIT}/etc/skel/.profile
 
 #Add pxe-kexec to nbinit, if it exists in this folder
@@ -222,17 +183,6 @@ if which advdef 2> /dev/null;then
 fi
 #rm -r ${NBINIT}
 echo "Made initrd:" $(wc -c ${DONE}/nbinit4.gz)
-
-if $FLOPPY;then
-	#Split up the kernel and floppy initrd for several disks
-	./disksplit.sh ${DONE}/vmlinuz ${DONE}/nbflop4.gz
-	cd done/floppy
-	cp 1.img ../NetbootCD-$NBCDVER-floppy.img
-	zip ../NetbootCD-$NBCDVER-floppy-set.zip *.img
-	cd -
-	ln -s ${DONE}/NetbootCD-$NBCDVER-floppy.img ${DONE}/NetbootCD-floppy.img
-	ln -s ${DONE}/NetbootCD-$NBCDVER-floppy-set.zip ${DONE}/NetbootCD-floppy-set.zip
-fi
 
 if [ -d ${WORK}/iso ];then
 	rm -r ${WORK}/iso
