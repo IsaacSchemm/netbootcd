@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
-## nbscript.sh 9.0.1 - Download netboot images and launch them with kexec
-## Copyright (C) 2018 Isaac Schemm <isaacschemm@gmail.com>
+## nbscript.sh 11.1 - Download netboot images and launch them with kexec
+## Copyright (C) 2020 Isaac Schemm <isaacschemm@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License
@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 9.0.1 - November 3, 2019"
+TITLE="NetbootCD Script 11.1 - May 31, 2020"
 
 getversion ()
 {
@@ -111,9 +111,6 @@ rm /tmp/nb-distro
 if [ $DISTRO = "ubuntu" ];then
 	#Ask about version
 	dialog --menu "Choose a system to install:" 20 70 13 \
-	eoan "Ubuntu 19.10" \
-	disco "Ubuntu 19.04" \
-	cosmic "Ubuntu 18.10" \
 	bionic "Ubuntu 18.04 LTS" \
 	xenial "Ubuntu 16.04 LTS" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
@@ -139,9 +136,8 @@ fi
 if [ $DISTRO = "ubuntu64" ];then
 	#Ask about version
 	dialog --menu "Choose a system to install:" 20 70 13 \
+	focal "Ubuntu 20.04 LTS" \
 	eoan "Ubuntu 19.10" \
-	disco "Ubuntu 19.04" \
-	cosmic "Ubuntu 18.10" \
 	bionic "Ubuntu 18.04 LTS" \
 	xenial "Ubuntu 16.04 LTS" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
@@ -155,6 +151,10 @@ if [ $DISTRO = "ubuntu64" ];then
 	if ! wget --spider -q $KERNELURL; then # fallback to known distro
 		KERNELURL="http://archive.ubuntu.com/ubuntu/dists/$VERSION/main/installer-amd64/current/images/netboot/ubuntu-installer/amd64/linux"
 		INITRDURL="http://archive.ubuntu.com/ubuntu/dists/$VERSION/main/installer-amd64/current/images/netboot/ubuntu-installer/amd64/initrd.gz"
+	fi
+	if ! wget --spider -q $KERNELURL; then # try new path
+		KERNELURL="http://archive.ubuntu.com/ubuntu/dists/$VERSION/main/installer-amd64/current/legacy-images/netboot/ubuntu-installer/amd64/linux"
+		INITRDURL="http://archive.ubuntu.com/ubuntu/dists/$VERSION/main/installer-amd64/current/legacy-images/netboot/ubuntu-installer/amd64/initrd.gz"
 	fi
 	#These options are good for all Ubuntu installers.
 	echo -n 'vga=normal quiet '>>/tmp/nb-options
@@ -212,6 +212,7 @@ if [ $DISTRO = "debiandaily64" ];then
 fi
 if [ $DISTRO = "fedora64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	releases/31/Server "Fedora 31" \
 	releases/30/Server "Fedora 30" \
 	releases/29/Server "Fedora 29" \
 	releases/28/Server "Fedora 28" \
@@ -286,6 +287,22 @@ if [ $DISTRO = "mageia64" ];then
 	KERNELURL="http://mirrors.kernel.org/mageia/distrib/$VERSION/x86_64/isolinux/x86_64/vmlinuz"
 	INITRDURL="http://mirrors.kernel.org/mageia/distrib/$VERSION/x86_64/isolinux/x86_64/all.rdz"
 	echo -n 'automatic=method:http' >>/tmp/nb-options
+fi
+if [ $DISTRO = "rhel-type-8-64" ];then
+	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	c_8 "Latest version of CentOS 8" \
+	Manual "Manually enter a version to install (prefix with s_ or c_)" 2>/tmp/nb-version
+	getversion
+	TYPE=$(echo $VERSION|head -c 1)
+	VERSION=$(echo $VERSION|tail -c +3)
+	#Ask the user which server to use (the installer doesn't have a built-in list like Ubuntu and Debian do.)
+	dialog --inputbox "Where do you want to install CentOS from?" 8 70 "http://mirrors.kernel.org/centos/$VERSION/os/x86_64" 2>/tmp/nb-server
+	SERVER=$(cat /tmp/nb-server)
+	KERNELURL="$SERVER/isolinux/vmlinuz"
+	INITRDURL="$SERVER/isolinux/initrd.img"
+	echo -n "nomodeset repo=$(cat /tmp/nb-server)" >>/tmp/nb-options
+	rm /tmp/nb-server
+	askforopts
 fi
 if [ $DISTRO = "rhel-type-7-64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
