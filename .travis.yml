@@ -13,6 +13,8 @@ deploy:
   file:
     - "done/NetbootCD.iso"
     - "done/NetbootCD+CorePlus.iso"
+    - "done/vmlinuz"
+    - "done/nbinit4.gz"
   on:
     repo: IsaacSchemm/netbootcd
     tags: true
