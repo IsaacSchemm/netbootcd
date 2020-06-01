@@ -2,32 +2,6 @@ NetbootCD is a Linux live CD based on Tiny Core Linux. The live CD allows the us
 
 Some of the distributions supported by NetbootCD are prerelease or development distributions (such as Fedora Rawhide and Debian sid.) Because NetbootCD downloads the latest installer, which in turn downloads the latest system components, you can install a fully up-to-date system without burning a new CD.
 
-The NetbootCD script (nbscript.sh) is written by me and is licensed GPLv2+: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. See the file GPL-2.txt for the full license text. Other components have their own license terms.
+The NetbootCD script (nbscript.sh) is written by me and is licensed GPLv2+. Other components have their own license terms.
 
 See http://lakora.us/netbootcd for more information.
-
-----------------------------------------
-
-The files needed to run Build.sh are:
-blank-bootable-1440-floppy.gz
-CorePlus-6.4.1.iso (get it from http://www.tinycorelinux.com)
-dialog.tcz (from http://distro.ibiblio.org/tinycorelinux/6.x/x86/tcz)
-disksplit.sh
-dosfiles.tar.gz
-grub.exe (grub4dos - the version included here is 0.4.6a 2015-12-16)
-kexec.tgz (kexec-tools 2.0.9 binaries for tinycore)
-nbscript.sh
-ncurses.tcz (from http://distro.ibiblio.org/tinycorelinux/6.x/x86/tcz)
-tc-config.diff
-
-Recommended files: (note - none of these will end up in the floppy disk version; this is to keep the size down)
-nbcd-bg.png (desktop background for X11 environment)
-pxe-kexec.tcz (a recommendation from someone else)
-readline.tcz (required by pxe-kexec)
-curl.tcz (required by pxe-kexec)
-libidn.tcz (required by curl)
-openssl-1.0.1.tcz (required by curl)
-libssh2.tcz (required by curl)
-libgcrypt.tcz (required by libssh2)
-
-You must have installed squashfs-tools, zip, mkdosfs, perl, syslinux-utils (in particular isohybrid), and genisoimage/mkisofs.
