@@ -2,7 +2,7 @@ sudo: true
 language: c
 before_install:
 - sudo apt-get update -qq
-- sudo apt-get install -qq dosfstools squashfs-tools syslinux genisoimage
+- sudo apt-get install -qq dosfstools squashfs-tools syslinux syslinux-utils genisoimage
 script:
 - sudo ./Build.sh
 deploy:
