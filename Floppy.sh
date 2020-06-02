@@ -99,17 +99,11 @@ while [ $? != 0 ];do
 done
 echo > /tmp/internet-is-up
 
-wget -O /tmp/nb-linux http://lakora.nfshost.com/netbootcd/downloads/9.0/vmlinuz
-wget -O /tmp/nb-initrd http://lakora.nfshost.com/netbootcd/downloads/9.0/nbinit4.gz
+wget -O /tmp/nb-linux $(cat /proc/cmdline | grep -o -e 'kernelurl=[^ ]*' | sed -e 's/^kernelurl=//g')
+wget -O /tmp/nb-initrd $(cat /proc/cmdline | grep -o -e 'initrdurl=[^ ]*' | sed -e 's/^initrdurl=//g')
 
-if ! (sha1sum /tmp/nb-linux | grep 6b91a5385d8a92768817a5c14038c2ca9a3e1704);then
-	echo "kernel downloaded from lakora.nfshost.com did not match checksum"
-elif ! (sha1sum /tmp/nb-initrd | grep b38a84302873bbded3b4104a34c5669081b17075);then
-	echo "initrd downloaded from lakora.nfshost.com did not match checksum"
-else
-	kexec -l /tmp/nb-linux --initrd=/tmp/nb-initrd
-	kexec -e
-fi
+kexec -l /tmp/nb-linux --initrd=/tmp/nb-initrd
+kexec -e
 EOF
 chmod +x ${NBINIT2}/usr/bin/netboot
 cd ${NBINIT2}/etc/init.d

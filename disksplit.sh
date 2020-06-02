@@ -119,6 +119,7 @@ REM PART.000 is on Disk 2, PART.001 on Disk 3, etc
 ECHO This is disk 1 of a 1440KB $NUM_DISKS-disk set.
 COPY A:\CHUNK.EXE T:\\
 COPY A:\LINLD.COM T:\\
+COPY A:\KERNELCL.TXT T:\\
 " > $TMPDIR/1/tinycore.not
 if ! $EXTRADISK;then
 	echo "
@@ -149,8 +150,9 @@ echo "ECHO You may now remove the floppy disk from the drive.
 T:
 CHUNK.EXE /C PART NBCD4.CAT
 CHUNK.EXE /S${BIGGER_SIZE} NBCD4.CAT FILE
-LINLD.COM image=FILE.001 initrd=FILE.000 cl=quiet
+LINLD.COM image=FILE.001 initrd=FILE.000 cl=@KERNELCL.TXT
 " >> $TMPDIR/1/tinycore.not
+echo "quiet kernelurl=http://lakora.nfshost.com/netbootcd/downloads/9.0/vmlinuz initrdurl=http://lakora.nfshost.com/netbootcd/downloads/9.0/nbinit4.gz" > $TMPDIR/1/kernelcl.txt
 
 dd if=/dev/zero bs=1474560 count=1 of=$TMPDIR/1.img
 mkdosfs -n NetbootCD1 $TMPDIR/1.img
