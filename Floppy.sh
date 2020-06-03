@@ -145,12 +145,11 @@ mkdir $TMPDIR
 
 mkdir $TMPDIR/1
 
-tar -xvf dosfiles.tar.gz -C $TMPDIR/1
-cp grldr $TMPDIR/1
+cp -v dos/* $TMPDIR/1
 echo "default 0
-timeout 10
+timeout 3
 
-title Chainload FreeDOS -> Core 5.4 -> NetbootCD 9.0
+title Load FreeDOS
 chainloader (fd0)/kernel.sys" > $TMPDIR/1/menu.lst
 echo "DEVICE=HIMEMX.EXE
 LASTDRIVE=Z" > $TMPDIR/1/fdconfig.sys
