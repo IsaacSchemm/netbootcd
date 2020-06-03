@@ -171,15 +171,7 @@ else
 fi
 FILESIZE=$(wc -c $CAT|awk '{print $1}')
 NUM_DISKS=$(( $FILESIZE / 1457644 + 1))
-echo $NUM_DISKS
-if [ $(($FILESIZE%1457644)) -gt $(($(du -b $TMPDIR/1 | tail -n 1 | awk '{print $1}')+1024)) ];then
-	echo extradisk
-	EXTRADISK="true"
-	NUM_DISKS=$(($NUM_DISKS+1))
-else
-	echo no extradisk
-	EXTRADISK="false"
-fi
+EXTRADISK="false"
 for i in $(seq 2 $NUM_DISKS);do
 	if [ -d $TMPDIR/$i ];then
 		rm -r $TMPDIR/$i
@@ -255,9 +247,7 @@ LINLD.COM image=FILE.001 initrd=FILE.000 cl=@KERNELCL.TXT
 " >> $TMPDIR/1/tinycore.not
 echo "quiet kernelurl=http://lakora.nfshost.com/netbootcd/downloads/$NBCDVER/vmlinuz initrdurl=http://lakora.nfshost.com/netbootcd/downloads/$NBCDVER/nbinit4.gz" > $TMPDIR/1/kernelcl.txt
 
-dd if=/dev/zero bs=1474560 count=1 of=$TMPDIR/1.img
-mkdosfs -n NetbootCD1 $TMPDIR/1.img
-./bootlace.com --floppy $TMPDIR/1.img
+gzip -cd freedos.img.gz > $TMPDIR/1.img
 mkdir $TMPDIR/a1
 mount -o loop $TMPDIR/1.img $TMPDIR/a1
 cp $TMPDIR/1/* $TMPDIR/a1/
