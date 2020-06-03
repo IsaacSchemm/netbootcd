@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 11.1.1 - May 31, 2020"
+TITLE="NetbootCD Script 11.1.2 - June 2, 2020"
 
 getversion ()
 {
@@ -104,7 +104,7 @@ rhel-type-8-64 "(x86_64) CentOS 8" \
 rhel-type-7-64 "(x86_64) CentOS 7 and Scientific Linux 7" \
 rhel-type-6-64 "(x86_64) CentOS 6 and Scientific Linux 6" \
 rhel-type-6 "  (i386) CentOS 6 and Scientific Linux 6" \
-slackware "Slackware" 2>/tmp/nb-distro
+slackware "         Slackware" 2>/tmp/nb-distro
 #Read their choice, save it, and delete the old file
 DISTRO=$(cat /tmp/nb-distro)
 rm /tmp/nb-distro
@@ -395,11 +395,7 @@ utilsmenu ()
 #Ask the user to choose a distro, save the choice to /tmp/nb-distro
 dialog --backtitle "$TITLE" --menu "Choose a utility:" 20 70 13 \
 slitaz "SliTaz" \
-core "Core 11.x" \
-tinycore "Core 11.x (add TinyCore packages: Xvesa Xlibs Xprogs aterm flwm_topside wbar)" \
-dillo "Core 11.x (TinyCore plus: dillo)" \
-firefox "Core 11.x (TinyCore plus: firefox-ESR)" \
-gparted "Core 11.x (TinyCore plus: gparted ntfsprogs dosfstools reiserfsprogs e2fsprogs xfsprogs)" 2>/tmp/nb-distro
+core "Core" 2>/tmp/nb-distro
 #Read their choice, save it, and delete the old file
 DISTRO=$(cat /tmp/nb-distro)
 rm /tmp/nb-distro
@@ -471,65 +467,13 @@ if [ $DISTRO = "slitaz" ];then
 		done
 		echo -n "rw root=/dev/null video=-32 autologin" >>/tmp/nb-options
 	fi
-elif [ $DISTRO = "core" ] || [ $DISTRO = "tinycore" ] || [ $DISTRO = "dillo" ] || [ $DISTRO = "firefox" ] || [ $DISTRO = "gparted" ];then
-	if [ $DISTRO != "core" ];then
-		echo flwm_topside > /tmp/nb-wm
-		dialog --backtitle "$TITLE" --menu "Choose a window manager:" 20 70 13 \
-			flwm_topside "FLWM topside" \
-			jwm "JWM" \
-			icewm "ICEwm" \
-			fluxbox "Fluxbox" \
-			hackedbox "Hackedbox" \
-			openbox "Openbox" \
-			flwm "FLWM classic" \
-			dwm "dwm" \
-			pekwm "pekwm" 2>/tmp/nb-wm
-	fi
+elif [ $DISTRO = "core" ];then
 	if [ "$VERSION" == "64" ];then
 		wget http://tinycorelinux.net/11.x/x86_64/release/distribution_files/vmlinuz64 -O /tmp/nb-linux
 		wget http://tinycorelinux.net/11.x/x86_64/release/distribution_files/corepure64.gz -O /tmp/nb-initrd
 	else
 		wget http://tinycorelinux.net/11.x/x86/release/distribution_files/vmlinuz -O /tmp/nb-linux
 		wget http://tinycorelinux.net/11.x/x86/release/distribution_files/core.gz -O /tmp/nb-initrd
-	fi
-	if [ $DISTRO != "core" ];then
-		mkdir -p /tmp/build
-		cd /tmp/build
-		gzip -cd /tmp/nb-initrd | cpio -id
-		echo '#!/bin/sh
-		echo "Waiting for internet connection (will keep trying indefinitely)"
-		echo -n "Testing example.com"
-		[ -f /tmp/internet-is-up ]
-		while [ $? != 0 ];do
-			sleep 0.1
-			echo -n "."
-			wget -q --spider http://www.example.com > /dev/null
-		done
-		echo > /tmp/internet-is-up' > script.sh
-		echo "tce-load -wi Xvesa || tce-load -wi Xorg-7.7" >> script.sh
-		for i in Xlibs Xprogs aterm wbar $(cat /tmp/nb-wm);do # xbase.lst from CorePlus-6.1
-			echo "tce-load -wi $i" >> script.sh
-		done
-		if [ $DISTRO = "firefox" ];then
-			echo "tce-load -wi firefox-ESR" >> script.sh
-			echo "sed -i -e 's/WM_PID=\$!$/WM_PID=$!\nfirefox \&/g' .xsession" >> script.sh
-		fi
-		if [ $DISTRO = "dillo" ];then
-			echo "tce-load -wi dillo" >> script.sh
-			echo "sed -i -e 's/WM_PID=\$!$/WM_PID=$!\ndillo \&/g' .xsession" >> script.sh
-		fi
-		if [ $DISTRO = "gparted" ];then
-			for i in gparted ntfsprogs dosfstools reiserfsprogs e2fsprogs xfsprogs;do
-				echo "tce-load -wi $i" >> script.sh
-			done
-			echo "sudo swapoff -a" >> script.sh
-			echo "sed -i -e 's/WM_PID=\$!$/WM_PID=$!\nsudo gparted \&/g' .xsession" >> script.sh
-		fi
-		chmod +x script.sh
-		echo "/script.sh && startx" >> etc/skel/.profile
-		find . | cpio -o -H newc | gzip -c > /tmp/nb-initrd
-		cd -
-		rm -rf /tmp/build
 	fi
 fi
 }
