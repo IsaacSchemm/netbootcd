@@ -137,7 +137,6 @@ fi
 if [ $DISTRO = "ubuntu64" ];then
 	#Ask about version
 	dialog --menu "Choose a system to install:" 20 70 13 \
-	impish "Ubuntu 21.10" \
 	focal "Ubuntu 20.04 LTS" \
 	bionic "Ubuntu 18.04 LTS" \
 	xenial "Ubuntu 16.04 LTS" \
