@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 ## nbscript.sh - Download netboot images and launch them with kexec
-## Copyright (C) 2020 Isaac Schemm <isaacschemm@gmail.com>
+## Copyright (C) 2022 Isaac Schemm <isaacschemm@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License
@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 11.1.2 - June 2, 2020"
+TITLE="NetbootCD Script 11.1.3 - January 20, 2022"
 
 getversion ()
 {
@@ -137,8 +137,8 @@ fi
 if [ $DISTRO = "ubuntu64" ];then
 	#Ask about version
 	dialog --menu "Choose a system to install:" 20 70 13 \
+	impish "Ubuntu 21.10" \
 	focal "Ubuntu 20.04 LTS" \
-	eoan "Ubuntu 19.10" \
 	bionic "Ubuntu 18.04 LTS" \
 	xenial "Ubuntu 16.04 LTS" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
@@ -213,11 +213,9 @@ if [ $DISTRO = "debiandaily64" ];then
 fi
 if [ $DISTRO = "fedora64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
-	releases/31/Server "Fedora 31" \
-	releases/30/Server "Fedora 30" \
-	releases/29/Server "Fedora 29" \
-	releases/28/Server "Fedora 28" \
-	releases/27/Server "Fedora 27" \
+	releases/35/Server "Fedora 35" \
+	releases/34/Server "Fedora 34" \
+	releases/33/Server "Fedora 33" \
 	development/rawhide "Rawhide" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
@@ -249,9 +247,7 @@ fi
 if [ $DISTRO = "opensuse64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
 	tumbleweed "openSUSE Tumbleweed" \
-	leap/15.1 "openSUSE Leap 15.1" \
-	leap/15.0 "openSUSE Leap 15.0" \
-	leap/42.3 "openSUSE Leap 42.3" \
+	leap/15.3 "openSUSE Leap 15.3" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
 	#All versions of openSUSE are in the "distribution" folder, except for factory/tumbleweed.
@@ -269,8 +265,7 @@ if [ $DISTRO = "opensuse64" ];then
 fi
 if [ $DISTRO = "mageia" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
-	6.1 "Mageia 6.1" \
-	6 "Mageia 6" \
+	8 "Mageia 8" \
 	cauldron "Mageia cauldron" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
@@ -280,8 +275,7 @@ if [ $DISTRO = "mageia" ];then
 fi
 if [ $DISTRO = "mageia64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
-	6.1 "Mageia 6.1" \
-	6 "Mageia 6" \
+	8 "Mageia 8" \
 	cauldron "Mageia cauldron" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
