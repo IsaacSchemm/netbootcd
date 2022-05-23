@@ -100,7 +100,7 @@ opensuse64 "(x86_64) openSUSE" \
 opensuse "  (i386) openSUSE" \
 mageia64 "(x86_64) Mageia" \
 mageia "  (i386) Mageia" \
-rhel-type-8-64 "(x86_64) CentOS 8" \
+rhel-type-8-64 "(x86_64) AlmaLinux 8 / CentOS 8 / Rocky Linux 8" \
 rhel-type-7-64 "(x86_64) CentOS 7 and Scientific Linux 7" \
 rhel-type-6-64 "(x86_64) CentOS 6 and Scientific Linux 6" \
 rhel-type-6 "  (i386) CentOS 6 and Scientific Linux 6" \
@@ -288,10 +288,8 @@ if [ $DISTRO = "mageia64" ];then
 fi
 if [ $DISTRO = "rhel-type-8-64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
-	a_9 "Latest version of AlmaLinux 9" \
 	a_8 "Latest version of AlmaLinux 8" \
 	c_8 "Latest version of CentOS 8" \
-	r_9 "Latest version of Rocky Linux 9" \
 	r_8 "Latest version of Rocky Linux 8" \
 	Manual "Manually enter a version to install (prefix with a_, c_, or r_)" 2>/tmp/nb-version
 	getversion
@@ -299,7 +297,7 @@ if [ $DISTRO = "rhel-type-8-64" ];then
 	VERSION=$(echo $VERSION|tail -c +3)
 	#Ask the user which server to use (the installer doesn't have a built-in list like Ubuntu and Debian do.)
 	if [ $TYPE = a ];then
-		dialog --inputbox "Where do you want to install AlmaLinux OS from?" 8 70 "http://repo.almalinux.org/almalinux/$VERSION/x86_64/os" 2>/tmp/nb-server
+		dialog --inputbox "Where do you want to install AlmaLinux OS from?" 8 70 "http://repo.almalinux.org/almalinux/$VERSION/BaseOS/x86_64/os" 2>/tmp/nb-server
 	elif [ $TYPE = c ];then
 		dialog --inputbox "Where do you want to install CentOS from?" 8 70 "http://mirrors.kernel.org/centos/$VERSION/BaseOS/x86_64/os" 2>/tmp/nb-server
 	elif [ $TYPE = r ];then
@@ -310,7 +308,7 @@ if [ $DISTRO = "rhel-type-8-64" ];then
 	SERVER=$(cat /tmp/nb-server)
 	KERNELURL="$SERVER/isolinux/vmlinuz"
 	INITRDURL="$SERVER/isolinux/initrd.img"
-	echo -n "nomodeset repo=$(cat /tmp/nb-server)" >>/tmp/nb-options
+	echo -n "nomodeset inst.repo=$(cat /tmp/nb-server)" >>/tmp/nb-options
 	rm /tmp/nb-server
 	askforopts
 fi
@@ -415,12 +413,13 @@ DISTRO=$(cat /tmp/nb-distro)
 rm /tmp/nb-distro
 #What version?
 if [ $DISTRO = "slitaz64" ] || [ $DISTRO = "slitaz32" ];then
-	dialog --backtitle "$TITLE" --menu "Choose the boot mode:" 20 70 13 \
-	core "SliTaz core Live" \
-	gtkonly "SliTaz gtkonly Live" \
-	justx "SliTaz justx Live" \
-	base "SliTaz base Live" 2>/tmp/nb-version
-	getversion
+#	dialog --backtitle "$TITLE" --menu "Choose the boot mode:" 20 70 13 \
+#	core "SliTaz core Live" \
+#	gtkonly "SliTaz gtkonly Live" \
+#	justx "SliTaz justx Live" \
+#	base "SliTaz base Live" 2>/tmp/nb-version
+#	getversion
+	VERSION=core
 elif [ $DISTRO = "slitaz" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a version to download:" 20 70 13 \
 	4.0-httpfs "SliTaz 4.0 (GUI mode, mounted over HTTP)" \
