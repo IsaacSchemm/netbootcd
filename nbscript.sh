@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 11.1.3 - January 20, 2022"
+TITLE="NetbootCD Script 11.1.x - May 22, 2022"
 
 getversion ()
 {
@@ -165,6 +165,10 @@ if [ $DISTRO = "ubuntu64" ];then
 fi
 if [ $DISTRO = "debian" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	bullseye "Debian 11" \
+	buster "Debian 10" \
+	stretch "Debian 9" \
+	jessie "Debian 8" \
 	stable "Debian stable" \
 	testing "Debian testing" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
@@ -176,6 +180,10 @@ if [ $DISTRO = "debian" ];then
 fi
 if [ $DISTRO = "debian64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	bullseye "Debian 11" \
+	buster "Debian 10" \
+	stretch "Debian 9" \
+	jessie "Debian 8" \
 	stable "Debian stable" \
 	testing "Debian testing" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
@@ -185,36 +193,32 @@ if [ $DISTRO = "debian64" ];then
 	echo -n 'vga=normal quiet" '>>/tmp/nb-options
 fi
 if [ $DISTRO = "debiandaily" ];then
-	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
-	testing "Debian testing" \
-	testing-expert "Debian testing/unstable (expert mode)" \
-	Manual "Manually enter a version to install" 2>/tmp/nb-version
+	dialog --backtitle "$TITLE" --menu "Choose a priority level:" 20 70 13 \
+	high "Default" \
+	medium "Show installation menu" \
+	low "Expert mode" 2>/tmp/nb-version
 	getversion
 	KERNELURL="http://d-i.debian.org/daily-images/i386/daily/netboot/debian-installer/i386/linux"
 	INITRDURL="http://d-i.debian.org/daily-images/i386/daily/netboot/debian-installer/i386/initrd.gz"
 	echo -n 'vga=normal quiet '>>/tmp/nb-options
-	if [ $VERSION = "testing-expert" ];then
-		echo -n 'priority=low '>>/tmp/nb-options
-	fi
+	echo -n "priority=$VERSION ">>/tmp/nb-options
 fi
 if [ $DISTRO = "debiandaily64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
-	testing "Debian testing" \
-	testing-expert "Debian testing/unstable (expert mode)" \
-	Manual "Manually enter a version to install" 2>/tmp/nb-version
+	high "Default" \
+	medium "Show installation menu" \
+	low "Expert mode" 2>/tmp/nb-version
 	getversion
 	KERNELURL="http://d-i.debian.org/daily-images/amd64/daily/netboot/debian-installer/amd64/linux"
 	INITRDURL="http://d-i.debian.org/daily-images/amd64/daily/netboot/debian-installer/amd64/initrd.gz"
 	echo -n 'vga=normal quiet '>>/tmp/nb-options
-	if [ $VERSION = "testing-expert" ];then
-		echo -n 'priority=low '>>/tmp/nb-options
-	fi
+	echo -n "priority=$VERSION ">>/tmp/nb-options
 fi
 if [ $DISTRO = "fedora64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	releases/36/Server "Fedora 36" \
 	releases/35/Server "Fedora 35" \
 	releases/34/Server "Fedora 34" \
-	releases/33/Server "Fedora 33" \
 	development/rawhide "Rawhide" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
@@ -284,13 +288,25 @@ if [ $DISTRO = "mageia64" ];then
 fi
 if [ $DISTRO = "rhel-type-8-64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	a_9 "Latest version of AlmaLinux 9" \
+	a_8 "Latest version of AlmaLinux 8" \
 	c_8 "Latest version of CentOS 8" \
-	Manual "Manually enter a version to install (prefix with s_ or c_)" 2>/tmp/nb-version
+	r_9 "Latest version of Rocky Linux 9" \
+	r_8 "Latest version of Rocky Linux 8" \
+	Manual "Manually enter a version to install (prefix with a_, c_, or r_)" 2>/tmp/nb-version
 	getversion
 	TYPE=$(echo $VERSION|head -c 1)
 	VERSION=$(echo $VERSION|tail -c +3)
 	#Ask the user which server to use (the installer doesn't have a built-in list like Ubuntu and Debian do.)
-	dialog --inputbox "Where do you want to install CentOS from?" 8 70 "http://mirrors.kernel.org/centos/$VERSION/BaseOS/x86_64/os" 2>/tmp/nb-server
+	if [ $TYPE = a ];then
+		dialog --inputbox "Where do you want to install AlmaLinux OS from?" 8 70 "http://repo.almalinux.org/almalinux/$VERSION/x86_64/os" 2>/tmp/nb-server
+	elif [ $TYPE = c ];then
+		dialog --inputbox "Where do you want to install CentOS from?" 8 70 "http://mirrors.kernel.org/centos/$VERSION/BaseOS/x86_64/os" 2>/tmp/nb-server
+	elif [ $TYPE = r ];then
+		dialog --inputbox "Where do you want to install Rocky Linux from?" 8 70 "http://download.rockylinux.org/pub/rocky/$VERSION/BaseOS/x86_64/os" 2>/tmp/nb-server
+	else
+		dialog --inputbox "Where do you want to install this distribution from?" 8 70 "" 2>/tmp/nb-server
+	fi
 	SERVER=$(cat /tmp/nb-server)
 	KERNELURL="$SERVER/isolinux/vmlinuz"
 	INITRDURL="$SERVER/isolinux/initrd.img"
@@ -363,6 +379,8 @@ if [ $DISTRO = "rhel-type-6-64" ];then
 fi
 if [ $DISTRO = "slackware" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	slackware-15.0 "Slackware 15.0 (32-bit)" \
+	slackware64-15.0 "Slackware 15.0 (64-bit)" \
 	slackware-14.2 "Slackware 14.2 (32-bit)" \
 	slackware64-14.2 "Slackware 14.2 (64-bit)" \
 	slackware-current "Slackware current (32-bit)" \
@@ -387,16 +405,24 @@ utilsmenu ()
 {
 #Ask the user to choose a distro, save the choice to /tmp/nb-distro
 dialog --backtitle "$TITLE" --menu "Choose a utility:" 20 70 13 \
-slitaz "SliTaz" \
-core "Core" 2>/tmp/nb-distro
+slitaz64 "SliTaz (64-bit)" \
+slitaz32 "SliTaz (32-bit)" \
+slitaz "SliTaz (historical)" \
+core64 "Core (64-bit)" \
+core32 "Core (32-bit)" 2>/tmp/nb-distro
 #Read their choice, save it, and delete the old file
 DISTRO=$(cat /tmp/nb-distro)
 rm /tmp/nb-distro
 #What version?
-if [ $DISTRO = "slitaz" ];then
+if [ $DISTRO = "slitaz64" ] || [ $DISTRO = "slitaz32" ];then
+	dialog --backtitle "$TITLE" --menu "Choose the boot mode:" 20 70 13 \
+	core "SliTaz core Live" \
+	gtkonly "SliTaz gtkonly Live" \
+	justx "SliTaz justx Live" \
+	base "SliTaz base Live" 2>/tmp/nb-version
+	getversion
+elif [ $DISTRO = "slitaz" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a version to download:" 20 70 13 \
-	rolling "SliTaz 5.0 rolling release" \
-	5.0-rc3 "SliTaz 5.0 rc3" \
 	4.0-httpfs "SliTaz 4.0 (GUI mode, mounted over HTTP)" \
 	4.0-full "SliTaz 4.0 (GUI mode, download and copy to RAM)" \
 	4.0-text "SliTaz 4.0 (text mode, first initrd only)" \
@@ -405,15 +431,40 @@ if [ $DISTRO = "slitaz" ];then
 	getversion
 else
 	dialog --backtitle "$TITLE" --menu "Choose a version to download:" 20 70 13 \
-	32 "Core 11.x - 32-bit" \
-	64 "Core 11.x - 64-bit" 2>/tmp/nb-version
+	13.x "Core 13.x - 32-bit" \
+	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
 fi
 if [ $DISTRO != "grub4dos" ];then
 	askforopts
 fi
 #Now for downloading.
-if [ $DISTRO = "slitaz" ];then
+if [ $DISTRO = "slitaz64" ] || [ $DISTRO = "slitaz32" ];then
+	sudo -u tc tce-load -wi xz
+	wget http://mirror.slitaz.org/iso/rolling/slitaz-rolling-core-5in1.iso -O /tmp/slitaz.iso
+	mkdir /tmp/slitaz
+	mount -o loop /tmp/slitaz.iso /tmp/slitaz
+	if [ $DISTRO = "slitaz64" ];then
+		ln -s /tmp/slitaz/boot/bzImage64 /tmp/nb-linux
+	else
+		ln -s /tmp/slitaz/boot/bzImage /tmp/nb-linux
+	fi
+	if [ -f /tmp/nb-initrd ];then
+		rm /tmp/nb-initrd
+	fi
+	cat /tmp/slitaz/boot/rootfs5.gz | /usr/local/bin/xz --single-stream -cd >> /tmp/nb-initrd
+	if [ $VERSION == "core" ] || [ $VERSION == "gtkonly" ] || [ $VERSION == "justx" ];then
+		cat /tmp/slitaz/boot/rootfs4.gz | /usr/local/bin/xz --single-stream -cd >> /tmp/nb-initrd
+	fi
+	if [ $VERSION == "core" ] || [ $VERSION == "gtkonly" ];then
+		cat /tmp/slitaz/boot/rootfs3.gz | /usr/local/bin/xz --single-stream -cd >> /tmp/nb-initrd
+	fi
+	if [ $VERSION == "core" ];then
+		cat /tmp/slitaz/boot/rootfs2.gz | /usr/local/bin/xz --single-stream -cd >> /tmp/nb-initrd
+	fi
+	cat /tmp/slitaz/boot/rootfs1.gz | /usr/local/bin/xz --single-stream -cd >> /tmp/nb-initrd
+	echo -n "root=/dev/null video=-32 autologin" >>/tmp/nb-options
+elif [ $DISTRO = "slitaz" ];then
 	if [ "$VERSION" = "tiny" ];then
 		wget http://mirror.slitaz.org/pxe/tiny/bzImage.gz -O /tmp/nb-linux
 		wget http://mirror.slitaz.org/pxe/tiny/rootfs.gz -O /tmp/nb-initrd
@@ -439,35 +490,13 @@ if [ $DISTRO = "slitaz" ];then
 		wget http://mirror.slitaz.org/pxe/tiny/vnc/bzImage.gz -O /tmp/nb-linux
 		wget http://mirror.slitaz.org/pxe/tiny/vnc/rootfs.gz -O /tmp/nb-initrd
 		echo -n "vga=ask" >>/tmp/nb-options
-	elif [ "$VERSION" = "5.0-rc3" ];then
-		wget http://mirror.slitaz.org/iso/5.0/slitaz-5.0-rc3.iso -O /tmp/slitaz.iso
-		mkdir /tmp/slitaz
-		mount -o loop /tmp/slitaz.iso /tmp/slitaz
-		ln -s /tmp/slitaz/boot/vmlinuz* /tmp/nb-linux
-		ln -s /tmp/slitaz/boot/rootfs.gz /tmp/nb-initrd
-		echo -n "rw root=/dev/null autologin" >>/tmp/nb-options
-	elif [ "$VERSION" = "rolling" ];then
-		sudo -u tc tce-load -wi xz
-		wget http://mirror.slitaz.org/iso/rolling/slitaz-rolling.iso -O /tmp/slitaz.iso
-		mkdir /tmp/slitaz
-		mount -o loop /tmp/slitaz.iso /tmp/slitaz
-		ln -s /tmp/slitaz/boot/vmlinuz* /tmp/nb-linux
-		if [ -f /tmp/nb-initrd ];then
-			rm /tmp/nb-initrd
-		fi
-		for i in 4 3 2 1;do
-			cat /tmp/slitaz/boot/rootfs$i.gz | /usr/local/bin/xz --single-stream -cd >> /tmp/nb-initrd
-		done
-		echo -n "rw root=/dev/null video=-32 autologin" >>/tmp/nb-options
 	fi
-elif [ $DISTRO = "core" ];then
-	if [ "$VERSION" == "64" ];then
-		wget http://tinycorelinux.net/11.x/x86_64/release/distribution_files/vmlinuz64 -O /tmp/nb-linux
-		wget http://tinycorelinux.net/11.x/x86_64/release/distribution_files/corepure64.gz -O /tmp/nb-initrd
-	else
-		wget http://tinycorelinux.net/11.x/x86/release/distribution_files/vmlinuz -O /tmp/nb-linux
-		wget http://tinycorelinux.net/11.x/x86/release/distribution_files/core.gz -O /tmp/nb-initrd
-	fi
+elif [ $DISTRO = "core64" ];then
+	wget http://tinycorelinux.net/$VERSION/x86_64/release/distribution_files/vmlinuz64 -O /tmp/nb-linux
+	wget http://tinycorelinux.net/$VERSION/x86_64/release/distribution_files/corepure64.gz -O /tmp/nb-initrd
+elif [ $DISTRO = "core32" ];then
+	wget http://tinycorelinux.net/$VERSION/x86/release/distribution_files/vmlinuz -O /tmp/nb-linux
+	wget http://tinycorelinux.net/$VERSION/x86/release/distribution_files/core.gz -O /tmp/nb-initrd
 fi
 }
 # Do not display menu if nb_provisionurl or local provisioning
