@@ -1,6 +1,7 @@
 #!/bin/sh
-#Build.sh 11.1 for netbootcd
-
+#Build.sh 13.1 for netbootcd
+## Copyright (C) 2022 Isaac Schemm <isaacschemm@gmail.com>
+##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License
 ## as published by the Free Software Foundation; either version 2
@@ -25,29 +26,23 @@ DONE=$(pwd)/done
 NBINIT=${WORK}/nbinit #for CD/USB
 
 #Set to false to not build floppy images
-FLOPPY=true
-NBCDVER=11.1
-COREVER=11.1
+NBCDVER=13.1
+COREVER=13.1
 
 if [ ! -f CorePlus-$COREVER.iso ];then
-	wget http://www.tinycorelinux.net/11.x/x86/release/CorePlus-$COREVER.iso
+	wget http://www.tinycorelinux.net/13.x/x86/release/CorePlus-$COREVER.iso
 fi
 
 NO=0
 for i in CorePlus-$COREVER.iso \
 nbscript.sh tc-config.diff kexec.tgz \
-grub.exe \
 dialog.tcz ncurses.tcz;do
 	if [ ! -e $i ];then
 		echo "Couldn't find $i!"
 		NO=1
 	fi
 done
-if $FLOPPY && [ ! -e blank-bootable-1440-floppy.gz ];then
-	echo "Couldn't find blank-bootable-1440-floppy.gz!"
-	NO=1
-fi
-for i in mkdosfs unsquashfs isohybrid zip;do
+for i in mkdosfs unsquashfs isohybrid zip 7zr;do
 	if ! which $i > /dev/null;then
 		echo "Please install $i!"
 		NO=1
@@ -195,7 +190,14 @@ cp ${TCISO}/boot/isolinux/menu.c32 ${WORK}/iso/boot/isolinux #get menu.c32 from 
 for i in vmlinuz nbinit4.gz;do
 	cp ${DONE}/$i ${WORK}/iso/boot
 done
-wget -O ${WORK}/iso/boot/grub.exe https://www.lakora.us/netbootcd/downloads/grub4dos-0.4.6a-2020-02-29/grub.exe
+wget -O ${WORK}/grub4dos.7z http://dl.grub4dos.chenall.net/grub4dos-0.4.6a-2022-01-18.7z
+mkdir ${WORK}/grub4dos
+cd ${WORK}/grub4dos
+7zr x ${WORK}/grub4dos.7z
+cd -
+rm ${WORK}/grub4dos.7z
+cp ${WORK}/grub4dos/grub4dos-0.4.6a/grub.exe ${WORK}/iso/boot/grub.exe
+rm -r ${WORK}/grub4dos
 
 echo "DEFAULT menu.c32
 PROMPT 0
@@ -214,7 +216,7 @@ initrd /boot/nbinit4.gz
 append quiet
 
 LABEL grub4dos
-menu label ^GRUB4DOS 0.4.6a-2020-02-29
+menu label ^grub4dos-0.4.6a-2022-01-18
 kernel /boot/grub.exe
 " >> ${WORK}/iso/boot/isolinux/isolinux.cfg
 
@@ -409,7 +411,7 @@ APPEND initrd=/boot/core.gz loglevel=3 waitusb=5
 MENU END
 
 LABEL grub4dos
-menu label ^GRUB4DOS 0.4.6a-2020-02-29
+menu label ^grub4dos-0.4.6a-2022-01-18
 kernel /boot/grub.exe
 " > ${WORK}/iso/boot/isolinux/isolinux.cfg
 $MAKER --no-emul-boot --boot-info-table --boot-load-size 4 \

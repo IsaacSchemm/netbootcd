@@ -1,6 +1,6 @@
 #!/bin/sh
-##Floppy.sh 11.1 for netbootcd
-## Copyright (C) 2020 Isaac Schemm <isaacschemm@gmail.com>
+##Floppy.sh 13.1 for netbootcd
+## Copyright (C) 2022 Isaac Schemm <isaacschemm@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License
@@ -28,16 +28,10 @@ NBINIT2=${WORK}/nbinit2 #for floppy
 FDIR=$(pwd)
 
 #Set to false to not build floppy images
-FLOPPY=true
-NBCDVER=11.1
+NBCDVER=13.1
 
-if [ ! -f old.vmlinuz ];then
-	wget -O old.vmlinuz http://tinycorelinux.net/7.x/x86/release/distribution_files/vmlinuz
-fi
-
-if [ ! -f old.core.gz ];then
-	wget -O old.core.gz http://tinycorelinux.net/7.x/x86/release/distribution_files/core.gz
-fi
+wget -O old.vmlinuz http://tinycorelinux.net/5.x/x86/release/distribution_files/vmlinuz
+wget -O old.core.gz http://tinycorelinux.net/5.x/x86/release/distribution_files/core.gz
 
 NO=0
 for i in old.vmlinuz old.core.gz tc-config.diff kexec.tgz;do
@@ -46,11 +40,11 @@ for i in old.vmlinuz old.core.gz tc-config.diff kexec.tgz;do
 		NO=1
 	fi
 done
-if $FLOPPY && [ ! -e blank-bootable-1440-floppy.gz ];then
+if [ ! -e blank-bootable-1440-floppy.gz ];then
 	echo "Couldn't find blank-bootable-1440-floppy.gz!"
 	NO=1
 fi
-for i in zip;do
+for i in zip advdef;do
 	if ! which $i > /dev/null;then
 		echo "Please install $i!"
 		NO=1
@@ -120,7 +114,7 @@ cd ${NBINIT2}
 find . | cpio -o -H 'newc' | gzip -c > ${DONE}/nbflop4.gz
 cd -
 if which advdef 2> /dev/null;then
-	advdef -z ${DONE}/nbflop4.gz #extra compression
+	advdef -z -3 ${DONE}/nbflop4.gz #extra compression
 fi
 #rm -r ${NBINIT2}
 echo "Made floppy initrd:" $(wc -c ${DONE}/nbflop4.gz)
@@ -146,17 +140,6 @@ mkdir $TMPDIR
 mkdir $TMPDIR/1
 
 cp -v dos/* $TMPDIR/1
-echo "default 0
-timeout 3
-
-title Load FreeDOS
-chainloader (fd0)/kernel.sys" > $TMPDIR/1/menu.lst
-echo "DEVICE=HIMEMX.EXE
-LASTDRIVE=Z" > $TMPDIR/1/fdconfig.sys
-echo "@ECHO OFF
-XMSDSK.EXE 49152 T: /Y
-COPY TINYCORE.NOT T:\TINYCORE.BAT
-T:\TINYCORE.BAT" > $TMPDIR/1/autoexec.bat
 
 KERNEL_SIZE=$(wc -c $KERNEL|awk '{print $1}')
 INITRD_SIZE=$(wc -c $INITRD|awk '{print $1}')
@@ -246,6 +229,15 @@ CHUNK.EXE /S${BIGGER_SIZE} NBCD4.CAT FILE
 LINLD.COM image=FILE.001 initrd=FILE.000 cl=@KERNELCL.TXT
 " >> $TMPDIR/1/tinycore.not
 echo "quiet kernelurl=http://lakora.nfshost.com/netbootcd/downloads/$NBCDVER/vmlinuz initrdurl=http://lakora.nfshost.com/netbootcd/downloads/$NBCDVER/nbinit4.gz" > $TMPDIR/1/kernelcl.txt
+
+BATCH_FILE_SIZE=$(wc -c $TMPDIR/1/tinycore.not|awk '{print $1}')
+NEEDED_RAMDISK=$((2*($KERNEL_SIZE+$INITRD_SIZE)+$BATCH_FILE_SIZE))
+echo "DEVICE=HIMEMX.EXE
+LASTDRIVE=Z" > $TMPDIR/1/fdconfig.sys
+echo "@ECHO OFF
+XMSDSK.EXE $NEEDED_RAMDISK T: /Y
+COPY TINYCORE.NOT T:\TINYCORE.BAT
+T:\TINYCORE.BAT" > $TMPDIR/1/autoexec.bat
 
 gzip -cd freedos.img.gz > $TMPDIR/1.img
 mkdir $TMPDIR/a1
