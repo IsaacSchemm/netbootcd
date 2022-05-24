@@ -225,13 +225,14 @@ done
 echo "ECHO You may now remove the floppy disk from the drive.
 T:
 CHUNK.EXE /C PART NBCD4.CAT
+DEL PART.*
 CHUNK.EXE /S${BIGGER_SIZE} NBCD4.CAT FILE
 LINLD.COM image=FILE.001 initrd=FILE.000 cl=@KERNELCL.TXT
 " >> $TMPDIR/1/tinycore.not
 echo "quiet kernelurl=http://lakora.nfshost.com/netbootcd/downloads/$NBCDVER/vmlinuz initrdurl=http://lakora.nfshost.com/netbootcd/downloads/$NBCDVER/nbinit4.gz" > $TMPDIR/1/kernelcl.txt
 
 BATCH_FILE_SIZE=$(wc -c $TMPDIR/1/tinycore.not|awk '{print $1}')
-NEEDED_RAMDISK=$((2*($KERNEL_SIZE+$INITRD_SIZE)+$BATCH_FILE_SIZE))
+NEEDED_RAMDISK=20160
 echo "DEVICE=HIMEMX.EXE
 LASTDRIVE=Z" > $TMPDIR/1/fdconfig.sys
 echo "@ECHO OFF
