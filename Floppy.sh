@@ -114,7 +114,7 @@ cd ${NBINIT2}
 find . | cpio -o -H 'newc' | gzip -c > ${DONE}/nbflop4.gz
 cd -
 if which advdef 2> /dev/null;then
-	advdef -z -3 ${DONE}/nbflop4.gz #extra compression
+	advdef -z ${DONE}/nbflop4.gz #extra compression
 fi
 #rm -r ${NBINIT2}
 echo "Made floppy initrd:" $(wc -c ${DONE}/nbflop4.gz)
