@@ -21,7 +21,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 13.1 - May 22, 2022"
+TITLE="NetbootCD Script 11.1.4 - May 23, 2022"
 
 getversion ()
 {
@@ -430,7 +430,9 @@ elif [ $DISTRO = "slitaz" ];then
 	getversion
 else
 	dialog --backtitle "$TITLE" --menu "Choose a version to download:" 20 70 13 \
-	13.x "Core 13.x - 32-bit" \
+	13.x "Core 13.x" \
+	12.x "Core 12.x" \
+	11.x "Core 11.x" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
 fi

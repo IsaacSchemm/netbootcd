@@ -1,5 +1,5 @@
 #!/bin/sh
-#Build.sh 13.1 for netbootcd
+#Build.sh 11.1.4 for netbootcd
 ## Copyright (C) 2022 Isaac Schemm <isaacschemm@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
@@ -26,11 +26,11 @@ DONE=$(pwd)/done
 NBINIT=${WORK}/nbinit #for CD/USB
 
 #Set to false to not build floppy images
-NBCDVER=13.1
-COREVER=13.1
+NBCDVER=11.1.4
+COREVER=11.1
 
 if [ ! -f CorePlus-$COREVER.iso ];then
-	wget http://www.tinycorelinux.net/13.x/x86/release/CorePlus-$COREVER.iso
+	wget http://www.tinycorelinux.net/11.x/x86/release/CorePlus-$COREVER.iso
 fi
 
 NO=0
@@ -269,6 +269,7 @@ LABEL nbcd
 menu label Start ^NetbootCD $NBCDVER only
 kernel /boot/vmlinuz
 initrd /boot/nbinit4.gz
+append base
 text help
 Runs NetbootCD on its own, without loading GUI or extensions.
 Boot media is removable.
@@ -286,16 +287,6 @@ append loglevel=3 cde showapps desktop=flwm_topside
 
 MENU BEGIN Other Core Plus options
 
-LABEL plus
-MENU DEFAULT
-MENU LABEL Boot Core Plus with default FLWM topside.
-TEXT HELP
-Boot Core plus support extensions of networking, installation and remastering.
-All extensions are loaded mount mode. Boot media is not removable.
-ENDTEXT
-KERNEL /boot/vmlinuz
-APPEND initrd=/boot/core.gz loglevel=3 cde showapps desktop=flwm_topside
-
 LABEL jwm
 MENU LABEL Boot Core Plus with Joe's Window Manager.
 TEXT HELP
@@ -303,7 +294,8 @@ Boot Core with JWM plus networking, installation and remastering.
 All extensions are loaded mount mode. Boot media is not removable.
 ENDTEXT
 KERNEL /boot/vmlinuz
-APPEND initrd=/boot/core.gz loglevel=3 cde showapps desktop=jwm
+INITRD /boot/core.gz
+APPEND loglevel=3 cde showapps desktop=jwm
 
 LABEL icewm
 MENU LABEL Boot Core Plus with ICE Window Manager.
@@ -312,7 +304,8 @@ Boot Core with ICE window manager plus networking, installation and remastering.
 All extensions are loaded mount mode. Boot media is not removable.
 ENDTEXT
 KERNEL /boot/vmlinuz
-APPEND initrd=/boot/core.gz loglevel=3 cde showapps desktop=icewm
+INITRD /boot/core.gz
+APPEND loglevel=3 cde showapps desktop=icewm
 
 LABEL fluxbox
 MENU LABEL Boot Core Plus with Fluxbox Window Manager.
@@ -321,7 +314,8 @@ Boot Core with Fluxbox plus networking, installation and remastering.
 All extensions are loaded mount mode. Boot media is not removable.
 ENDTEXT
 KERNEL /boot/vmlinuz
-APPEND initrd=/boot/core.gz loglevel=3 cde showapps desktop=fluxbox
+INITRD /boot/core.gz
+APPEND loglevel=3 cde showapps desktop=fluxbox
 
 LABEL hackedbox
 MENU LABEL Boot Core Plus with Hackedbox Window Manager.
@@ -330,7 +324,8 @@ Boot Core with hackedbox plus networking, installation and remastering.
 All extensions are loaded mount mode. Boot media is not removable.
 ENDTEXT
 KERNEL /boot/vmlinuz
-APPEND initrd=/boot/core.gz loglevel=3 cde showapps desktop=hackedbox
+INITRD /boot/core.gz
+APPEND loglevel=3 cde showapps desktop=hackedbox
 
 LABEL openbox
 MENU LABEL Boot Core Plus with Openbox Window Manager.
@@ -339,7 +334,8 @@ Boot Core with openbox plus networking, installation and remastering.
 All extensions are loaded mount mode. Boot media is not removable.
 ENDTEXT
 KERNEL /boot/vmlinuz
-APPEND initrd=/boot/core.gz loglevel=3 cde showapps desktop=openbox
+INITRD /boot/core.gz
+APPEND loglevel=3 cde showapps desktop=openbox
 
 LABEL flwm
 MENU LABEL Boot Core Plus with FLWM Classic Window Manager.
@@ -348,7 +344,8 @@ Boot Core with flwm plus networking, installation and remastering.
 All extensions are loaded mount mode. Boot media is not removable.
 ENDTEXT
 KERNEL /boot/vmlinuz
-APPEND initrd=/boot/core.gz loglevel=3 cde showapps desktop=flwm
+INITRD /boot/core.gz
+APPEND loglevel=3 cde showapps desktop=flwm
 
 LABEL tiny
 MENU LABEL Boot Core with only X/GUI (TinyCore).
@@ -358,7 +355,8 @@ All X/GUI extensions are loaded mount mode. Boot media is not removable.
 Use TAB to edit desktop= to boot to alternate window manager.
 ENDTEXT
 KERNEL /boot/vmlinuz
-APPEND initrd=/boot/core.gz loglevel=3 cde showapps lst=xbase.lst base desktop=flwm_topside
+INITRD /boot/core.gz
+APPEND loglevel=3 cde showapps lst=xbase.lst desktop=flwm_topside
 
 LABEL cxi
 MENU LABEL Boot Core with X/GUI (TinyCore) + Installation Extension.
@@ -368,7 +366,8 @@ Extensions are loaded mount mode. Boot media is not removable.
 Use TAB to edit desktop= to boot to alternate window manager.
 ENDTEXT
 KERNEL /boot/vmlinuz
-APPEND initrd=/boot/core.gz loglevel=3 cde showapps lst=xibase.lst base desktop=flwm_topside
+INITRD /boot/core.gz
+APPEND loglevel=3 cde showapps lst=xibase.lst desktop=flwm_topside
 
 LABEL cxw
 MENU LABEL Boot Core with X/GUI (TinyCore) + Wifi Extension.
@@ -378,7 +377,8 @@ Extensions are loaded mount mode. Boot media is not removable.
 Use TAB to edit desktop= to boot to alternate window manager.
 ENDTEXT
 KERNEL /boot/vmlinuz
-APPEND initrd=/boot/core.gz loglevel=3 cde showapps lst=xwbase.lst base desktop=flwm_topside
+INITRD /boot/core.gz
+APPEND loglevel=3 cde showapps lst=xwbase.lst desktop=flwm_topside
 
 LABEL cxf
 MENU LABEL Boot Core with X/GUI (TinyCore) + Wifi + Firmware.
@@ -388,7 +388,8 @@ Extensions are loaded mount mode. Boot media is not removable.
 Use TAB to edit desktop= to boot to alternate window manager.
 ENDTEXT
 KERNEL /boot/vmlinuz
-APPEND initrd=/boot/core.gz loglevel=3 cde showapps lst=xfbase.lst base desktop=flwm_topside
+INITRD /boot/core.gz
+APPEND loglevel=3 cde showapps lst=xfbase.lst desktop=flwm_topside
 
 LABEL core
 MENU LABEL Boot Core to command line only. No X/GUI or extensions.
@@ -397,7 +398,8 @@ Boot Core character text mode to ram. No user or support extensions are loaded.
 Boot media is removable.
 ENDTEXT
 KERNEL /boot/vmlinuz
-APPEND initrd=/boot/core.gz loglevel=3 base
+INITRD /boot/core.gz
+APPEND loglevel=3 base
 
 LABEL nocde
 MENU LABEL Boot Core without embedded extensions with waitusb=5.
@@ -406,7 +408,8 @@ Boot Core to base system. No embedded support extensions are loaded. User extens
 scanned or specified will be loaded and will need to provide X/GUI if required.
 ENDTEXT
 KERNEL /boot/vmlinuz
-APPEND initrd=/boot/core.gz loglevel=3 waitusb=5
+INITRD /boot/core.gz
+APPEND loglevel=3 waitusb=5 base
 
 MENU END
 

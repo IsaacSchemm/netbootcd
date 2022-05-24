@@ -1,5 +1,5 @@
 #!/bin/sh
-##Floppy.sh 13.1 for netbootcd
+##Floppy.sh 11.1.4 for netbootcd
 ## Copyright (C) 2022 Isaac Schemm <isaacschemm@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
@@ -22,13 +22,13 @@
 set -e
 PATH=$PATH:/sbin
 WORK=$(pwd)/work
-DONE=$(pwd)/done
+DONE=$(pwd)/flopdone
 NBINIT2=${WORK}/nbinit2 #for floppy
 
 FDIR=$(pwd)
 
 #Set to false to not build floppy images
-NBCDVER=13.1
+NBCDVER=11.1.4
 
 wget -O old.vmlinuz http://tinycorelinux.net/5.x/x86/release/distribution_files/vmlinuz
 wget -O old.core.gz http://tinycorelinux.net/5.x/x86/release/distribution_files/core.gz
@@ -262,7 +262,7 @@ for i in $(seq 2 $NUM_DISKS);do
 	mv $TMPDIR/$i.img ${DONE}/floppy/$i.img
 done
 
-cd done/floppy
+cd $DONE/floppy
 cp 1.img ../NetbootCD-$NBCDVER-floppy.img
 zip ../NetbootCD-$NBCDVER-floppy-set.zip *.img
 cd -
