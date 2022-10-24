@@ -2,7 +2,7 @@
 set -e
 ## nbscript.sh - Download netboot images and launch them with kexec
 ## Copyright (C) 2022 Isaac Schemm <isaacschemm@gmail.com>
-## Copyright (C) 2022 Jonathan A. Wingo <spcwingo1@gmail.com>
+## Devuan added by Jonathan A. Wingo Oct 2022 <spcwingo1@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License
