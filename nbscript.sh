@@ -226,7 +226,6 @@ if [ $DISTRO = "devuan" ];then
 	KERNELURL="https://pkgmaster.devuan.org/devuan/dists/$VERSION/main/installer-i386/current/images/netboot/debian-installer/i386/linux"
 	INITRDURL="https://pkgmaster.devuan.org/devuan/dists/$VERSION/main/installer-i386/current/images/netboot/debian-installer/i386/initrd.gz"
 	echo -n 'vga=normal quiet '>>/tmp/nb-options
-	#Testing and unstable use the same kernel. See: https://wiki.debian.org/DebianUnstable#How_do_I_install_Sid.3F
 fi
 if [ $DISTRO = "devuan64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
