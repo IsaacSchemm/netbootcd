@@ -96,8 +96,8 @@ debian64 " (amd64) Debian GNU/Linux" \
 debian "  (i386) Debian GNU/Linux" \
 debiandaily64 " (amd64) Debian GNU/Linux - daily installers" \
 debiandaily "  (i386) Debian GNU/Linux - daily installers" \
-devuan "  (i386) Devuan GNU/Linux \
-devuan64 " (amd64) Devuan GNU/Linux \
+devuan "  (i386) Devuan GNU/Linux" \
+devuan64 " (amd64) Devuan GNU/Linux" \
 fedora64 "(x86_64) Fedora" \
 opensuse64 "(x86_64) openSUSE" \
 opensuse "  (i386) openSUSE" \
