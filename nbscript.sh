@@ -2,6 +2,7 @@
 set -e
 ## nbscript.sh - Download netboot images and launch them with kexec
 ## Copyright (C) 2022 Isaac Schemm <isaacschemm@gmail.com>
+## Copyright (C) 2022 Jonathan A. Wingo <spcwingo1@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License
@@ -95,6 +96,8 @@ debian64 " (amd64) Debian GNU/Linux" \
 debian "  (i386) Debian GNU/Linux" \
 debiandaily64 " (amd64) Debian GNU/Linux - daily installers" \
 debiandaily "  (i386) Debian GNU/Linux - daily installers" \
+devuan "  (i386) Devuan GNU/Linux \
+devuan64 " (amd64) Devuan GNU/Linux \
 fedora64 "(x86_64) Fedora" \
 opensuse64 "(x86_64) openSUSE" \
 opensuse "  (i386) openSUSE" \
@@ -213,6 +216,27 @@ if [ $DISTRO = "debiandaily64" ];then
 	INITRDURL="http://d-i.debian.org/daily-images/amd64/daily/netboot/debian-installer/amd64/initrd.gz"
 	echo -n 'vga=normal quiet '>>/tmp/nb-options
 	echo -n "priority=$VERSION ">>/tmp/nb-options
+fi
+if [ $DISTRO = "devuan" ];then
+	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	chimaera "Devuan chimaera" \
+	ceres "Devuan ceres" \
+	Manual "Manually enter a version to install" 2>/tmp/nb-version
+	getversion
+	KERNELURL="https://pkgmaster.devuan.org/devuan/dists/$VERSION/main/installer-i386/current/images/netboot/debian-installer/i386/linux"
+	INITRDURL="https://pkgmaster.devuan.org/devuan/dists/$VERSION/main/installer-i386/current/images/netboot/debian-installer/i386/initrd.gz"
+	echo -n 'vga=normal quiet '>>/tmp/nb-options
+	#Testing and unstable use the same kernel. See: https://wiki.debian.org/DebianUnstable#How_do_I_install_Sid.3F
+fi
+if [ $DISTRO = "devuan64" ];then
+	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	chimaera "Devuan chimaera" \
+	ceres "Devuan ceres"\
+	Manual "Manually enter a version to install" 2>/tmp/nb-version
+	getversion
+	KERNELURL="https://pkgmaster.devuan.org/devuan/dists/$VERSION/main/installer-amd64/current/images/netboot/debian-installer/amd64/linux"
+	INITRDURL="https://pkgmaster.devuan.org/devuan/dists/$VERSION/main/installer-amd64/current/images/netboot/debian-installer/amd64/initrd.gz"
+	echo -n 'vga=normal quiet" '>>/tmp/nb-options
 fi
 if [ $DISTRO = "fedora64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
