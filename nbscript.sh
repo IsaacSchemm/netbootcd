@@ -223,8 +223,8 @@ if [ $DISTRO = "devuan" ];then
 	ceres "Devuan ceres" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
-	KERNELURL="http://deb.devuan.org/devuan/dists/$VERSION/main/installer-amd64/current/images/netboot/debian-installer/i386/linux"
-	INITRDURL="http://deb.devuan.org/devuan/dists/$VERSION/main/installer-amd64/current/images/netboot/debian-installer/i386/initrd.gz"
+	KERNELURL="http://deb.devuan.org/devuan/dists/$VERSION/main/installer-i386/current/images/netboot/debian-installer/i386/linux"
+	INITRDURL="http://deb.devuan.org/devuan/dists/$VERSION/main/installer-i386/current/images/netboot/debian-installer/i386/initrd.gz"
 	echo -n 'vga=normal quiet '>>/tmp/nb-options
 fi
 if [ $DISTRO = "devuan64" ];then
