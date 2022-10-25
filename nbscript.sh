@@ -230,7 +230,7 @@ fi
 if [ $DISTRO = "devuan64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
 	chimaera "Devuan chimaera" \
-	ceres "Devuan ceres"\
+	ceres "Devuan ceres" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
 	KERNELURL="https://pkgmaster.devuan.org/devuan/dists/$VERSION/main/installer-amd64/current/images/netboot/debian-installer/amd64/linux"
