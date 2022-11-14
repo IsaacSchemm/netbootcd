@@ -22,7 +22,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 11.1.5 - October 24, 2022"
+TITLE="NetbootCD Script 11.1.6 - November 14, 2022"
 
 getversion ()
 {
