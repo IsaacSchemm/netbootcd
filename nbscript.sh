@@ -2,7 +2,7 @@
 set -e
 ## nbscript.sh - Download netboot images and launch them with kexec
 ## Copyright (C) 2022 Isaac Schemm <isaacschemm@gmail.com>
-## Devuan added by Jonathan A. Wingo Oct 2022 <spcwingo1@gmail.com>
+## Devuan and Arch added by Jonathan A. Wingo Oct 2022 <spcwingo1@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License
@@ -107,6 +107,7 @@ rhel-type-8-64 "(x86_64) AlmaLinux 8 / CentOS 8 / Rocky Linux 8" \
 rhel-type-7-64 "(x86_64) CentOS 7 and Scientific Linux 7" \
 rhel-type-6-64 "(x86_64) CentOS 6 and Scientific Linux 6" \
 rhel-type-6 "  (i386) CentOS 6 and Scientific Linux 6" \
+arch "(x86_64) Arch Linux" \
 slackware "         Slackware" 2>/tmp/nb-distro
 #Read their choice, save it, and delete the old file
 DISTRO=$(cat /tmp/nb-distro)
@@ -397,6 +398,14 @@ if [ $DISTRO = "rhel-type-6-64" ];then
 	echo -n "ide=nodma method=$(cat /tmp/nb-server)" >>/tmp/nb-options
 	rm /tmp/nb-server
 	askforopts
+fi
+if [ $DISTRO = "arch" ];then
+	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	latest "Arch x86_64" 2>/tmp/nb-version
+	getversion
+	KERNELURL="http://mirror.rackspace.com/archlinux/iso/$VERSION/arch/boot/x86_64/vmlinuz-linux"
+	INITRDURL="http://mirror.rackspace.com/archlinux/iso/$VERSION/arch/boot/x86_64/initramfs-linux.img"
+	echo -n 'vga=normal quiet archiso_http_srv=http://mirror.rackspace.com/archlinux/iso/latest/ archisobasedir=arch verify=y ip=dhcp net.ifnames=0 BOOTIF=01-${netX/mac} boot" '>>/tmp/nb-options
 fi
 if [ $DISTRO = "slackware" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
