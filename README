@@ -2,6 +2,6 @@ NetbootCD is a Linux live CD based on Tiny Core Linux. The live CD allows the us
 
 Some of the distributions supported by NetbootCD are prerelease or development distributions (such as Fedora Rawhide and Debian sid.) Because NetbootCD downloads the latest installer, which in turn downloads the latest system components, you can install a fully up-to-date system without burning a new CD.
 
-The NetbootCD script (nbscript.sh) is written by me and is licensed GPLv2+. Other components have their own license terms.
+The NetbootCD script (nbscript.sh) is written by Isaac Schemm (et al) and is licensed GPLv2+. Other components have their own license terms.
 
 See http://lakora.us/netbootcd for more information.
