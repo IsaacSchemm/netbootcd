@@ -1,5 +1,5 @@
 #!/bin/sh
-#Build.sh 11.1.5 for netbootcd
+#Build.sh 11.1.7 for netbootcd
 ## Copyright (C) 2022 Isaac Schemm <isaacschemm@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
@@ -26,7 +26,7 @@ DONE=$(pwd)/done
 NBINIT=${WORK}/nbinit #for CD/USB
 
 #Set to false to not build floppy images
-NBCDVER=11.1.5
+NBCDVER=11.1.7
 COREVER=11.1
 
 if [ ! -f CorePlus-$COREVER.iso ];then

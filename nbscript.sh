@@ -22,7 +22,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 11.1.6 - November 14, 2022"
+TITLE="NetbootCD Script 11.1.7 - September 27, 2023"
 
 getversion ()
 {
@@ -169,6 +169,7 @@ if [ $DISTRO = "ubuntu64" ];then
 fi
 if [ $DISTRO = "debian" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+ 	bookworm "Debian 12" \
 	bullseye "Debian 11" \
 	buster "Debian 10" \
 	stretch "Debian 9" \
@@ -184,6 +185,7 @@ if [ $DISTRO = "debian" ];then
 fi
 if [ $DISTRO = "debian64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+ 	bookworm "Debian 12" \
 	bullseye "Debian 11" \
 	buster "Debian 10" \
 	stretch "Debian 9" \
@@ -220,6 +222,7 @@ if [ $DISTRO = "debiandaily64" ];then
 fi
 if [ $DISTRO = "devuan" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+ 	daedalus "Devuan daedalus" \
 	chimaera "Devuan chimaera" \
 	ceres "Devuan ceres" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
@@ -230,6 +233,7 @@ if [ $DISTRO = "devuan" ];then
 fi
 if [ $DISTRO = "devuan64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+ 	daedalus "Devuan daedalus" \
 	chimaera "Devuan chimaera" \
 	ceres "Devuan ceres" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
