@@ -244,9 +244,8 @@ if [ $DISTRO = "devuan64" ];then
 fi
 if [ $DISTRO = "fedora64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
-	releases/36/Server "Fedora 36" \
-	releases/35/Server "Fedora 35" \
-	releases/34/Server "Fedora 34" \
+ 	releases/38/Server "Fedora 38" \
+ 	releases/37/Server "Fedora 37" \
 	development/rawhide "Rawhide" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
