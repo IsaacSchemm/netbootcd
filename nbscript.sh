@@ -295,6 +295,7 @@ if [ $DISTRO = "opensuse64" ];then
 fi
 if [ $DISTRO = "mageia" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	9 "Mageia 9" \
 	8 "Mageia 8" \
 	cauldron "Mageia cauldron" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
@@ -305,6 +306,7 @@ if [ $DISTRO = "mageia" ];then
 fi
 if [ $DISTRO = "mageia64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	9 "Mageia 9" \
 	8 "Mageia 8" \
 	cauldron "Mageia cauldron" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
