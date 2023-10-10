@@ -100,7 +100,6 @@ devuan "  (i386) Devuan GNU/Linux" \
 devuan64 " (amd64) Devuan GNU/Linux" \
 fedora64 "(x86_64) Fedora" \
 opensuse64 "(x86_64) openSUSE" \
-opensuse "  (i386) openSUSE" \
 mageia64 "(x86_64) Mageia" \
 mageia "  (i386) Mageia" \
 rhel-type-8-64 "(x86_64) AlmaLinux 8 / CentOS 8 / Rocky Linux 8" \
@@ -256,27 +255,12 @@ if [ $DISTRO = "fedora64" ];then
 	echo -n "inst.stage2=$(cat /tmp/nb-server)" >>/tmp/nb-options
 	rm /tmp/nb-server
 fi
-if [ $DISTRO = "opensuse" ];then
-	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
-	tumbleweed "openSUSE Tumbleweed" \
-	Manual "Manually enter a version to install" 2>/tmp/nb-version
-	getversion
-	#All versions of openSUSE are in the "distribution" folder, except for factory/tumbleweed.
-	if [ $VERSION != "tumbleweed" ];then
-		VERSION=distribution/$VERSION
-	fi
-	KERNELURL="http://download.opensuse.org/$VERSION/repo/oss/boot/i386/loader/linux"
-	INITRDURL="http://download.opensuse.org/$VERSION/repo/oss/boot/i386/loader/initrd"
-	#These options are common to openSUSE.
-	echo -n 'splash=silent showopts '>>/tmp/nb-options
-	#Ask the user which server to use (the installer doesn't have a built-in list like Ubuntu and Debian do.)
-	dialog --inputbox "Where do you want to install openSUSE from?" 8 70 http://download.opensuse.org/$VERSION/repo/oss 2>/tmp/nb-server
-	echo -n "install=$(cat /tmp/nb-server)" >>/tmp/nb-options
-	rm /tmp/nb-server
-fi
 if [ $DISTRO = "opensuse64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
 	tumbleweed "openSUSE Tumbleweed" \
+	leap/15.6 "openSUSE Leap 15.6" \
+	leap/15.5 "openSUSE Leap 15.5" \
+	leap/15.4 "openSUSE Leap 15.4" \
 	leap/15.3 "openSUSE Leap 15.3" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
@@ -295,6 +279,7 @@ if [ $DISTRO = "opensuse64" ];then
 fi
 if [ $DISTRO = "mageia" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	9 "Mageia 9" \
 	8 "Mageia 8" \
 	cauldron "Mageia cauldron" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
@@ -305,6 +290,7 @@ if [ $DISTRO = "mageia" ];then
 fi
 if [ $DISTRO = "mageia64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	9 "Mageia 9" \
 	8 "Mageia 8" \
 	cauldron "Mageia cauldron" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
@@ -408,7 +394,7 @@ if [ $DISTRO = "arch" ];then
 	getversion
 	KERNELURL="http://mirror.rackspace.com/archlinux/iso/$VERSION/arch/boot/x86_64/vmlinuz-linux"
 	INITRDURL="http://mirror.rackspace.com/archlinux/iso/$VERSION/arch/boot/x86_64/initramfs-linux.img"
-	echo -n 'vga=normal quiet archiso_http_srv=http://mirror.rackspace.com/archlinux/iso/latest/ archisobasedir=arch verify=y ip=dhcp net.ifnames=0 BOOTIF=01-${netX/mac} boot" '>>/tmp/nb-options
+	echo -n 'vga=normal quiet archiso_http_srv=http://mirror.rackspace.com/archlinux/iso/latest/ archisobasedir=arch verify=n ip=dhcp net.ifnames=0 BOOTIF=01-${netX/mac} boot" '>>/tmp/nb-options
 fi
 if [ $DISTRO = "slackware" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
