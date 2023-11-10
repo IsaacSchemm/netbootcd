@@ -247,9 +247,6 @@ if [ $DISTRO = "fedora64" ];then
   	releases/38/Server "Fedora 38" \
  	releases/37/Server "Fedora 37" \
 	development/rawhide "Rawhide" \
-	releases/39/Silverblue "Silverblue 39" \
-	releases/38/Silverblue "Silverblue 38" \
-	releases/37/Silverblue "Silverblue 37" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
 	getversion
 	#Ask the user which server to use (the installer doesn't have a built-in list like Ubuntu and Debian do.)
