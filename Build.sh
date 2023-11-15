@@ -421,7 +421,7 @@ $MAKER --no-emul-boot --boot-info-table --boot-load-size 4 \
 -b boot/isolinux/isolinux.bin -c boot/isolinux/boot.cat -J -r -l \
 -o ${DONE}/NetbootCD-$NBCDVER+CorePlus-$COREVER.iso ${WORK}/iso
 
-chown -R 1000.1000 $DONE
+chown -R 1000:1000 $DONE
 isohybrid ${DONE}/NetbootCD-$NBCDVER+CorePlus-$COREVER.iso
 
 ln -s ${DONE}/NetbootCD-$NBCDVER+CorePlus-$COREVER.iso ${DONE}/NetbootCD+CorePlus.iso
