@@ -102,6 +102,7 @@ fedora64 "(x86_64) Fedora" \
 opensuse64 "(x86_64) openSUSE" \
 mageia64 "(x86_64) Mageia" \
 mageia "  (i386) Mageia" \
+rhel-type-9-64 "(x86_64) AlmaLinux 9 / CentOS 9-Stream / Rocky Linux 9" \
 rhel-type-8-64 "(x86_64) AlmaLinux 8 / CentOS 8 / Rocky Linux 8" \
 rhel-type-7-64 "(x86_64) CentOS 7 and Scientific Linux 7" \
 rhel-type-6-64 "(x86_64) CentOS 6 and Scientific Linux 6" \
@@ -299,6 +300,32 @@ if [ $DISTRO = "mageia64" ];then
 	KERNELURL="http://mirrors.kernel.org/mageia/distrib/$VERSION/x86_64/isolinux/x86_64/vmlinuz"
 	INITRDURL="http://mirrors.kernel.org/mageia/distrib/$VERSION/x86_64/isolinux/x86_64/all.rdz"
 	echo -n 'automatic=method:http' >>/tmp/nb-options
+fi
+if [ $DISTRO = "rhel-type-9-64" ];then
+	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
+	a_9 "Latest version of AlmaLinux 9" \
+	c_9-stream "Latest version of CentOS Stream 9" \
+	r_9 "Latest version of Rocky Linux 9" \
+	Manual "Manually enter a version to install (prefix with a_, c_, or r_)" 2>/tmp/nb-version
+	getversion
+	TYPE=$(echo $VERSION|head -c 1)
+	VERSION=$(echo $VERSION|tail -c +3)
+	#Ask the user which server to use (the installer doesn't have a built-in list like Ubuntu and Debian do.)
+	if [ $TYPE = a ];then
+		dialog --inputbox "Where do you want to install AlmaLinux OS from?" 8 70 "http://repo.almalinux.org/almalinux/$VERSION/BaseOS/x86_64/os" 2>/tmp/nb-server
+	elif [ $TYPE = c ];then
+		dialog --inputbox "Where do you want to install CentOS Stream from?" 8 70 "https://ftp-chi.osuosl.org/pub/centos-stream/$VERSION/BaseOS/x86_64/os" 2>/tmp/nb-server
+	elif [ $TYPE = r ];then
+		dialog --inputbox "Where do you want to install Rocky Linux from?" 8 70 "http://download.rockylinux.org/pub/rocky/$VERSION/BaseOS/x86_64/os" 2>/tmp/nb-server
+	else
+		dialog --inputbox "Where do you want to install this distribution from?" 8 70 "" 2>/tmp/nb-server
+	fi
+	SERVER=$(cat /tmp/nb-server)
+	KERNELURL="$SERVER/isolinux/vmlinuz"
+	INITRDURL="$SERVER/isolinux/initrd.img"
+	echo -n "nomodeset inst.repo=$(cat /tmp/nb-server)" >>/tmp/nb-options
+	rm /tmp/nb-server
+	askforopts
 fi
 if [ $DISTRO = "rhel-type-8-64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
