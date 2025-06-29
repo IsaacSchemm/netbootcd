@@ -321,8 +321,8 @@ if [ $DISTRO = "rhel-type-10-64" ];then
 		dialog --inputbox "Where do you want to install this distribution from?" 8 70 "" 2>/tmp/nb-server
 	fi
 	SERVER=$(cat /tmp/nb-server)
-	KERNELURL="$SERVER/isolinux/vmlinuz"
-	INITRDURL="$SERVER/isolinux/initrd.img"
+	KERNELURL="$SERVER/images/pxeboot/vmlinuz"
+	INITRDURL="$SERVER/images/pxeboot/initrd.img"
 	echo -n "nomodeset inst.repo=$(cat /tmp/nb-server)" >>/tmp/nb-options
 	rm /tmp/nb-server
 	askforopts
