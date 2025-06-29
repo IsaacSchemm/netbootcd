@@ -102,6 +102,7 @@ fedora64 "(x86_64) Fedora" \
 opensuse64 "(x86_64) openSUSE" \
 mageia64 "(x86_64) Mageia" \
 mageia "  (i386) Mageia" \
+rhel-type-10-64 "(x86_64) AlmaLinux 10 / CentOS 10-Stream / Rocky Linux 10" \
 rhel-type-9-64 "(x86_64) AlmaLinux 9 / CentOS 9-Stream / Rocky Linux 9" \
 rhel-type-8-64 "(x86_64) AlmaLinux 8 / CentOS 8 / Rocky Linux 8" \
 rhel-type-7-64 "(x86_64) CentOS 7 and Scientific Linux 7" \
