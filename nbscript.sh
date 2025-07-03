@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 ## nbscript.sh - Download netboot images and launch them with kexec
-## Copyright (C) 2022 Isaac Schemm <isaacschemm@gmail.com>
+## Copyright (C) 2022-2025 Isaac Schemm <isaacschemm@gmail.com>
 ## Devuan and Arch added by Jonathan A. Wingo Oct 2022 <spcwingo1@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ set -e
 ## <http://www.gnu.org/copyleft/gpl.html>, on the NetbootCD site at
 ## <http://netbootcd.tuxfamily.org>, or on the CD itself.
 
-TITLE="NetbootCD Script 11.1.7 - September 27, 2023"
+TITLE="NetbootCD Script 11.1.8 - April 1, 2025"
 
 getversion ()
 {
