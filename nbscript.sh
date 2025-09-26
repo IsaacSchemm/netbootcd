@@ -170,7 +170,7 @@ if [ $DISTRO = "ubuntu64" ];then
 fi
 if [ $DISTRO = "debian" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
-	trixie "Debian 13"
+	trixie "Debian 13" \
 	bookworm "Debian 12" \
 	bullseye "Debian 11" \
 	buster "Debian 10" \
@@ -187,7 +187,7 @@ if [ $DISTRO = "debian" ];then
 fi
 if [ $DISTRO = "debian64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
-	trixie "Debian 13"
+	trixie "Debian 13" \
 	bookworm "Debian 12" \
 	bullseye "Debian 11" \
 	buster "Debian 10" \
