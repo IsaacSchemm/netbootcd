@@ -170,7 +170,6 @@ if [ $DISTRO = "ubuntu64" ];then
 fi
 if [ $DISTRO = "debian" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
-	trixie "Debian 13" \
 	bookworm "Debian 12" \
 	bullseye "Debian 11" \
 	buster "Debian 10" \
@@ -225,7 +224,7 @@ if [ $DISTRO = "debiandaily64" ];then
 fi
 if [ $DISTRO = "devuan" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
- 	daedalus "Devuan daedalus" \
+	daedalus "Devuan daedalus" \
 	chimaera "Devuan chimaera" \
 	ceres "Devuan ceres" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
@@ -236,7 +235,8 @@ if [ $DISTRO = "devuan" ];then
 fi
 if [ $DISTRO = "devuan64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
- 	daedalus "Devuan daedalus" \
+ 	excalibur "Devuan excalibur" \
+	daedalus "Devuan daedalus" \
 	chimaera "Devuan chimaera" \
 	ceres "Devuan ceres" \
 	Manual "Manually enter a version to install" 2>/tmp/nb-version
