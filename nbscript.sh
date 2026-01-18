@@ -263,6 +263,7 @@ fi
 if [ $DISTRO = "opensuse64" ];then
 	dialog --backtitle "$TITLE" --menu "Choose a system to install:" 20 70 13 \
 	tumbleweed "openSUSE Tumbleweed" \
+	leap/16.0 "openSUSE Leap 16.0" \
 	leap/15.6 "openSUSE Leap 15.6" \
 	leap/15.5 "openSUSE Leap 15.5" \
 	leap/15.4 "openSUSE Leap 15.4" \
